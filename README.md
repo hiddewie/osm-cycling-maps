@@ -19,4 +19,6 @@ Run the command
 ```
 to generate the Mapnik XML configuration and the printable PDF map in the folder `output`.
 
+You may edit the constants in the download and generate scripts to generate maps for other countries.
+
 ![Expected output](assets/cover.jpg)

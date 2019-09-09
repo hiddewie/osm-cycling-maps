@@ -4,7 +4,7 @@
 import mapnik
 import cairo
 
-BASE_PATH = '/mnt/d/mapnik-data/slovakia/'
+BASE_PATH = 'data/'
 OUTPUT_PATH = 'output/'
 
 SHADE_NAMES = ['N48E018', 'N48E019', 'N49E018', 'N49E019']
@@ -159,14 +159,14 @@ def shield():
 
 def maki(name, color=None, scaleFactor=None, allowOverlap=False):
     scale = 0.68 * (scaleFactor if scaleFactor is not None else 1.0)
-    return icon(BASE_PATH + '../icons/maki/' + name + '.svg', 'scale(%s, %s)' % (scale, scale),
+    return icon(BASE_PATH + 'icons/maki/' + name + '.svg', 'scale(%s, %s)' % (scale, scale),
                 color=color if color is not None else mapnik.Color('black'),
                 allowOverlap=allowOverlap)
 
 
 def svg(name, color=None, scaleFactor=None, allowOverlap=False):
     scale = 0.03 * (scaleFactor if scaleFactor is not None else 1.0)
-    return icon(BASE_PATH + '../icons/svg/' + name + '.svg', 'scale(%s, %s)' % (scale, scale),
+    return icon(BASE_PATH + 'icons/svg/' + name + '.svg', 'scale(%s, %s)' % (scale, scale),
                 color=color if color is not None else mapnik.Color('black'),
                 allowOverlap=allowOverlap)
 

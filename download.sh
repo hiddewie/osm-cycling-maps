@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
-DATA_DIR=/mnt/d/mapnik-data/slovakia/
+DATA_DIR=data
 COUNTRIES="Slovakia\|Poland"
 FEATURE_COUNTRIES="slovakia poland/slaskie poland/malopolskie"
 LATITUDES="N48 N49"
 LONGITUDES="E018 E019"
+
+mkdir -p $DATA_DIR
 
 echo
 echo " -- Height, contours & shade -- "
@@ -34,6 +36,7 @@ do
     echo "Shade $NAME"
     rm -f $DATA_DIR/$NAME.shade || exit 1
     gdaldem hillshade $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.shade || exit 1
+    rm -f $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.prj $DATA_DIR/$NAME.shp $DATA_DIR/$NAME.shx || exit 1
 
     echo "Done $NAME"
 
