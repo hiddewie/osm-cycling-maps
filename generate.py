@@ -7,7 +7,10 @@ import cairo
 BASE_PATH = 'data/'
 OUTPUT_PATH = 'output/'
 
-SHADE_NAMES = ['N48E018', 'N48E019', 'N49E018', 'N49E019']
+LATITUDES = ['N48', 'N49', 'N50']
+LONGITUDES = ['E018', 'E019']
+
+SHADE_NAMES = [lat + lon for lat in LATITUDES for lon in LONGITUDES]
 
 
 def layer(name, srs, ds, group=None):
