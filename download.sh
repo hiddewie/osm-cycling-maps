@@ -6,53 +6,53 @@ FEATURE_COUNTRIES="slovakia poland/slaskie poland/malopolskie"
 LATITUDES="N48 N49"
 LONGITUDES="E018 E019"
 
-#echo
-#echo " -- Height, contours & shade -- "
-#echo
-#
-#ARGS="-I -d"
-#for LAT in $LATITUDES
-#do
-#  for LON in $LONGITUDES
-#  do
-#    NAME="${LAT}${LON}"
-#
-#    echo "Get $NAME"
-#    wget https://dds.cr.usgs.gov/srtm/version2_1/SRTM3/Eurasia/$NAME.hgt.zip -O $DATA_DIR/$NAME.hgt.zip || exit 1
-#
-#    echo "Unzip $NAME"
-#    unzip -o $DATA_DIR/$NAME.hgt.zip -d $DATA_DIR || exit 1
-#    rm $DATA_DIR/$NAME.hgt.zip || exit 1
-#
-#    echo "Contours $NAME"
-#    rm -f $DATA_DIR/$NAME.shp || exit 1
-#    gdal_contour -i 20 -snodata -32768 -a height $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.shp || exit 1
-#
-#    echo "Import contours $NAME"
-#    shp2pgsql $ARGS -s 4326 $DATA_DIR/$NAME.shp contours | sudo -u postgres psql -U postgres -d gis | grep -v 'INSERT' || exit 1
-#
-#    echo "Shade $NAME"
-#    rm -f $DATA_DIR/$NAME.shade || exit 1
-#    gdaldem hillshade $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.shade || exit 1
-#
-#    echo "Done $NAME"
-#
-#    ARGS="-a"
-#  done
-#done
-#
-#echo
-#echo " -- Country borders -- "
-#echo
-#
-#echo "Get $COUNTRIES"
-#IDS=$(grep $COUNTRIES /mnt/d/mapnik-data/countries.txt  | awk '{print $1}' | paste -sd "," -)
-#wget "https://wambachers-osm.website/boundaries/exportBoundaries?cliVersion=1.0&cliKey=192f6ee3-bde5-4c76-a655-1d68b66a91b8&exportFormat=shp&exportLayout=single&exportAreas=land&union=true&selected=$IDS" \
-#  -O $DATA_DIR/countries.shp || exit 1
-#
-#shp2pgsql -I -d -s 4326 $DATA_DIR/countries.shp country_border | sudo -u postgres psql -U postgres -d gis | grep -v 'INSERT'
-#
-#rm $DATA_DIR/countries.shp || exit 1
+echo
+echo " -- Height, contours & shade -- "
+echo
+
+ARGS="-I -d"
+for LAT in $LATITUDES
+do
+  for LON in $LONGITUDES
+  do
+    NAME="${LAT}${LON}"
+
+    echo "Get $NAME"
+    wget https://dds.cr.usgs.gov/srtm/version2_1/SRTM3/Eurasia/$NAME.hgt.zip -O $DATA_DIR/$NAME.hgt.zip || exit 1
+
+    echo "Unzip $NAME"
+    unzip -o $DATA_DIR/$NAME.hgt.zip -d $DATA_DIR || exit 1
+    rm $DATA_DIR/$NAME.hgt.zip || exit 1
+
+    echo "Contours $NAME"
+    rm -f $DATA_DIR/$NAME.shp || exit 1
+    gdal_contour -i 20 -snodata -32768 -a height $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.shp || exit 1
+
+    echo "Import contours $NAME"
+    shp2pgsql $ARGS -s 4326 $DATA_DIR/$NAME.shp contours | sudo -u postgres psql -U postgres -d gis | grep -v 'INSERT' || exit 1
+
+    echo "Shade $NAME"
+    rm -f $DATA_DIR/$NAME.shade || exit 1
+    gdaldem hillshade $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.shade || exit 1
+
+    echo "Done $NAME"
+
+    ARGS="-a"
+  done
+done
+
+echo
+echo " -- Country borders -- "
+echo
+
+echo "Get $COUNTRIES"
+IDS=$(grep $COUNTRIES /mnt/d/mapnik-data/countries.txt  | awk '{print $1}' | paste -sd "," -)
+wget "https://wambachers-osm.website/boundaries/exportBoundaries?cliVersion=1.0&cliKey=192f6ee3-bde5-4c76-a655-1d68b66a91b8&exportFormat=shp&exportLayout=single&exportAreas=land&union=true&selected=$IDS" \
+  -O $DATA_DIR/countries.shp || exit 1
+
+shp2pgsql -I -d -s 4326 $DATA_DIR/countries.shp country_border | sudo -u postgres psql -U postgres -d gis | grep -v 'INSERT'
+
+rm $DATA_DIR/countries.shp || exit 1
 
 echo
 echo " -- Map content -- "
