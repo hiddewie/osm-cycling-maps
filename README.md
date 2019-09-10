@@ -1,7 +1,7 @@
 
 ## Generating a custom cycling map with Mapnik
 
-View blogpost at https://dev.to/hiddewie/creating-a-custom-cycling-map-ida-temp-slug-3451121.
+View blogpost at https://dev.to/hiddewie/creating-a-custom-cycling-map-3g2a.
 
 ### Getting started
 
