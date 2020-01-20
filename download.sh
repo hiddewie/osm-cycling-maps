@@ -49,7 +49,7 @@ echo " -- Country borders -- "
 echo
 
 echo "Get $COUNTRIES"
-IDS=$(grep $COUNTRIES /mnt/d/mapnik-data/countries.txt  | awk '{print $1}' | paste -sd "," -)
+IDS=$(grep $COUNTRIES countries.txt  | awk '{print $1}' | paste -sd "," -)
 wget "https://wambachers-osm.website/boundaries/exportBoundaries?cliVersion=1.0&cliKey=192f6ee3-bde5-4c76-a655-1d68b66a91b8&exportFormat=shp&exportLayout=single&exportAreas=land&union=true&selected=$IDS" \
   -O $DATA_DIR/countries.shp || exit 1
 
