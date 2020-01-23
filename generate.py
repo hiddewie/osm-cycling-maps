@@ -7,8 +7,8 @@ import cairo
 BASE_PATH = 'data/'
 OUTPUT_PATH = 'output/'
 
-LATITUDES = ['N48', 'N49', 'N50']
-LONGITUDES = ['E018', 'E019']
+LATITUDES = ['N52']
+LONGITUDES = ['E006']
 
 SHADE_NAMES = [lat + lon for lat in LATITUDES for lon in LONGITUDES]
 
