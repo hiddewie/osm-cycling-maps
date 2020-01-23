@@ -3,12 +3,13 @@
 
 import mapnik
 import cairo
+import os
 
 BASE_PATH = 'data/'
 OUTPUT_PATH = 'output/'
 
-LATITUDES = ['N48', 'N49', 'N50']
-LONGITUDES = ['E018', 'E019']
+LATITUDES = ['N52']
+LONGITUDES = ['E006']
 
 SHADE_NAMES = [lat + lon for lat in LATITUDES for lon in LONGITUDES]
 
@@ -25,13 +26,15 @@ def layer(name, srs, ds, group=None):
 def shapeFile(name):
     return mapnik.Shapefile(file=BASE_PATH + name)
 
+def env(key, default=None):
+    return os.getenv(key, default)
 
 # Import with
 #   shp2pgsql -I -d -s 4326 gis_osm_water_a_free_1.shp water_a | sudo -u postgres psql -U postgres -d gis
 # -d -I is delete (and create index)
 # -a is append
 def postgres(table):
-    return mapnik.PostGIS(host='localhost', user='postgres', password='postgres', dbname='gis', table=table)
+    return mapnik.PostGIS(host=env('PG_HOST', 'localhost'), user=env('PG_USER', 'postgres'), password=env('PG_PASSWORD', 'postgres'), dbname=env('PG_DATABASE', 'gis'), table=table)
 
 
 def tableWithFclasses(table, *classes):
@@ -58,21 +61,25 @@ def rule(symbol, filter=None):
 
 
 def line(width=1.0, color=None, dash=None, cap=None):
-    stroke = mapnik.Stroke()
-    if color is not None:
-        stroke.color = color
+    symb = mapnik.LineSymbolizer()
+    # stroke = mapnik.Stroke()
+#    if color is not None:
+#        symb.stroke_color = color
     if dash is not None:
-        stroke.add_dash(dash[0], dash[1])
-    if cap is None:
-        stroke.line_cap = mapnik.line_cap.ROUND_CAP
-    elif cap == 'butt':
-        stroke.line_cap = mapnik.line_cap.BUTT_CAP
-    elif cap == 'square':
-        stroke.line_cap = mapnik.line_cap.SQUARE_CAP
-    stroke.line_join = mapnik.line_join.ROUND_JOIN
-    stroke.width = width
+        pass
+        # symb.add_dash(dash[0], dash[1])
+        # print "ignoring dash"
+        # pass
+    # if cap is None:
+    #     symb.stroke_line_cap = mapnik.line_cap.ROUND_CAP
+    # elif cap == 'butt':
+    #     symb.stroke_line_cap = mapnik.line_cap.BUTT_CAP
+    # elif cap == 'square':
+    #     symb.stroke_line_cap = mapnik.line_cap.SQUARE_CAP
+    # symb.stroke_line_join = mapnik.line_join.ROUND_JOIN
+    symb.stroke_width = width
 
-    return mapnik.LineSymbolizer(stroke)
+    return symb #mapnik.LineSymbolizer(stroke)
 
 
 def lineStyle(name, filters, width, borderWidth, color, borderColor, dash=None, cap=None):
@@ -118,7 +125,7 @@ def pattern(file):
 
 def raster(opacity=1.0):
     symbolizer = mapnik.RasterSymbolizer()
-    symbolizer.scaling = mapnik.scaling_method.BILINEAR8
+    symbolizer.scaling = mapnik.scaling_method.BILINEAR
     symbolizer.opacity = opacity
     return symbolizer
 
@@ -136,7 +143,7 @@ def point(color=None, stroke=None):
 
 def icon(file, transform=None, color=None, allowOverlap=False):
     symbolizer = mapnik.MarkersSymbolizer()
-    symbolizer.filename = file
+    # symbolizer.filename = file
     symbolizer.allow_overlap = allowOverlap
     if color is not None:
         symbolizer.fill = color
@@ -227,23 +234,27 @@ def text(expression, size, color, fontVariant=None, haloRadius=None, halo=mapnik
     font = 'DejaVu Sans Book'
     if fontVariant is not None and fontVariant == 'bold':
         font = 'DejaVu Sans Bold'
-    symbolizer = mapnik.TextSymbolizer(expression, font, size, color)
+    symbolizer = mapnik.TextSymbolizer()
+    # symbolizer.expression = expression
+    # symbolizer.font = font
+    # symbolizer.size = size
+    # symbolizer.color = color
 
-    symbolizer.label_placement = mapnik.label_placement.POINT_PLACEMENT
-    if placement is not None and placement == 'line':
-        symbolizer.label_placement = mapnik.label_placement.LINE_PLACEMENT
-    if halo is not None:
-        symbolizer.halo_fill = halo
-    if haloRadius is not None:
-        symbolizer.halo_radius = haloRadius
-    symbolizer.placement_type = 'simple'
+    # symbolizer.label_placement = mapnik.label_placement.POINT_PLACEMENT
+    # if placement is not None and placement == 'line':
+    #     symbolizer.label_placement = mapnik.label_placement.LINE_PLACEMENT
+    # if halo is not None:
+    #     symbolizer.halo_fill = halo
+    # if haloRadius is not None:
+    #     symbolizer.halo_radius = haloRadius
+    # symbolizer.placement_type = 'simple'
     symbolizer.avoid_edges = True
     symbolizer.allow_overlap = False
     if transform is not None:
         symbolizer.text_transform = transform
 
     if minPathLength is not None:
-        symbolizer.minimum_distance = minPathLength
+        # symbolizer.minimum_distance = minPathLength
         symbolizer.minimum_path_length = minPathLength
 
     return symbolizer
@@ -333,11 +344,11 @@ def generateMap(width, height, topLeft, bottomRight):
     )
 
     # Download from https://wambachers-osm.website/boundaries/
-    addLayerWithStylesToMap(
-        m,
-        layer('countries', "+init=epsg:4326", postgres('country_border')),
-        lineStyle('countries', [], 1, 9, mapnik.Color(0, 74, 24, 200), mapnik.Color(0, 219, 68, 120), dash=[10, 4]),
-    )
+    # addLayerWithStylesToMap(
+    #     m,
+    #     layer('countries', "+init=epsg:4326", postgres('country_border')),
+    #     lineStyle('countries', [], 1, 9, mapnik.Color(0, 74, 24, 200), mapnik.Color(0, 219, 68, 120), dash=[10, 4]),
+    # )
 
     addLayerWithStylesToMap(
         m,
@@ -357,7 +368,7 @@ def generateMap(width, height, topLeft, bottomRight):
         m,
         layer('natural', "+init=epsg:4326", tableWithFclasses('natural_a', 'spring')),
         style('spring', rule(
-            point(mapnik.Color(123, 179, 232), mapnik.Stroke(mapnik.Color(53, 134, 212), 1)),
+            point(mapnik.Color(123, 179, 232)),#, mapnik.Stroke(mapnik.Color(53, 134, 212), 1)),
             classFilter('spring')
         )),
     )
@@ -686,12 +697,15 @@ i = -1
 j = -4
 
 numPagesHorizontal = 2
-numPagesVertical = 4
+numPagesVertical = 2
+
+enschede = (768612.53626086, 6840158.51251942)
+slovakia = (2138462.019734, 6361404.796634)
 
 pageWidth = 29693.396832
 pageHeight = - 1.414 * pageWidth
 # -47419.621422
-topLeft = 2138462.019734 + i * pageWidth, 6361404.796634 + j * pageHeight
+topLeft = enschede[0] + i * pageWidth, enschede[1] + j * pageHeight
 # bottomRight = 2168155.416566, 6313985.175212
 bottomRight = topLeft[0] + numPagesHorizontal * pageWidth, topLeft[1] + numPagesVertical * pageHeight
 

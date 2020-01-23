@@ -1,0 +1,83 @@
+ynology/Programmeren/Git/cyclosm"
+
+
+docker run -d \
+    -p 6789:6789 \
+    -v "D:\Synology/Programmeren/Git/cyclosm:/opt/project" \
+    --link postgres-osm:postgres-osm \
+    -e USER_ID=1000 \
+    joxit/kosmtik \
+    kosmtik serve /opt/project/project.mml --host 0.0.0.0
+
+
+
+
+
+Docker:
+
+Download a `osm.pbf` file from geofabrik.
+
+# Docker OSM Postgres
+docker run -d --name postgres-osm openfirmware/postgres-osm
+
+# Docker OSM load Postgres data
+docker run -i -t --rm --link postgres-osm:pg -v "D:\Downloads/overijssel-latest.osm.pbf:/osm/extract.osm.pbf" openfirmware/osm2pgsql -c 'osm2pgsql --create --slim --hstore --cache 2000 --database $PG_ENV_OSM_DB --username $PG_ENV_OSM_USER --host pg --port $PG_PORT_5432_TCP_PORT /osm/extract.osm.pbf'
+
+# Windows paths
+export MSYS_NO_PATHCONV=1;
+
+# Docker run kosmtik
+docker run -ti -p 6789:6789 -v "D:\Synology/Programmeren/Git/cyclosm/:/opt/project" --link postgres-osm:postgres-osm -e USER_ID=1000 -v "D:\fonts:/usr/share/fonts:ro" joxit/kosmtik kosmtik serve "/opt/project/project.mml" --host 0.0.0.0 --net host
+
+
+
+
+
+
+
+
+# Map it Docker 
+
+Run a Postgres in Docker
+> docker run -d --name postgres-osm openfirmware/postgres-osm
+
+Import data (build)
+> docker build -t map-it-import -f import.Dockerfile .
+
+Import data
+> docker run -ti --rm -v /d/Synology/Programmeren/Python/Mapnik/data:/data --link postgres-osm:postgres-osm map-it-import
+
+Build map-it Docker image
+> docker build -t map-it .
+
+Run the image to generate a map
+> docker run -ti --rm -v /d/Synology/Programmeren/Python/Mapnik:/map-it --link postgres-osm:db -e PG_HOST=db -e PG_USER=osm -e PG_DATABASE=gis map-it
+
+
+
+
+
+# Manual Mapnik build
+
+apt install git clang python zlib1g-dev make pkg-config curl
+
+
+# Mapnik
+
+git clone https://github.com/mapnik/mapnik.git
+cd mapnik
+git submodule update --init
+
+source bootstrap.sh
+./configure CUSTOM_CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
+make
+# make test
+make install
+
+# Mapnik python
+
+apt install python-setuptools python-dev libxml2-dev libxslt-dev
+git clone https://github.com/mapnik/python-mapnik.git
+python setup.py install
+
+
