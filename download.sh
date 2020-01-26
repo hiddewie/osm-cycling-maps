@@ -34,8 +34,8 @@ do
     shp2pgsql $ARGS -s 4326 $DATA_DIR/$NAME.shp contours | sudo -u postgres psql -U postgres -d gis | grep -v 'INSERT' || exit 1
 
     echo "Shade $NAME"
-    rm -f $DATA_DIR/$NAME.shade || exit 1
-    gdaldem hillshade $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.shade || exit 1
+    rm -f $DATA_DIR/$NAME.tif || exit 1
+    gdaldem hillshade $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.tif || exit 1
     rm -f $DATA_DIR/$NAME.dbf $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.prj $DATA_DIR/$NAME.shp $DATA_DIR/$NAME.shx || exit 1
 
     echo "Done $NAME"

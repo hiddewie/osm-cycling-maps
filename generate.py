@@ -282,11 +282,11 @@ def generateMap(width, height, topLeft, bottomRight):
 
     # Download at https://dds.cr.usgs.gov/srtm/version2_1/SRTM3/
     # Generate with
-    #    gdaldem hillshade N49E019.hgt N49E019.shade
+    #    gdaldem hillshade N49E019.hgt N49E019.tif
     for shade in SHADE_NAMES:
         addLayerWithStylesToMap(
             m,
-            layer('shade-' + shade, "+init=epsg:4326", mapnik.Gdal(file=BASE_PATH + ('%s.shade' % (shade,)))),
+            layer('shade-' + shade, "+init=epsg:4326", mapnik.Gdal(file=BASE_PATH + ('%s.tif' % (shade,)))),
             style('shade-', rule(
                 raster(0.15),
             ))
