@@ -25,3 +25,4 @@ You may edit the constants in the download and generate scripts to generate maps
 
 ![Expected output](assets/cover.jpg)
 
+![Printed map](assets/printed.jpg)
