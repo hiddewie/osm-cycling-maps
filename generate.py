@@ -10,6 +10,10 @@ OUTPUT_PATH = 'output/'
 LATITUDES = ['N52']
 LONGITUDES = ['E006']
 
+TOP_LEFT = (685473.99208034, 6944533.36465124)
+PAGE_OFFSET = (-1, 0)
+PAGES = (3, 2)
+
 SHADE_NAMES = [lat + lon for lat in LATITUDES for lon in LONGITUDES]
 
 
@@ -288,32 +292,32 @@ def generateMap(width, height, topLeft, bottomRight):
             m,
             layer('shade-' + shade, "+init=epsg:4326", mapnik.Gdal(file=BASE_PATH + ('%s.shade' % (shade,)))),
             style('shade-', rule(
-                raster(0.15),
+                raster(0.10),
             ))
         )
 
     # Generate with
     #    gdal_contour -i 20 -snodata -32768 -a height  /mnt/d/mapnik-data/slovakia/N49E019.hgt /mnt/d/mapnik-data/slovakia/N49E019.shp
-    addLayerWithStylesToMap(
-        m,
-        layer('contours', "+init=epsg:4326", postgres('contours')),
-        style(
-            'contours',
-            rule(
-                line(0.5, mapnik.Color(145, 132, 83, 100)),
-                '[height] % 100 != 0',
-            ),
-            rule(
-                line(1.0, mapnik.Color(145, 132, 83, 140)),
-                '[height] % 100 = 0',
-            ),
-            rule(
-                text(mapnik.Expression('[height]'), 6, mapnik.Color(145, 132, 83), halo=mapnik.Color('white'),
-                     haloRadius=1.0, placement='line'),
-                '[height] % 100 = 0',
-            ),
-        )
-    )
+    # addLayerWithStylesToMap(
+    #     m,
+    #     layer('contours', "+init=epsg:4326", postgres('contours')),
+    #     style(
+    #         'contours',
+    #         rule(
+    #             line(0.5, mapnik.Color(145, 132, 83, 100)),
+    #             '[height] % 100 != 0',
+    #         ),
+    #         rule(
+    #             line(1.0, mapnik.Color(145, 132, 83, 140)),
+    #             '[height] % 100 = 0',
+    #         ),
+    #         rule(
+    #             text(mapnik.Expression('[height]'), 6, mapnik.Color(145, 132, 83), halo=mapnik.Color('white'),
+    #                  haloRadius=1.0, placement='line'),
+    #             '[height] % 100 = 0',
+    #         ),
+    #     )
+    # )
 
     addLayerWithStylesToMap(
         m,
@@ -658,7 +662,7 @@ def generateMap(width, height, topLeft, bottomRight):
     return m
 
 
-def renderMap(m):
+def renderMap(m, name):
     print 'Rendering map with dimensions %s, %s' % (m.width, m.height)
     im = mapnik.Image(m.width, m.height)
     mapnik.render(m, im)
@@ -667,13 +671,13 @@ def renderMap(m):
     if mapnik.has_pycairo():
         print 'Rendering PDF'
 
-        pdf_surface = cairo.PDFSurface(OUTPUT_PATH + 'slovakia.pdf', m.width, m.height)
+        pdf_surface = cairo.PDFSurface(OUTPUT_PATH + name + '.pdf', m.width, m.height)
         mapnik.render(m, pdf_surface)
         pdf_surface.finish()
-        print 'Rendered PDF to %s' % (OUTPUT_PATH + 'slovakia.pdf',)
+        print 'Rendered PDF to %s' % (OUTPUT_PATH + name + '.pdf',)
 
-    print 'Saving map configuration to %s' % (OUTPUT_PATH + "map_slovakia.xml",)
-    mapnik.save_map(m, OUTPUT_PATH + "map_slovakia.xml")
+    print 'Saving map configuration to %s' % (OUTPUT_PATH + "map_" + name + ".xml",)
+    mapnik.save_map(m, OUTPUT_PATH + "map_" + name + ".xml")
 
 
 # Choose with https://epsg.io/map#srs=3857&x=2225846.263664&y=6275978.874398&z=8&layer=streets
@@ -682,25 +686,34 @@ width = 8.27  # inch
 height = ratio * width  # inch
 dpi = 125
 
-i = -1
-j = -4
+iOffset = PAGE_OFFSET[0]
+jOffset = PAGE_OFFSET[1]
 
-numPagesHorizontal = 2
-numPagesVertical = 4
+numPagesHorizontal = PAGES[0]
+numPagesVertical = PAGES[1]
 
-pageWidth = 29693.396832
+# pageWidth = 29693.396832
+pageWidth = 20000
 pageHeight = - 1.414 * pageWidth
 # -47419.621422
-topLeft = 2138462.019734 + i * pageWidth, 6361404.796634 + j * pageHeight
-# bottomRight = 2168155.416566, 6313985.175212
-bottomRight = topLeft[0] + numPagesHorizontal * pageWidth, topLeft[1] + numPagesVertical * pageHeight
 
-# print (2168155.416566 - 2138462.019734)  # / (width * dpi)
-# print (6313985.175212 - 6361404.796634)  # / (height * dpi)
-# topLeft = 2138462.019734
+slovakia = (2138462.019734, 6361404.796634)
 
-# box = mapnik.Box2d(2077252.680678,6361443.015148,2225846.263664,6302691.604282)
-# box = mapnik.Box2d(2138462.019734,6361404.796634,2168155.416566,6313985.175212)
+for iq in range(numPagesHorizontal):
+    i = iq + iOffset
+    for jq in range(numPagesVertical):
+        j = jq + jOffset
 
-m = generateMap(numPagesHorizontal * int(width * dpi), numPagesVertical * int(height * dpi), topLeft, bottomRight)
-renderMap(m)
+        topLeft = TOP_LEFT[0] + i * pageWidth, TOP_LEFT[1] + j * pageHeight
+        # bottomRight = 2168155.416566, 6313985.175212
+        bottomRight = topLeft[0] + pageWidth, topLeft[1] + pageHeight
+
+        # print (2168155.416566 - 2138462.019734)  # / (width * dpi)
+        # print (6313985.175212 - 6361404.796634)  # / (height * dpi)
+        # topLeft = 2138462.019734
+
+        # box = mapnik.Box2d(2077252.680678,6361443.015148,2225846.263664,6302691.604282)
+        # box = mapnik.Box2d(2138462.019734,6361404.796634,2168155.416566,6313985.175212)
+
+        m = generateMap(1 * int(width * dpi), 1 * int(height * dpi), topLeft, bottomRight)
+        renderMap(m, 'overijssel_drenthe_%s_%s' % (i, j))
