@@ -334,11 +334,11 @@ def generateMap(width, height, topLeft, bottomRight):
     )
 
     # Download from https://wambachers-osm.website/boundaries/
-    # addLayerWithStylesToMap(
-    #     m,
-    #     layer('countries', "+init=epsg:4326", postgres('country_border')),
-    #     lineStyle('countries', [], 1, 9, mapnik.Color(0, 74, 24, 200), mapnik.Color(0, 219, 68, 120), dash=[10, 4]),
-    # )
+    addLayerWithStylesToMap(
+        m,
+        layer('countries', "+init=epsg:4326", postgres('country_border')),
+        lineStyle('countries', [], 1, 9, mapnik.Color(0, 74, 24, 200), mapnik.Color(0, 219, 68, 120), dash=[10, 4]),
+    )
 
     addLayerWithStylesToMap(
         m,
@@ -672,8 +672,10 @@ def renderMap(m, name):
         pdf_surface.finish()
         print 'Rendered PDF to %s' % (OUTPUT_PATH + name + '.pdf',)
 
-    print 'Saving map configuration to %s' % (OUTPUT_PATH + "map_" + name + ".xml",)
-    mapnik.save_map(m, OUTPUT_PATH + "map_" + name + ".xml")
+    xmlFilename = "mapnik_" + name + ".xml"
+    print 'Saving map configuration to %s' % (OUTPUT_PATH + xmlFilename,)
+    mapnik.save_map(m, OUTPUT_PATH + xmlFilename)
+    print 'Done'
 
 
 name=env('MAP_NAME', 'map')
@@ -711,10 +713,10 @@ numPagesVertical = PAGES_VERTICAL
 
 enschede = (TOP_LEFT_X, TOP_LEFT_Y)
 
-pageWidth = 29693.396832
+pageWidth = 29693
 pageHeight = - 1.414 * pageWidth
-topLeft = enschede[0] + i * pageWidth, enschede[1] + j * pageHeight
-bottomRight = topLeft[0] + numPagesHorizontal * pageWidth, topLeft[1] + numPagesVertical * pageHeight
+topLeft = int(enschede[0] + i * pageWidth), int(enschede[1] + j * pageHeight)
+bottomRight = int(topLeft[0] + numPagesHorizontal * pageWidth), int(topLeft[1] + numPagesVertical * pageHeight)
 
 print ('Generating from top left %s, %s to bottom right %s, %s (%s pages horizontal and %s pages vertical)' % (topLeft[0], topLeft[1], bottomRight[0], bottomRight[1], numPagesHorizontal, numPagesVertical))
 
