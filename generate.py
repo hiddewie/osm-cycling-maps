@@ -5,13 +5,12 @@ import mapnik
 import cairo
 import os
 
+def env(key, default=None):
+    return os.getenv(key, default)
+
+
 BASE_PATH = 'data/'
 OUTPUT_PATH = 'output/'
-
-LATITUDES = ['N52']
-LONGITUDES = ['E006']
-
-SHADE_NAMES = [lat + lon for lat in LATITUDES for lon in LONGITUDES]
 
 
 def layer(name, srs, ds, group=None):
@@ -26,8 +25,6 @@ def layer(name, srs, ds, group=None):
 def shapeFile(name):
     return mapnik.Shapefile(file=BASE_PATH + name)
 
-def env(key, default=None):
-    return os.getenv(key, default)
 
 # Import with
 #   shp2pgsql -I -d -s 4326 gis_osm_water_a_free_1.shp water_a | sudo -u postgres psql -U postgres -d gis
@@ -662,52 +659,64 @@ def generateMap(width, height, topLeft, bottomRight):
     return m
 
 
-def renderMap(m):
+def renderMap(m, name):
     print 'Rendering map with dimensions %s, %s' % (m.width, m.height)
     im = mapnik.Image(m.width, m.height)
     mapnik.render(m, im)
 
-    # Render cairo examples
     if mapnik.has_pycairo():
         print 'Rendering PDF'
 
-        pdf_surface = cairo.PDFSurface(OUTPUT_PATH + 'slovakia.pdf', m.width, m.height)
+        pdf_surface = cairo.PDFSurface(OUTPUT_PATH + name + '.pdf', m.width, m.height)
         mapnik.render(m, pdf_surface)
         pdf_surface.finish()
-        print 'Rendered PDF to %s' % (OUTPUT_PATH + 'slovakia.pdf',)
+        print 'Rendered PDF to %s' % (OUTPUT_PATH + name + '.pdf',)
 
-    print 'Saving map configuration to %s' % (OUTPUT_PATH + "map_slovakia.xml",)
-    mapnik.save_map(m, OUTPUT_PATH + "map_slovakia.xml")
+    print 'Saving map configuration to %s' % (OUTPUT_PATH + "map_" + name + ".xml",)
+    mapnik.save_map(m, OUTPUT_PATH + "map_" + name + ".xml")
 
+
+name=env('MAP_NAME', 'map')
+
+LATITUDES = ['N52']
+LONGITUDES = ['E006']
+
+SHADE_NAMES = [lat + lon for lat in LATITUDES for lon in LONGITUDES]
+
+print ('Using name "%s"' % (name, ))
+print ('Using latitudes %s' % (LATITUDES, ))
+print ('Using longitudes %s' % (LONGITUDES, ))
 
 # Choose with https://epsg.io/map#srs=3857&x=2225846.263664&y=6275978.874398&z=8&layer=streets
+# In EPSG:3857
+TOP_LEFT_X=int(env('TOP_LEFT_X', 735324))
+TOP_LEFT_Y=int(env('TOP_LEFT_Y', 6874058))
+
+OFFSET_PAGES_X=int(env('OFFSET_PAGES_X', 0))
+OFFSET_PAGES_Y=int(env('OFFSET_PAGES_Y', 0))
+
+PAGES_HORIZONTAL=int(env('PAGES_HORIZONTAL', 1))
+PAGES_VERTICAL=int(env('PAGES_VERTICAL', 1))
+
 ratio = 1.414
 width = 8.27  # inch
 height = ratio * width  # inch
 dpi = 125
 
-i = 0
-j = 0
+i = OFFSET_PAGES_X
+j = OFFSET_PAGES_Y
 
-numPagesHorizontal = 1
-numPagesVertical = 1
+numPagesHorizontal = PAGES_HORIZONTAL
+numPagesVertical = PAGES_VERTICAL
 
-enschede = (763300, 6844247)
-slovakia = (2138462.019734, 6361404.796634)
+enschede = (TOP_LEFT_X, TOP_LEFT_Y)
 
 pageWidth = 29693.396832
 pageHeight = - 1.414 * pageWidth
-# -47419.621422
 topLeft = enschede[0] + i * pageWidth, enschede[1] + j * pageHeight
-# bottomRight = 2168155.416566, 6313985.175212
 bottomRight = topLeft[0] + numPagesHorizontal * pageWidth, topLeft[1] + numPagesVertical * pageHeight
 
-# print (2168155.416566 - 2138462.019734)  # / (width * dpi)
-# print (6313985.175212 - 6361404.796634)  # / (height * dpi)
-# topLeft = 2138462.019734
-
-# box = mapnik.Box2d(2077252.680678,6361443.015148,2225846.263664,6302691.604282)
-# box = mapnik.Box2d(2138462.019734,6361404.796634,2168155.416566,6313985.175212)
+print ('Generating from top left %s, %s to bottom right %s, %s (%s pages horizontal and %s pages vertical)' % (topLeft[0], topLeft[1], bottomRight[0], bottomRight[1], numPagesHorizontal, numPagesVertical))
 
 m = generateMap(numPagesHorizontal * int(width * dpi), numPagesVertical * int(height * dpi), topLeft, bottomRight)
-renderMap(m)
+renderMap(m, name)

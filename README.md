@@ -41,7 +41,7 @@ docker run -ti --rm -v $PROJECT_DIR/data:/data --link postgres-osm:postgres-osm 
 ```
 where `$PROJECT_DIR` is the project directory
 
-Let's generate a map. Build the image using
+Let's generate a map. Build the image specified by `Dockerfile` using
 ```bash
 docker build -t map-it .
 ```

@@ -58,11 +58,13 @@ echo
 echo "Get $COUNTRIES"
 IDS=$(grep $COUNTRIES $COUNTRIES_LOCATION  | awk '{print $1}' | paste -sd "," -)
 wget "https://wambachers-osm.website/boundaries/exportBoundaries?cliVersion=1.0&cliKey=192f6ee3-bde5-4c76-a655-1d68b66a91b8&exportFormat=shp&exportLayout=single&exportAreas=land&union=true&selected=$IDS" \
-  -O $DATA_DIR/countries.shp || exit 1
+  -O $DATA_DIR/countries.zip || exit 1
+mkdir $DATA_DIR/countries
+unzip $DATA_DIR/countries.zip -d $DATA_DIR/countries
 
-shp2pgsql -I -d -s 4326 $DATA_DIR/countries.shp country_border | psql -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE" | grep -v 'INSERT'
+shp2pgsql -I -d -s 4326 $DATA_DIR/countries/union_of_selected_boundaries_AL2-AL2.shp country_border | psql -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE" | grep -v 'INSERT'
 
-rm $DATA_DIR/countries.shp || exit 1
+rm -r $DATA_DIR/countries || exit 1
 
 echo
 echo " -- Map content -- "
