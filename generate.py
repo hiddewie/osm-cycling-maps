@@ -4,6 +4,7 @@
 import mapnik
 import cairo
 import os
+import re
 
 def env(key, default=None):
     return os.getenv(key, default)
@@ -261,7 +262,7 @@ def addLayerWithStylesToMap(m, layer, *styles):
 
 
 def addStyle(m, layer, s):
-    print 'Adding style %s' % (s.name,)
+    # print 'Adding style %s' % (s.name,)
     m.append_style(s.name, s)
     layer.styles.append(s.name)
 
@@ -678,14 +679,27 @@ def renderMap(m, name):
     print 'Done'
 
 
+def envList(envString, pattern):
+    ret = [] 
+    pattern = re.compile(pattern)
+    split = envString.split(',')
+    for s in split:
+        current = s.strip()
+        if not pattern.match(current):
+            print ("Input '%s' does not match %s" % (current, pattern))
+            exit(1)
+        ret.append(current)
+
+    return ret
+
 name=env('MAP_NAME', 'map')
 
-LATITUDES = ['N52']
-LONGITUDES = ['E006']
+LATITUDES = envList(env('LATITUDES', 'N52'), '^[NS][0-9]{2}$')
+LONGITUDES = envList(env('LATITUDES', 'E006'), '^[EW][0-9]{3}$')
 
 SHADE_NAMES = [lat + lon for lat in LATITUDES for lon in LONGITUDES]
 
-print ('Using name "%s"' % (name, ))
+print ('Using name \'%s\'' % (name, ))
 print ('Using latitudes %s' % (LATITUDES, ))
 print ('Using longitudes %s' % (LONGITUDES, ))
 
