@@ -63,7 +63,7 @@ def rule(symbol, filter=None):
 def line(width=1.0, color=None, dash=None, cap=None):
     stroke = mapnik.Stroke()
     if color is not None:
-       stroke.color = color
+        stroke.color = color
     if dash is not None:
         stroke.add_dash(dash[0], dash[1])
     if cap is None:
@@ -121,7 +121,7 @@ def pattern(file):
 
 def raster(opacity=1.0):
     symbolizer = mapnik.RasterSymbolizer()
-    symbolizer.scaling = mapnik.scaling_method.BILINEAR
+    symbolizer.scaling = mapnik.scaling_method.BILINEAR8
     symbolizer.opacity = opacity
     return symbolizer
 
@@ -230,11 +230,7 @@ def text(expression, size, color, fontVariant=None, haloRadius=None, halo=mapnik
     font = 'DejaVu Sans Book'
     if fontVariant is not None and fontVariant == 'bold':
         font = 'DejaVu Sans Bold'
-    symbolizer = mapnik.TextSymbolizer()
-    symbolizer.expression = expression
-    symbolizer.font = font
-    symbolizer.size = size
-    symbolizer.color = color
+    symbolizer = mapnik.TextSymbolizer(expression, font, size, color)
 
     symbolizer.label_placement = mapnik.label_placement.POINT_PLACEMENT
     if placement is not None and placement == 'line':
@@ -251,7 +247,7 @@ def text(expression, size, color, fontVariant=None, haloRadius=None, halo=mapnik
         symbolizer.text_transform = transform
 
     if minPathLength is not None:
-        # symbolizer.minimum_distance = minPathLength
+        symbolizer.minimum_distance = minPathLength
         symbolizer.minimum_path_length = minPathLength
 
     return symbolizer
@@ -365,7 +361,7 @@ def generateMap(width, height, topLeft, bottomRight):
         m,
         layer('natural', "+init=epsg:4326", tableWithFclasses('natural_a', 'spring')),
         style('spring', rule(
-            point(mapnik.Color(123, 179, 232)),#, mapnik.Stroke(mapnik.Color(53, 134, 212), 1)),
+            point(mapnik.Color(123, 179, 232), mapnik.Stroke(mapnik.Color(53, 134, 212), 1)),
             classFilter('spring')
         )),
     )
