@@ -1,4 +1,4 @@
-FROM debian:jessie-slim
+FROM kotaimen/mapnik:3.0.9-ubuntu
 
 LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
 
@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
     # automake \
     # build-essential \
     # python-mapnik \
-    # python-cairo \
+    python-cairo \
     # libmapnik2-2.0 \
     # mapnik-utils \
     # mapnik \
@@ -17,8 +17,6 @@ RUN apt-get update && apt-get install -y \
     # other\
     # packages \
     # python \
-    libmapnik-dev libmapnik2-dev libmapnik2.2 mapnik-doc mapnik-utils python-mapnik python-mapnik2 \
-    # libmapnik2.2 libmapnik2-dev mapnik-utils python-mapnik \
   && apt-get autoclean \
   && rm -rf /var/lib/apt/lists/*
 

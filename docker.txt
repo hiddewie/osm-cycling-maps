@@ -38,6 +38,9 @@ docker run -ti -p 6789:6789 -v "D:\Synology/Programmeren/Git/cyclosm/:/opt/proje
 
 # Map it Docker 
 
+Fix paths 
+> export MSYS_NO_PATHCONV=1;
+
 Run a Postgres in Docker
 > docker run -d --name postgres-osm openfirmware/postgres-osm
 
@@ -77,7 +80,8 @@ make install
 # Mapnik python
 
 apt install python-setuptools python-dev libxml2-dev libxslt-dev
-git clone https://github.com/mapnik/python-mapnik.git
+git clone -b 'v3.0.x' --single-branch --depth 1 https://github.com/mapnik/python-mapnik.git python-mapnik
+cd python-mapnik
 python setup.py install
 
 

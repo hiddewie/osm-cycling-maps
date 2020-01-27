@@ -61,25 +61,21 @@ def rule(symbol, filter=None):
 
 
 def line(width=1.0, color=None, dash=None, cap=None):
-    symb = mapnik.LineSymbolizer()
-    # stroke = mapnik.Stroke()
-#    if color is not None:
-#        symb.stroke_color = color
+    stroke = mapnik.Stroke()
+    if color is not None:
+       stroke.color = color
     if dash is not None:
-        pass
-        # symb.add_dash(dash[0], dash[1])
-        # print "ignoring dash"
-        # pass
-    # if cap is None:
-    #     symb.stroke_line_cap = mapnik.line_cap.ROUND_CAP
-    # elif cap == 'butt':
-    #     symb.stroke_line_cap = mapnik.line_cap.BUTT_CAP
-    # elif cap == 'square':
-    #     symb.stroke_line_cap = mapnik.line_cap.SQUARE_CAP
-    # symb.stroke_line_join = mapnik.line_join.ROUND_JOIN
-    symb.stroke_width = width
+        stroke.add_dash(dash[0], dash[1])
+    if cap is None:
+        stroke.line_cap = mapnik.line_cap.ROUND_CAP
+    elif cap == 'butt':
+        stroke.line_cap = mapnik.line_cap.BUTT_CAP
+    elif cap == 'square':
+        stroke.line_cap = mapnik.line_cap.SQUARE_CAP
+    stroke.line_join = mapnik.line_join.ROUND_JOIN
+    stroke.width = width
 
-    return symb #mapnik.LineSymbolizer(stroke)
+    return mapnik.LineSymbolizer(stroke)
 
 
 def lineStyle(name, filters, width, borderWidth, color, borderColor, dash=None, cap=None):
@@ -143,7 +139,7 @@ def point(color=None, stroke=None):
 
 def icon(file, transform=None, color=None, allowOverlap=False):
     symbolizer = mapnik.MarkersSymbolizer()
-    # symbolizer.filename = file
+    symbolizer.filename = file
     symbolizer.allow_overlap = allowOverlap
     if color is not None:
         symbolizer.fill = color
@@ -235,19 +231,20 @@ def text(expression, size, color, fontVariant=None, haloRadius=None, halo=mapnik
     if fontVariant is not None and fontVariant == 'bold':
         font = 'DejaVu Sans Bold'
     symbolizer = mapnik.TextSymbolizer()
-    # symbolizer.expression = expression
-    # symbolizer.font = font
-    # symbolizer.size = size
-    # symbolizer.color = color
+    symbolizer.expression = expression
+    symbolizer.font = font
+    symbolizer.size = size
+    symbolizer.color = color
 
-    # symbolizer.label_placement = mapnik.label_placement.POINT_PLACEMENT
-    # if placement is not None and placement == 'line':
-    #     symbolizer.label_placement = mapnik.label_placement.LINE_PLACEMENT
-    # if halo is not None:
-    #     symbolizer.halo_fill = halo
-    # if haloRadius is not None:
-    #     symbolizer.halo_radius = haloRadius
-    # symbolizer.placement_type = 'simple'
+    symbolizer.label_placement = mapnik.label_placement.POINT_PLACEMENT
+    if placement is not None and placement == 'line':
+        symbolizer.label_placement = mapnik.label_placement.LINE_PLACEMENT
+    if halo is not None:
+        symbolizer.halo_fill = halo
+    if haloRadius is not None:
+        symbolizer.halo_radius = haloRadius
+    symbolizer.placement_type = 'simple'
+    
     symbolizer.avoid_edges = True
     symbolizer.allow_overlap = False
     if transform is not None:
@@ -693,13 +690,13 @@ width = 8.27  # inch
 height = ratio * width  # inch
 dpi = 125
 
-i = -1
-j = -4
+i = 0
+j = 0
 
-numPagesHorizontal = 2
-numPagesVertical = 2
+numPagesHorizontal = 1
+numPagesVertical = 1
 
-enschede = (768612.53626086, 6840158.51251942)
+enschede = (763300, 6844247)
 slovakia = (2138462.019734, 6361404.796634)
 
 pageWidth = 29693.396832
