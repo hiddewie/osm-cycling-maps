@@ -138,10 +138,11 @@ def point(color=None, stroke=None):
     return symbolizer
 
 
-def icon(file, transform=None, color=None, allowOverlap=False):
+def icon(file, transform=None, color=None, allowOverlap=False, ignorePlacement=False):
     symbolizer = mapnik.MarkersSymbolizer()
     symbolizer.filename = file
     symbolizer.allow_overlap = allowOverlap
+    symbolizer.ignore_placement = ignorePlacement
     if color is not None:
         symbolizer.fill = color
     if transform is not None:
@@ -164,29 +165,29 @@ def shield():
     return symbolizer
 
 
-def maki(name, color=None, scaleFactor=None, allowOverlap=False):
+def maki(name, color=None, scaleFactor=None, allowOverlap=False, ignorePlacement=False):
     scale = 0.68 * (scaleFactor if scaleFactor is not None else 1.0)
     return icon(BASE_PATH + 'icons/maki/' + name + '.svg', 'scale(%s, %s)' % (scale, scale),
                 color=color if color is not None else mapnik.Color('black'),
-                allowOverlap=allowOverlap)
+                allowOverlap=allowOverlap, ignorePlacement=ignorePlacement)
 
 
-def svg(name, color=None, scaleFactor=None, allowOverlap=False):
+def svg(name, color=None, scaleFactor=None, allowOverlap=False, ignorePlacement=False):
     scale = 0.03 * (scaleFactor if scaleFactor is not None else 1.0)
     return icon(BASE_PATH + 'icons/svg/' + name + '.svg', 'scale(%s, %s)' % (scale, scale),
                 color=color if color is not None else mapnik.Color('black'),
-                allowOverlap=allowOverlap)
+                allowOverlap=allowOverlap, ignorePlacement=ignorePlacement)
 
 
 def svgStyle(name, filter):
     return style(
         name,
         rule(
-            maki('circle-11', color=mapnik.Color(250, 250, 250, 200), scaleFactor=1.5, allowOverlap=True),
+            maki('circle-11', color=mapnik.Color(250, 250, 250, 200), scaleFactor=1.5, allowOverlap=False, ignorePlacement=True),
             filter
         ),
         rule(
-            svg(name, color=mapnik.Color(80, 0, 0), allowOverlap=True),
+            svg(name, color=mapnik.Color('purple'), allowOverlap=False, ignorePlacement=True),
             filter
         ),
     )
@@ -196,11 +197,11 @@ def makiStyle(name, filter):
     return style(
         name,
         rule(
-            maki('circle-11', color=mapnik.Color(250, 250, 250, 200), scaleFactor=1.5, allowOverlap=True),
+            maki('circle-11', color=mapnik.Color(250, 250, 250, 200), scaleFactor=1.5, allowOverlap=False, ignorePlacement=True),
             filter
         ),
         rule(
-            maki(name, color=mapnik.Color('purple'), allowOverlap=True),
+            maki(name, color=mapnik.Color('purple'), allowOverlap=False, ignorePlacement=True),
             filter
         ),
     )
@@ -549,6 +550,62 @@ def generateMap(width, height, topLeft, bottomRight):
 
     addLayerWithStylesToMap(
         m,
+        layer('transport', "+init=epsg:4326", tableWithFclasses('transport', 'railway_station', 'railway_halt', 'airfield', 'airport')),
+        makiStyle('rail-11', classFilter('railway_station', 'railway_halt')),
+        makiStyle('airfield-11', classFilter('airfield')),
+        makiStyle('airport-11', classFilter('airport')),
+    )
+
+    poiStyles = [
+        makiStyle('campsite-11', classFilter('camp_site')),
+        makiStyle('hospital-11', classFilter('hospital')),
+        makiStyle('swimming-11', classFilter('swimming_pool')),
+        svgStyle('caravan_site', classFilter('caravan_site')),
+        makiStyle('shop-11', classFilter('supermarket')),
+        makiStyle('bicycle-11', classFilter('bicycle_shop')),
+        makiStyle('castle-11', classFilter('castle', 'fort')),
+        svgStyle('ruins', classFilter('ruins')),
+        makiStyle('communications-tower-11', classFilter('tower_comms')),
+        makiStyle('viewpoint-11', classFilter('tower_observation')),
+        svgStyle('tower', classFilter('tower')),
+        makiStyle('lighthouse-11', classFilter('lighthouse')),
+    ]
+    addLayerWithStylesToMap(
+        m,
+        layer('poi', "+init=epsg:4326", postgres('poi')),
+        *poiStyles
+    )
+    addLayerWithStylesToMap(
+        m,
+        layer('poi-area', "+init=epsg:4326", postgres('poi_a')),
+        *poiStyles
+    )
+
+    addLayerWithStylesToMap(
+        m,
+        layer('pofw', "+init=epsg:4326", postgres('pofw')),
+        makiStyle(
+            'religious-christian-11',
+            classFilter(
+                'christian',
+                'christian_anglican',
+                'christian_catholic',
+                'christian_evangelical',
+                'christian_lutheran',
+                'christian_methodist',
+                'christian_orthodox',
+                'christian_protestant',
+                'christian_babtist',
+                'christian_mormon',
+            )
+        ),
+        makiStyle('religious-jewish-11', classFilter('jewish')),
+        makiStyle('religious-muslim-11', classFilter('muslim', 'muslim_sunni', 'muslim_shia')),
+        makiStyle('religious-buddhist-11', classFilter('buddhist')),
+    )
+
+    addLayerWithStylesToMap(
+        m,
         layer('Populated Places', "+init=epsg:4326", tableWithFclasses('places', 'national_capital', 'city', 'town', 'village', 'hamlet', 'suburb', 'locality')),
         style('capital', rule(
             text(mapnik.Expression("[name]"), 18, mapnik.Color('black'), 'bold', 1, mapnik.Color(255, 255, 220, 180), mapnik.text_transform.UPPERCASE),
@@ -611,62 +668,6 @@ def generateMap(width, height, topLeft, bottomRight):
                  haloRadius=1.0, placement='line', minPathLength=50),
             '[height] % 100 = 0',
         )),
-    )
-
-    addLayerWithStylesToMap(
-        m,
-        layer('transport', "+init=epsg:4326", tableWithFclasses('transport', 'railway_station', 'railway_halt', 'airfield', 'airport')),
-        makiStyle('rail-11', classFilter('railway_station', 'railway_halt')),
-        makiStyle('airfield-11', classFilter('airfield')),
-        makiStyle('airport-11', classFilter('airport')),
-    )
-
-    poiStyles = [
-        makiStyle('campsite-11', classFilter('camp_site')),
-        makiStyle('hospital-11', classFilter('hospital')),
-        makiStyle('swimming-11', classFilter('swimming_pool')),
-        svgStyle('caravan_site', classFilter('caravan_site')),
-        makiStyle('shop-11', classFilter('supermarket')),
-        makiStyle('bicycle-11', classFilter('bicycle_shop')),
-        makiStyle('castle-11', classFilter('castle', 'fort')),
-        svgStyle('ruins', classFilter('ruins')),
-        makiStyle('communications-tower-11', classFilter('tower_comms')),
-        makiStyle('viewpoint-11', classFilter('tower_observation')),
-        svgStyle('tower', classFilter('tower')),
-        makiStyle('lighthouse-11', classFilter('lighthouse')),
-    ]
-    addLayerWithStylesToMap(
-        m,
-        layer('poi', "+init=epsg:4326", postgres('poi')),
-        *poiStyles
-    )
-    addLayerWithStylesToMap(
-        m,
-        layer('poi-area', "+init=epsg:4326", postgres('poi_a')),
-        *poiStyles
-    )
-
-    addLayerWithStylesToMap(
-        m,
-        layer('pofw', "+init=epsg:4326", postgres('pofw')),
-        makiStyle(
-            'religious-christian-11',
-            classFilter(
-                'christian',
-                'christian_anglican',
-                'christian_catholic',
-                'christian_evangelical',
-                'christian_lutheran',
-                'christian_methodist',
-                'christian_orthodox',
-                'christian_protestant',
-                'christian_babtist',
-                'christian_mormon',
-            )
-        ),
-        makiStyle('religious-jewish-11', classFilter('jewish')),
-        makiStyle('religious-muslim-11', classFilter('muslim', 'muslim_sunni', 'muslim_shia')),
-        makiStyle('religious-buddhist-11', classFilter('buddhist')),
     )
 
     m.zoom_to_box(mapnik.Box2d(topLeft[0], topLeft[1], bottomRight[0], bottomRight[1]))
