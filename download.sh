@@ -12,7 +12,7 @@ echo "Using feature countries '$FEATURE_COUNTRIES' with IDs $IDS"
 echo 
 
 PGPASSWORD="$PG_PASSWORD"
-POSTGRES_ARGS="-h \"$PG_HOST\" -p \"$PG_PORT\" -U \"$PG_USER\" -d \"$PG_DATABASE\""
+POSTGRES_ARGS="-h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE""
 
 mkdir -p $DATA_DIR
 

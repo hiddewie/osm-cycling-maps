@@ -58,7 +58,7 @@ docker run \
   -e PG_PASSWORD="" \
   -e PG_DATABASE="gis" \
   -e COUNTRIES="Netherlands" \
-  -e FEATURE_COUNTRIES="netherlands/overijssel" \
+  -e FEATURE_COUNTRIES="europe/netherlands/overijssel" \
   -e LATITUDES="N52" \
   -e LONGITUDES="E006" \
   map-it-import

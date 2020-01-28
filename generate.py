@@ -9,10 +9,13 @@ import re
 def env(key, default=None):
     return os.getenv(key, default)
 
+def requireEnvironment(name):
+    if env(name) is None:
+        print ("The environment variable '%s' is required" % (name,))
+        exit(1)
 
 BASE_PATH = 'data/'
 OUTPUT_PATH = 'output/'
-
 
 def layer(name, srs, ds, group=None):
     lay = mapnik.Layer(name)
@@ -691,6 +694,9 @@ def envList(envString, pattern):
         ret.append(current)
 
     return ret
+
+requireEnvironment('TOP_LEFT_X')
+requireEnvironment('TOP_LEFT_Y')
 
 name=env('MAP_NAME', 'map')
 
