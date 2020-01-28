@@ -388,18 +388,19 @@ def generateMap(width, height, topLeft, bottomRight):
     )
 
     trackColor = mapnik.Color(105, 105, 105)
-    cycleColor, cycleBorderColor = mapnik.Color(94, 189, 0), mapnik.Color('black')
+    cycleColor, cycleBorderColor = mapnik.Color(176, 58, 240), mapnik.Color('white')
     unclassifiedColor, unclassifiedBorderColor = mapnik.Color('white'), mapnik.Color(82, 82, 82)
     tertiaryColor, tertiaryBorderColor = unclassifiedColor, unclassifiedBorderColor
     secondaryColor, secondaryBorderColor = mapnik.Color(232, 232, 16), mapnik.Color(99, 99, 6)
     primaryColor, primaryBorderColor = mapnik.Color(219, 143, 35), mapnik.Color(168, 109, 25)
-    trunkColor, trunkBorderColor = mapnik.Color(209, 64, 31), mapnik.Color(115, 35, 17)
-    highwayColor, highwayBorderColor = mapnik.Color('purple'), mapnik.Color('black')
+    trunkColor, trunkBorderColor = mapnik.Color(158, 158, 158), mapnik.Color('white')
+    highwayColor, highwayBorderColor = mapnik.Color(120, 120, 120), mapnik.Color('white')
     bridgeBaseBorderColor, bridgeBorderColor = mapnik.Color('white'), mapnik.Color('black')
 
     addLayerWithStylesToMap(
         m,
         layer('Unclassified tertiary', "+init=epsg:4326", postgres('roads')),
+
         style('track-bad', rule(
             line(1.0, trackColor, [4, 3], cap='butt'),
             classFilter('track_grade3', 'track_grade4', 'track_grade5')
@@ -413,10 +414,6 @@ def generateMap(width, height, topLeft, bottomRight):
             line(2.0, unclassifiedBorderColor),
             classFilter('unclassified', 'residential')
         )),
-        style('cycleway-border', rule(
-            line(2, cycleBorderColor),
-            classFilter('cycleway')
-        )),
         style('tertiary-border', rule(
             line(3.0, tertiaryBorderColor),
             classFilter('tertiary')
@@ -425,6 +422,12 @@ def generateMap(width, height, topLeft, bottomRight):
             line(3.0, secondaryBorderColor),
             classFilter('secondary', 'secondary_link')
         )),
+        
+        style('cycleway-border', rule(
+            line(2.0, cycleBorderColor),
+            classFilter('cycleway')
+        )),
+
         style('primary-border', rule(
             line(3.0, primaryBorderColor),
             classFilter('primary', 'primary_link')
@@ -467,10 +470,12 @@ def generateMap(width, height, topLeft, bottomRight):
             line(2.0, secondaryColor),
             classFilter('secondary')
         )),
+
         style('cycleway', rule(
-            line(1, cycleColor),
+            line(1.0, cycleColor),
             classFilter('cycleway')
         )),
+
         style('primary-fill', rule(
             line(2.0, primaryColor),
             classFilter('primary')
@@ -522,6 +527,12 @@ def generateMap(width, height, topLeft, bottomRight):
             line(2.0, secondaryColor),
             andExpr(bridge(), classFilter('secondary'))
         )),
+
+        style('cycleway', rule(
+            line(1.0, cycleColor),
+            andExpr(bridge(), classFilter('cycleway'))
+        )),
+        
         style('primary-bridge-fill', rule(
             line(2.0, primaryColor),
             andExpr(bridge(), classFilter('primary'))
