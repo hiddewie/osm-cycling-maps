@@ -18,13 +18,6 @@ RUN mkdir /script
 
 WORKDIR /data
 
-# Database config
-ENV PG_HOST postgres-osm
-ENV PG_PORT 5432
-ENV PG_USER osm
-ENV PG_PASSWORD ""
-ENV PG_DATABASE gis
-
 COPY ./countries.txt /script/countries.txt
 COPY ./download.sh /script/download.sh
 

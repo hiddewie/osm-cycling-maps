@@ -262,7 +262,7 @@ def addLayerWithStylesToMap(m, layer, *styles):
 
 
 def addStyle(m, layer, s):
-    # print 'Adding style %s' % (s.name,)
+    print 'Adding style %s' % (s.name,)
     m.append_style(s.name, s)
     layer.styles.append(s.name)
 
@@ -682,11 +682,11 @@ def renderMap(m, name):
 def envList(envString, pattern):
     ret = [] 
     pattern = re.compile(pattern)
-    split = envString.split(',')
+    split = envString.split(' ')
     for s in split:
         current = s.strip()
         if not pattern.match(current):
-            print ("Input '%s' does not match %s" % (current, pattern))
+            print ("Input '%s' does not match %s" % (current, pattern.pattern))
             exit(1)
         ret.append(current)
 
@@ -695,7 +695,7 @@ def envList(envString, pattern):
 name=env('MAP_NAME', 'map')
 
 LATITUDES = envList(env('LATITUDES', 'N52'), '^[NS][0-9]{2}$')
-LONGITUDES = envList(env('LATITUDES', 'E006'), '^[EW][0-9]{3}$')
+LONGITUDES = envList(env('LONGITUDES', 'E006'), '^[EW][0-9]{3}$')
 
 SHADE_NAMES = [lat + lon for lat in LATITUDES for lon in LONGITUDES]
 
@@ -732,7 +732,7 @@ pageHeight = - 1.414 * pageWidth
 topLeft = int(enschede[0] + i * pageWidth), int(enschede[1] + j * pageHeight)
 bottomRight = int(topLeft[0] + numPagesHorizontal * pageWidth), int(topLeft[1] + numPagesVertical * pageHeight)
 
-print ('Generating from top left %s, %s to bottom right %s, %s (%s pages horizontal and %s pages vertical)' % (topLeft[0], topLeft[1], bottomRight[0], bottomRight[1], numPagesHorizontal, numPagesVertical))
+print ('Generating from top left (%s, %s) to bottom right (%s, %s) (%s pages horizontal and %s pages vertical)' % (topLeft[0], topLeft[1], bottomRight[0], bottomRight[1], numPagesHorizontal, numPagesVertical))
 
 m = generateMap(numPagesHorizontal * int(width * dpi), numPagesVertical * int(height * dpi), topLeft, bottomRight)
 renderMap(m, name)

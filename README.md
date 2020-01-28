@@ -37,9 +37,23 @@ docker build -t map-it-import -f import.Dockerfile .
 
 Map the data directory of this project to the container. Some files are downloaded there that are used for shading the map. Run it using
 ```bash
-docker run -ti --rm -v $PROJECT_DIR/data:/data --link postgres-osm:postgres-osm map-it-import
+docker run \
+  -ti \
+  --rm \
+  -v $PROJECT_DIR/data:/data \
+  --link postgres-osm:postgres-osm \
+  -e PG_HOST=postgres-osm \
+  -e PG_PORT=5432 \
+  -e PG_USER="osm" \
+  -e PG_PASSWORD="" \
+  -e PG_DATABASE="gis" \
+  -e COUNTRIES="Netherlands" \
+  -e FEATURE_COUNTRIES="netherlands/overijssel" \
+  -e LATITUDES="N52" \
+  -e LONGITUDES="E006" \
+  map-it-import
 ```
-where `$PROJECT_DIR` is the project directory
+where `$PROJECT_DIR` is the project directory.
 
 Let's generate a map. Build the image specified by `Dockerfile` using
 ```bash
@@ -47,10 +61,116 @@ docker build -t map-it .
 ```
 and then run it using 
 ```bash
-docker run -ti --rm -v $PROJECT_DIR:/map-it --link postgres-osm:db -e PG_HOST=db -e PG_USER=osm -e PG_DATABASE=gis map-it
+docker run -ti \
+  --rm \
+  -v $PROJECT_DIR:/map-it \
+  --link postgres-osm:postgres-osm \
+  -e PG_HOST=postgres-osm \
+  -e PG_PORT=5432 \
+  -e PG_USER="osm" \
+  -e PG_PASSWORD="" \
+  -e PG_DATABASE="gis" \
+  -e MAP_NAME="map" \
+  -e LATITUDES="N52" \
+  -e LONGITUDES="E006" \
+  -e TOP_LEFT_X="735324" \
+  -e TOP_LEFT_Y="6874058" \
+  -e OFFSET_PAGES_X="0" \
+  -e OFFSET_PAGES_Y="0" \
+  -e PAGES_HORIZONTAL="1" \
+  -e PAGES_VERTICAL="1" \
+  map-it
 ```
 
 The map will be written to the mapped volume in the `/output` directory. The mapnik XML config will also be written there.
+
+
+### Scipt parameters
+
+The lists below describe the parameters used for the scripts, including defaults.
+
+#### Import script
+
+  -e PG_HOST=postgres-osm \
+  -e PG_PORT=5432 \
+  -e PG_USER="osm" \
+  -e PG_PASSWORD="" \
+  -e PG_DATABASE="gis" \
+  -e COUNTRIES="Netherlands" \
+  -e FEATURE_COUNTRIES="europe/netherlands/overijssel" \
+  -e LATITUDES="N52" \
+  -e LONGITUDES="E006" \
+
+- `PG_HOST` (default `localhost`)
+  
+  The Postgres database host
+- `PG_PORT` (default `5432`)
+  
+  The Postgres database port
+- `PG_USER` (default `osm`)
+  
+  The Postgres database user
+- `PG_PASSWORD` (default empty)
+  
+  The Postgres database password
+- `PG_DATABASE` (default `gis`)
+  
+  The Postgres database host
+- `COUNTRIES` (default empty)
+  
+  Regex of the countries which to download the national for, as listed in `countries.txt`. Separated with `|`. For example `Burundi|Cayman Islands`
+- `FEATURE_COUNTRIES` (default empty)
+  
+  Countries that will be downloaded from [GeoFabrik](http://download.geofabrik.de/). Separated by whitespace. For example `europe/netherlands/overijssel europe/slovakia europe/poland/slaskie europe/poland/malopolskie`.
+- `LATITUDES` (default empty)
+  
+  Latitude values that will be downloaded from [U.S. Geological Survey](https://www.usgs.gov/) for terrain information. Of the format `[NS][0-9]{2}` (regex). Separated by whitespace. For example `N52 S01`.
+- `LONGITUDES` (default empty)
+  
+  Longitude values that will be downloaded from [U.S. Geological Survey](https://www.usgs.gov/) for terrain information. Of the format `[EW][0-9]{3}` (regex). Separated by whitespace. For example `E002 W150`.
+
+All combinations of latitude/longitude pairs will be downloaded.
+
+#### Map generation script
+
+- `PG_HOST` (default `localhost`)
+  
+  The Postgres database host
+- `PG_PORT` (default `5432`)
+  
+  The Postgres database port
+- `PG_USER` (default `osm`)
+  
+  The Postgres database user
+- `PG_PASSWORD` (default empty)
+  
+  The Postgres database password
+- `PG_DATABASE` (default `gis`)
+  
+  The Postgres database host
+- `MAP_NAME` (default `map`)
+  
+  The name of the map. Used for generating filenames. Existing files will be overwritten.
+- `LATITUDES` (default empty)
+  
+  Latitude values that will be used for generating a contour and shade map layer. Of the format `[NS][0-9]{2}` (regex). Separated by whitespace. For example `N52 S01`.
+- `LONGITUDES` (default empty)
+  
+  Longitude values that will be used for generating a contour and shade map layer. Of the format `[EW][0-9]{3}` (regex). Separated by whitespace. For example `E002 W150`.
+- `TOP_LEFT_X`, `TOP_LEFT_Y` (both default empty)
+  
+  The [EPSG:3857](https://epsg.io/3857) coordinates of the top-left corner of the map.
+- `OFFSET_PAGES_X`, `OFFSET_PAGES_Y` (both default `0`)
+  
+  The offset of pages to generate. Useful for automating generating multiple tiled maps.
+- `PAGES_HORIZONTAL` (default `1`)
+  
+  The number of pages to generate in the horizonal direction.
+- `TOP_LEFT_X` (default `1`)
+  
+  The number of pages to generate in the vertical direction.
+
+All combinations of latitude/longitude pairs will be used for generating the terrain map layer.
 
 ### Examples
 

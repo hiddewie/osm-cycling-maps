@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
 DATA_DIR=/data
-# DATA_DIR=data
-COUNTRIES="Netherlands"
-# COUNTRIES="Slovakia"
 COUNTRIES_LOCATION="/script/countries.txt"
-# COUNTRIES_LOCATIO"countries.txt"
-FEATURE_COUNTRIES="netherlands/overijssel"
-# FEATURE_COUNTRIES="slovakia"
-LATITUDES="N52"
-LONGITUDES="E006"
+
+IDS=$(grep $COUNTRIES $COUNTRIES_LOCATION  | awk '{print $1}' | paste -sd "," -)
+
+echo "Using latitudes '$LATITUDES'"
+echo "Using longitudes '$LONGITUDES'"
+echo "Using countries '$COUNTRIES'"
+echo "Using feature countries '$FEATURE_COUNTRIES' with IDs $IDS"
+echo 
 
 PGPASSWORD="$PG_PASSWORD"
 
@@ -56,7 +56,6 @@ echo " -- Country borders -- "
 echo
 
 echo "Get $COUNTRIES"
-IDS=$(grep $COUNTRIES $COUNTRIES_LOCATION  | awk '{print $1}' | paste -sd "," -)
 wget "https://wambachers-osm.website/boundaries/exportBoundaries?cliVersion=1.0&cliKey=192f6ee3-bde5-4c76-a655-1d68b66a91b8&exportFormat=shp&exportLayout=single&exportAreas=land&union=true&selected=$IDS" \
   -O $DATA_DIR/countries.zip || exit 1
 mkdir $DATA_DIR/countries
@@ -76,7 +75,7 @@ do
   mkdir -p $DATA_DIR/$COUNTRY
 
   echo "Get $COUNTRY"
-  wget http://download.geofabrik.de/europe/$COUNTRY-latest-free.shp.zip -O $DATA_DIR/$COUNTRY.hgt.zip || exit 1
+  wget http://download.geofabrik.de/$COUNTRY-latest-free.shp.zip -O $DATA_DIR/$COUNTRY.hgt.zip || exit 1
 
   echo "Unzip $COUNTRY"
   unzip -o $DATA_DIR/$COUNTRY.hgt.zip -d $DATA_DIR/$COUNTRY || exit 1
