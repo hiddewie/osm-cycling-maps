@@ -5,11 +5,21 @@ View blogpost at https://dev.to/hiddewie/creating-a-custom-cycling-map-3g2a.
 
 ## Getting started
 
+There are two scripts in this repository:
+- `download.sh`
+
+  Downloads the required data into a Postgres database for the map.
+- `generate.py`
+
+  A Python script which will generate the map. 
+  
+See the environment variables which can be configured for both scripts below.
+
 ### Manually
 
 Make sure you have a running Postgres database, with a `gis` schema with GIS extensions enabled.
 
-Run the command 
+Run the command
 ```shell script
 ./download.sh
 ```
@@ -90,16 +100,6 @@ The map will be written to the mapped volume in the `/output` directory. The map
 The lists below describe the parameters used for the scripts, including defaults.
 
 #### Import script
-
-  -e PG_HOST=postgres-osm \
-  -e PG_PORT=5432 \
-  -e PG_USER="osm" \
-  -e PG_PASSWORD="" \
-  -e PG_DATABASE="gis" \
-  -e COUNTRIES="Netherlands" \
-  -e FEATURE_COUNTRIES="europe/netherlands/overijssel" \
-  -e LATITUDES="N52" \
-  -e LONGITUDES="E006" \
 
 - `PG_HOST` (default `localhost`)
   

@@ -12,6 +12,7 @@ echo "Using feature countries '$FEATURE_COUNTRIES' with IDs $IDS"
 echo 
 
 PGPASSWORD="$PG_PASSWORD"
+POSTGRES_ARGS="-h \"$PG_HOST\" -p \"$PG_PORT\" -U \"$PG_USER\" -d \"$PG_DATABASE\""
 
 mkdir -p $DATA_DIR
 
@@ -38,7 +39,7 @@ do
     gdal_contour -i 20 -snodata -32768 -a height $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.shp || exit 1
 
     echo "Import contours $NAME"
-    shp2pgsql $ARGS -s 4326 $DATA_DIR/$NAME.shp contours | psql -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE" | grep -v 'INSERT' || exit 1
+    shp2pgsql $ARGS -s 4326 $DATA_DIR/$NAME.shp contours | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
 
     echo "Shade $NAME"
     rm -f $DATA_DIR/$NAME.shade || exit 1
@@ -61,7 +62,7 @@ wget "https://wambachers-osm.website/boundaries/exportBoundaries?cliVersion=1.0&
 mkdir $DATA_DIR/countries
 unzip $DATA_DIR/countries.zip -d $DATA_DIR/countries
 
-shp2pgsql -I -d -s 4326 $DATA_DIR/countries/union_of_selected_boundaries_AL2-AL2.shp country_border | psql -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE" | grep -v 'INSERT'
+shp2pgsql -I -d -s 4326 $DATA_DIR/countries/union_of_selected_boundaries_AL2-AL2.shp country_border | psql $POSTGRES_ARGS | grep -v 'INSERT'
 
 rm -r $DATA_DIR/countries || exit 1
 
@@ -82,18 +83,18 @@ do
   rm $DATA_DIR/$COUNTRY.hgt.zip || exit 1
 
   echo "Import data $COUNTRY"
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_water_a_free_1.shp water_a | psql -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE" | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_landuse_a_free_1.shp landuse_a | psql -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE"  | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_waterways_free_1.shp waterways | psql -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE" | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_natural_free_1.shp natural | psql -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE" | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_railways_free_1.shp railways | psql -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE" | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_roads_free_1.shp roads | psql -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE" | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_places_free_1.shp places | psql -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE" | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_transport_free_1.shp transport | psql -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE" | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_pois_free_1.shp poi | psql -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE" | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_pois_a_free_1.shp poi_a | psql -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE" | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_pofw_free_1.shp pofw | psql -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE" | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_natural_free_1.shp natural_a | psql -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE" | grep -v 'INSERT' || exit 1
+  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_water_a_free_1.shp water_a | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
+  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_landuse_a_free_1.shp landuse_a | psql $POSTGRES_ARGS  | grep -v 'INSERT' || exit 1
+  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_waterways_free_1.shp waterways | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
+  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_natural_free_1.shp natural | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
+  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_railways_free_1.shp railways | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
+  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_roads_free_1.shp roads | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
+  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_places_free_1.shp places | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
+  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_transport_free_1.shp transport | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
+  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_pois_free_1.shp poi | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
+  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_pois_a_free_1.shp poi_a | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
+  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_pofw_free_1.shp pofw | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
+  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_natural_free_1.shp natural_a | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
 
   echo "Delete shape data $COUNTRY"
   rm -r $DATA_DIR/$COUNTRY || exit 1
