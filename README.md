@@ -40,7 +40,7 @@ Start a database with GIS extensions enabled using the image `openfirmware/postg
 docker run -d --name postgres-osm openfirmware/postgres-osm
 ```
 
-Then, download and import the data of the map using the docker image `hiddewie/map-it-import` [![](https://images.microbadger.com/badges/image/hiddewie/map-it-import.svg)](https://microbadger.com/images/hiddewie/map-it-import). Map the data directory of this project to the container. Some files are downloaded there that are used for shading the map. Run it using
+Then, download and import the data of the map using the docker image `hiddewie/map-it-import` [![](https://images.microbadger.com/badges/image/hiddewie/map-it-import.svg)](https://hub.docker.com/r/hiddewie/map-it-import). Map the data directory of this project to the container. Some files are downloaded there that are used for shading the map. Run it using
 ```bash
 docker run \
   -ti \
@@ -62,7 +62,7 @@ where `$PROJECT_DIR` is the project directory.
 
 (You can also build it yourself using `docker build -t map-it-import -f import.Dockerfile .`)
 
-Let's generate a map. Use the image `hiddewie/map-it` [![](https://images.microbadger.com/badges/image/hiddewie/map-it.svg)](https://microbadger.com/images/hiddewie/map-it) and run it using 
+Let's generate a map. Use the image `hiddewie/map-it` [![](https://images.microbadger.com/badges/image/hiddewie/map-it.svg)](https://hub.docker.com/r/hiddewie/map-it) and run it using 
 ```bash
 docker run -ti \
   --rm \
