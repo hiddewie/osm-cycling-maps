@@ -40,12 +40,7 @@ Start a database with GIS extensions enabled using the image `openfirmware/postg
 docker run -d --name postgres-osm openfirmware/postgres-osm
 ```
 
-Then, download and import the data of the map using the docker image `import.Dockerfile`. First build it using
-```bash
-docker build -t map-it-import -f import.Dockerfile .
-``` 
-
-Map the data directory of this project to the container. Some files are downloaded there that are used for shading the map. Run it using
+Then, download and import the data of the map using the docker image `hiddewie/map-it-import` [![](https://images.microbadger.com/badges/image/hiddewie/map-it-import.svg)](https://microbadger.com/images/hiddewie/map-it-import). Map the data directory of this project to the container. Some files are downloaded there that are used for shading the map. Run it using
 ```bash
 docker run \
   -ti \
@@ -61,15 +56,13 @@ docker run \
   -e FEATURE_COUNTRIES="europe/netherlands/overijssel" \
   -e LATITUDES="N52" \
   -e LONGITUDES="E006" \
-  map-it-import
+  hiddewie/map-it-import
 ```
 where `$PROJECT_DIR` is the project directory.
 
-Let's generate a map. Build the image specified by `Dockerfile` using
-```bash
-docker build -t map-it .
-```
-and then run it using 
+(You can also build it yourself using `docker build -t map-it-import -f import.Dockerfile .`)
+
+Let's generate a map. Use the image `hiddewie/map-it` [![](https://images.microbadger.com/badges/image/hiddewie/map-it.svg)](https://microbadger.com/images/hiddewie/map-it) and run it using 
 ```bash
 docker run -ti \
   --rm \
@@ -89,11 +82,12 @@ docker run -ti \
   -e OFFSET_PAGES_Y="0" \
   -e PAGES_HORIZONTAL="1" \
   -e PAGES_VERTICAL="1" \
-  map-it
+  hiddewie/map-it
 ```
 
 The map will be written to the mapped volume in the `/output` directory. The mapnik XML config will also be written there.
 
+(You can also build it yourself using `docker build -t map-it .`)
 
 ### Scipt parameters
 
