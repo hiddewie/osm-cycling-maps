@@ -16,4 +16,6 @@ RUN apt-get update && apt-get install -y \
 RUN mkdir /map-it
 WORKDIR /map-it
 
+COPY ./generate.py .
+
 CMD ["/usr/bin/python", "./generate.py"]
