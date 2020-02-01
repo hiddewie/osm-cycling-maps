@@ -680,6 +680,10 @@ def renderMap(m, name):
     im = mapnik.Image(m.width, m.height)
     mapnik.render(m, im)
 
+    if not os.path.exists(OUTPUT_PATH):
+        print 'Creating output directory %s' % (OUTPUT_PATH,)
+        os.makedirs(OUTPUT_PATH)
+
     if mapnik.has_pycairo():
         print 'Rendering PDF'
 
