@@ -160,7 +160,7 @@ All combinations of latitude/longitude pairs will be downloaded.
 - `PAGES_HORIZONTAL` (default `1`)
   
   The number of pages to generate in the horizonal direction.
-- `TOP_LEFT_X` (default `1`)
+- `PAGES_VERTICAL` (default `1`)
   
   The number of pages to generate in the vertical direction.
 
