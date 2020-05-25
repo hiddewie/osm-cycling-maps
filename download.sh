@@ -3,12 +3,9 @@
 DATA_DIR=/data
 COUNTRIES_LOCATION="/script/countries.txt"
 
-IDS=$(grep $COUNTRIES $COUNTRIES_LOCATION  | awk '{print $1}' | paste -sd "," -)
-
 echo "Using latitudes '$LATITUDES'"
 echo "Using longitudes '$LONGITUDES'"
-echo "Using countries '$COUNTRIES'"
-echo "Using feature countries '$FEATURE_COUNTRIES' with IDs $IDS"
+echo "Using feature countries '$FEATURE_COUNTRIES'"
 echo 
 
 PGPASSWORD="$PG_PASSWORD"
@@ -43,8 +40,9 @@ do
 
     echo "Shade $NAME"
     rm -f $DATA_DIR/$NAME.tif || exit 1
-    gdaldem hillshade $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.tif || exit 1
-    rm -f $DATA_DIR/$NAME.dbf $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.prj $DATA_DIR/$NAME.shp $DATA_DIR/$NAME.shx || exit 1
+    gdaldem hillshade -compute_edges $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.raw.tif || exit 1
+    gdaldem color-relief $NAME.raw.tif -alpha $DATA_DIR/shade.ramp $DATA_DIR/$NAME.tif || exit 1
+    rm -f $DATA_DIR/$NAME.dbf $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.prj $DATA_DIR/$NAME.shp $DATA_DIR/$NAME.shx $DATA_DIR/$NAME.raw.tif || exit 1
 
     echo "Done $NAME"
 
@@ -56,13 +54,13 @@ echo
 echo " -- Country borders -- "
 echo
 
-echo "Get $COUNTRIES"
-wget "https://wambachers-osm.website/boundaries/exportBoundaries?cliVersion=1.0&cliKey=192f6ee3-bde5-4c76-a655-1d68b66a91b8&exportFormat=shp&exportLayout=single&exportAreas=land&union=true&selected=$IDS" \
+echo "Get all country borders"
+wget  "https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_admin_0_countries.zip" \
   -O $DATA_DIR/countries.zip || exit 1
 mkdir $DATA_DIR/countries
 unzip $DATA_DIR/countries.zip -d $DATA_DIR/countries
 
-shp2pgsql -I -d -s 4326 $DATA_DIR/countries/union_of_selected_boundaries_AL2-AL2.shp country_border | psql $POSTGRES_ARGS | grep -v 'INSERT'
+shp2pgsql -I -d -s 4326 $DATA_DIR/countries/ne_10m_admin_0_countries country_border | psql $POSTGRES_ARGS | grep -v 'INSERT'
 
 rm -r $DATA_DIR/countries || exit 1
 

@@ -52,7 +52,6 @@ docker run \
   -e PG_USER="osm" \
   -e PG_PASSWORD="" \
   -e PG_DATABASE="gis" \
-  -e COUNTRIES="Netherlands" \
   -e FEATURE_COUNTRIES="europe/netherlands/overijssel" \
   -e LATITUDES="N52" \
   -e LONGITUDES="E006" \
