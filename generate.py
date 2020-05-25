@@ -271,7 +271,7 @@ def addStyle(m, layer, s):
     layer.styles.append(s.name)
 
 
-def generateMap(width, height, topLeft, bottomRight):
+def generateMap(width, height):
     m = mapnik.Map(width, height, "+init=epsg:3857")
     m.background = mapnik.Color('white')
 
@@ -671,13 +671,18 @@ def generateMap(width, height, topLeft, bottomRight):
         )),
     )
 
-    m.zoom_to_box(mapnik.Box2d(topLeft[0], topLeft[1], bottomRight[0], bottomRight[1]))
-
     return m
 
 
-def renderMap(m, name):
+def loadMapFromFile(file, mapWidth, mapHeight):
+    m = mapnik.Map(mapWidth, mapHeight)
+    print 'Loading map from file %s' % (file,)
+    mapnik.load_map(m, file)
+    return m
+
+def renderMap(m, name, topLeft, bottomRight):
     print 'Rendering map with dimensions %s, %s' % (m.width, m.height)
+    m.zoom_to_box(mapnik.Box2d(topLeft[0], topLeft[1], bottomRight[0], bottomRight[1]))
     im = mapnik.Image(m.width, m.height)
     mapnik.render(m, im)
 
@@ -757,5 +762,9 @@ bottomRight = int(topLeft[0] + numPagesHorizontal * pageWidth), int(topLeft[1] +
 
 print ('Generating from top left (%s, %s) to bottom right (%s, %s) (%s pages horizontal and %s pages vertical)' % (topLeft[0], topLeft[1], bottomRight[0], bottomRight[1], numPagesHorizontal, numPagesVertical))
 
-m = generateMap(numPagesHorizontal * int(width * dpi), numPagesVertical * int(height * dpi), topLeft, bottomRight)
-renderMap(m, name)
+mapWidth = numPagesHorizontal * int(width * dpi)
+mapHeight = numPagesVertical * int(height * dpi)
+
+# m = generateMap(mapWidth, mapHeight)
+m = loadMapFromFile('mapnik_map.xml', mapWidth, mapHeight)
+renderMap(m, name, topLeft, bottomRight)
