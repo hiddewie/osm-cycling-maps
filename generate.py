@@ -550,8 +550,9 @@ def generateMap(width, height, topLeft, bottomRight):
 
     addLayerWithStylesToMap(
         m,
-        layer('transport', "+init=epsg:4326", tableWithFclasses('transport', 'railway_station', 'railway_halt', 'airfield', 'airport')),
+        layer('transport', "+init=epsg:4326", tableWithFclasses('transport', 'railway_station', 'ferry_terminal', 'railway_halt', 'airfield', 'airport')),
         makiStyle('rail-11', classFilter('railway_station', 'railway_halt')),
+        makiStyle('ferry-11', classFilter('ferry_terminal')),
         makiStyle('airfield-11', classFilter('airfield')),
         makiStyle('airport-11', classFilter('airport')),
     )
