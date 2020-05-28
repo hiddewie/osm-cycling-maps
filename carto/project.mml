@@ -1,0 +1,269 @@
+name: Map-it
+description: 'Custom cycling maps from OpenStreetMap data'
+attribution: Data © OpenStreetMap (and) contributors, ODbL
+bounds: &world
+  - -180
+  - -85.05112877980659
+  - 180
+  - 85.05112877980659
+center: [0, 0, 4]
+format: pdf
+interactivity: false
+minzoom: 13
+maxzoom: 13
+srs: "+init=epsg:3857"
+
+# Various parts to be included later on
+_parts:
+  # Extents are used for tilemill, and dont actually make it to the generated XML
+  extents: &extents
+    extent: *world
+    srs-name: "WGS84"
+    srs: "+init=epsg:4326"
+  extents84: &extents84
+    extent: *world
+    srs-name: "WGS84"
+    srs: "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+  osm2pgsql: &osm2pgsql
+    type: postgis
+    host: postgres-osm 
+    dbname: gis
+    user: postgres
+    password: postgres
+    key_field: ""
+    geometry_field: "geom"
+    extent: "-20037508,-20037508,20037508,20037508"
+
+Stylesheet:
+  - styles.mss
+
+# Geometry
+# linestring, point, polygon, raster
+
+Layer:
+- id: landuse-background
+  geometry: polygon
+  <<: *extents
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          geom,
+          fclass
+        FROM
+          landuse_a
+        WHERE
+          fclass IN ('forest')
+      ) AS data
+- id: shade # TODO read all shade files
+  geometry: raster
+  <<: *extents
+  Datasource:
+    type: gdal
+    file: data/N51E005.tif
+- id: contours
+  geometry: linestring
+  <<: *extents
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          geom,
+          height,
+          CASE
+            WHEN (MOD(height::int, 100) = 0) THEN 'yes'
+            ELSE 'no'
+          END as boundary
+        FROM
+          contours
+      ) AS data
+- id: landuse-foreground
+  geometry: polygon
+  <<: *extents
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          geom,
+          fclass
+        FROM
+          landuse_a
+        WHERE
+          fclass IN ('residential', 'military')
+      ) AS data
+- id: country
+  geometry: linestring
+  <<: *extents
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          geom
+        FROM
+          country_border
+      ) AS data
+- id: waterways
+  geometry: linestring
+  <<: *extents
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          geom
+        FROM
+          waterways
+      ) AS data
+- id: water
+  geometry: linestring
+  <<: *extents
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          geom
+        FROM
+          water_a
+      ) AS data
+- id: springs
+  geometry: point
+  <<: *extents
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          geom
+        FROM
+          natural_a
+        WHERE
+          fclass IN ('spring')
+      ) AS data
+- id: railways
+  geometry: point
+  <<: *extents
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          geom
+        FROM
+          railways
+        WHERE
+          fclass IN ('rail')
+      ) AS data
+- id: roads
+  geometry: linestring
+  <<: *extents
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          geom,
+          fclass,
+          bridge,
+          ref
+        FROM
+          roads
+      ) AS data
+- id: poi
+  geometry: point
+  <<: *extents
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          geom,
+          fclass
+        FROM
+          poi
+        WHERE
+          fclass IN (
+            'camp_site'
+            'hospital',
+            'swimming_pool',
+            'caravan_site',
+            'supermarket',
+            'bicycle_shop',
+            'castle',
+            'fort',
+            'ruins',
+            'tower_comms',
+            'tower_observation',
+            'tower',
+            'lighthouse'
+          )
+
+        UNION ALL
+
+        SELECT
+          ST_PointOnSurface(geom) AS geom,
+          fclass
+        FROM
+          poi_a
+         WHERE
+           fclass IN (
+             'camp_site'
+             'hospital',
+             'swimming_pool',
+             'caravan_site',
+             'supermarket',
+             'bicycle_shop',
+             'castle',
+             'fort',
+             'ruins',
+             'tower_comms',
+             'tower_observation',
+             'tower',
+             'lighthouse'
+           )
+      ) AS data
+- id: religious
+  geometry: point
+  <<: *extents
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          geom,
+          fclass
+        FROM
+          pofw
+      ) AS data
+- id: places
+  geometry: point
+  <<: *extents
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          geom,
+          fclass,
+          name
+        FROM
+          places
+        WHERE
+          name IS NOT NULL
+          AND
+            fclass IN (
+              'national_capital',
+              'city',
+              'town',
+              'village',
+              'hamlet',
+              'suburb',
+              'locality'
+            )
+          AND
+            (fclass != 'locality' OR population > 0)
+      ) AS data
