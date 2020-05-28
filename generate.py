@@ -124,6 +124,7 @@ def raster(opacity=1.0):
     symbolizer = mapnik.RasterSymbolizer()
     symbolizer.scaling = mapnik.scaling_method.BILINEAR8
     symbolizer.opacity = opacity
+    symbolizer.comp_op = mapnik.CompositeOp.multiply
     return symbolizer
 
 

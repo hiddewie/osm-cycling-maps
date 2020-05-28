@@ -9,8 +9,14 @@ RUN apt-get update && apt-get install -y \
     unzip \
     gdal-bin \
     postgresql-client \
-    postgis \
-  && apt-get autoclean \
+    postgis
+
+RUN wget http://katze.tfiu.de/projects/phyghtmap/phyghtmap_2.21-1_all.deb && \
+    dpkg -i phyghtmap_2.21-1_all.deb; \
+    apt-get -f -y install && \
+    rm phyghtmap_2.21-1_all.deb
+
+RUN apt-get autoclean \
   && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /data

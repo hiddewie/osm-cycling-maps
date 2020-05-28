@@ -22,6 +22,7 @@ for LAT in $LATITUDES
 do
   for LON in $LONGITUDES
   do
+#    cp "$DATA_DIR/${LAT,,}_${LON,,}_1arc_v3.tif" "$DATA_DIR/${LAT}${LON}.hgt"
     NAME="${LAT}${LON}"
 
     echo "Get $NAME"
@@ -31,6 +32,11 @@ do
     unzip -o $DATA_DIR/$NAME.hgt.zip -d $DATA_DIR || exit 1
     rm $DATA_DIR/$NAME.hgt.zip || exit 1
 
+#    mkdir -p $DATA_DIR/dem
+#    NASA_USERNAME="---"
+#    NASA_PASSWSORD="---"
+#    phyghtmap --download-only --srtm=3 --srtm-version=3 --earthexplorer-user=$NASA_USERNAME --earthexplorer-password=$NASA_PASSWSORD --hgtdir=$DATA_DIR/dem --source=view1,view3,srtm1,srtm3 --area 51.000:5.000:53.000:7.000
+
     echo "Contours $NAME"
     rm -f $DATA_DIR/$NAME.shp || exit 1
     gdal_contour -i 20 -snodata -32768 -a height $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.shp || exit 1
@@ -38,11 +44,17 @@ do
     echo "Import contours $NAME"
     shp2pgsql $ARGS -s 4326 $DATA_DIR/$NAME.shp contours | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
 
+    # https://gist.github.com/cquest/8179870
+    # https://wiki.openstreetmap.org/wiki/Hillshading_using_the_Alpha_Channel_of_an_Image
+    # https://github.com/cyclosm/cyclosm-cartocss-style/blob/master/docs/INSTALL.md
+
     echo "Shade $NAME"
     rm -f $DATA_DIR/$NAME.tif || exit 1
-    gdaldem hillshade -compute_edges $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.raw.tif || exit 1
-    gdaldem color-relief $NAME.raw.tif -alpha $DATA_DIR/shade.ramp $DATA_DIR/$NAME.tif || exit 1
+    gdalinfo -hist $DATA_DIR/$NAME.hgt
+    gdaldem hillshade -co compress=lzw -compute_edges $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.raw.tif || exit 1
+    gdaldem color-relief $NAME.raw.tif -alpha $DATA_DIR/shade2.ramp $DATA_DIR/$NAME.tif || exit 1
     rm -f $DATA_DIR/$NAME.dbf $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.prj $DATA_DIR/$NAME.shp $DATA_DIR/$NAME.shx $DATA_DIR/$NAME.raw.tif || exit 1
+    gdalinfo -hist $DATA_DIR/$NAME.tif
 
     echo "Done $NAME"
 
