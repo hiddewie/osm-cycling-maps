@@ -731,8 +731,8 @@ print ('Using longitudes %s' % (LONGITUDES, ))
 TOP_LEFT_X=int(env('TOP_LEFT_X', 735324))
 TOP_LEFT_Y=int(env('TOP_LEFT_Y', 6874058))
 
-OFFSET_PAGES_X=int(env('OFFSET_PAGES_X', 0))
-OFFSET_PAGES_Y=int(env('OFFSET_PAGES_Y', 0))
+OFFSET_PAGES_X=float(env('OFFSET_PAGES_X', 0))
+OFFSET_PAGES_Y=float(env('OFFSET_PAGES_Y', 0))
 
 PAGES_HORIZONTAL=int(env('PAGES_HORIZONTAL', 1))
 PAGES_VERTICAL=int(env('PAGES_VERTICAL', 1))
@@ -748,11 +748,9 @@ j = OFFSET_PAGES_Y
 numPagesHorizontal = PAGES_HORIZONTAL
 numPagesVertical = PAGES_VERTICAL
 
-enschede = (TOP_LEFT_X, TOP_LEFT_Y)
-
 pageWidth = 29693
 pageHeight = - 1.414 * pageWidth
-topLeft = int(enschede[0] + i * pageWidth), int(enschede[1] + j * pageHeight)
+topLeft = int(TOP_LEFT_X + i * pageWidth), int(TOP_LEFT_Y + j * pageHeight)
 bottomRight = int(topLeft[0] + numPagesHorizontal * pageWidth), int(topLeft[1] + numPagesVertical * pageHeight)
 
 print ('Generating from top left (%s, %s) to bottom right (%s, %s) (%s pages horizontal and %s pages vertical)' % (topLeft[0], topLeft[1], bottomRight[0], bottomRight[1], numPagesHorizontal, numPagesVertical))
