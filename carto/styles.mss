@@ -12,9 +12,9 @@
 }
 
 #shade {
-  raster-scaling: lanczos;
+  raster-scaling: bilinear;
   raster-comp-op: multiply;
-  raster-opacity: 0.3;
+  raster-opacity: 1.0;
 }
 
 #contours {

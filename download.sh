@@ -17,7 +17,7 @@ echo
 echo " -- Height, contours & shade -- "
 echo
 
-ARGS="-I -d"
+FILES=""
 for LAT in $LATITUDES
 do
   for LON in $LONGITUDES
@@ -31,24 +31,35 @@ do
     unzip -o $DATA_DIR/$NAME.hgt.zip -d $DATA_DIR || exit 1
     rm $DATA_DIR/$NAME.hgt.zip || exit 1
 
-    echo "Contours $NAME"
-    rm -f $DATA_DIR/$NAME.shp || exit 1
-    gdal_contour -i 20 -snodata -32768 -a height $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.shp || exit 1
-
-    echo "Import contours $NAME"
-    shp2pgsql $ARGS -s 4326 $DATA_DIR/$NAME.shp contours | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-
-    echo "Shade $NAME"
-    rm -f $DATA_DIR/$NAME.tif || exit 1
-    gdaldem hillshade -compute_edges $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.raw.tif || exit 1
-    gdaldem color-relief $NAME.raw.tif -alpha $DATA_DIR/shade.ramp $DATA_DIR/$NAME.tif || exit 1
-    rm -f $DATA_DIR/$NAME.dbf $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.prj $DATA_DIR/$NAME.shp $DATA_DIR/$NAME.shx $DATA_DIR/$NAME.raw.tif || exit 1
+    FILES="$FILES $DATA_DIR/$NAME.hgt"
 
     echo "Done $NAME"
-
-    ARGS="-a"
   done
 done
+
+echo "Merge height data for combination into one height file for files $FILES"
+gdal_merge.py -o $DATA_DIR/combined.raw.hgt $FILES
+COMBINED_SIZE=$(gdalinfo combined.raw.hgt | grep -oP 'Size is \K\d+')
+rm -f combined.hgt || exit 1
+gdalwarp -ts $((4 * $COMBINED_SIZE)) 0 -r cubic -co "TFW=YES" $DATA_DIR/combined.raw.hgt $DATA_DIR/combined.hgt
+
+echo "Contours"
+rm -f $DATA_DIR/combined.shp || exit 1
+gdal_contour -i 20 -snodata -32768 -a height $DATA_DIR/combined.hgt $DATA_DIR/combined.shp || exit 1
+
+ARGS="-I -d"
+echo "Import contours"
+shp2pgsql $ARGS -s 4326 $DATA_DIR/combined.shp contours | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
+
+echo "Shade"
+rm -f $DATA_DIR/combined.tif || exit 1
+gdaldem hillshade -s 111120 -compute_edges $DATA_DIR/combined.hgt $DATA_DIR/combined.raw.tif || exit 1
+gdaldem color-relief combined.raw.tif -alpha $DATA_DIR/shade.ramp $DATA_DIR/combined.tif || exit 1
+rm -f $DATA_DIR/combined.{dbf,hgt.aux.xml,prj,shp,shx,raw.tif,tfw} || exit 1
+
+echo "Done"
+
+sleep 1
 
 echo
 echo " -- Country borders -- "
@@ -63,6 +74,10 @@ unzip $DATA_DIR/countries.zip -d $DATA_DIR/countries
 shp2pgsql -I -d -s 4326 $DATA_DIR/countries/ne_10m_admin_0_countries country_border | psql $POSTGRES_ARGS | grep -v 'INSERT'
 
 rm -r $DATA_DIR/countries || exit 1
+
+echo "Done"
+
+sleep 1
 
 echo
 echo " -- Map content -- "

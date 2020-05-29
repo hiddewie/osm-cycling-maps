@@ -56,12 +56,12 @@ Layer:
         WHERE
           fclass IN ('forest')
       ) AS data
-- id: shade # TODO read all shade files
+- id: shade
   geometry: raster
   <<: *extents
   Datasource:
     type: gdal
-    file: data/N52E006.tif
+    file: data/combined.tif
 - id: contours
   geometry: linestring
   <<: *extents
