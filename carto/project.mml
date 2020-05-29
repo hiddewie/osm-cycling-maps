@@ -158,6 +158,28 @@ Layer:
         WHERE
           fclass IN ('rail')
       ) AS data
+- id: transport
+  geometry: point
+  <<: *extents
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          geom,
+          fclass
+        FROM
+          transport
+        WHERE
+          fclass IN (
+            'transport',
+            'railway_station',
+            'ferry_terminal',
+            'railway_halt',
+            'airfield',
+            'airport'
+          )
+      ) AS data
 - id: roads
   geometry: linestring
   <<: *extents
