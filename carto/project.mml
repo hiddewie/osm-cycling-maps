@@ -61,7 +61,7 @@ Layer:
   <<: *extents
   Datasource:
     type: gdal
-    file: data/N51E005.tif
+    file: data/N52E006.tif
 - id: contours
   geometry: linestring
   <<: *extents
@@ -187,19 +187,19 @@ Layer:
           poi
         WHERE
           fclass IN (
-            'camp_site'
-            'hospital',
-            'swimming_pool',
-            'caravan_site',
-            'supermarket',
-            'bicycle_shop',
-            'castle',
-            'fort',
-            'ruins',
-            'tower_comms',
-            'tower_observation',
-            'tower',
-            'lighthouse'
+             'camp_site',
+             'hospital',
+             'swimming_pool',
+             'caravan_site',
+             'supermarket',
+             'bicycle_shop',
+             'castle',
+             'fort',
+             'ruins',
+             'tower_comms',
+             'tower_observation',
+             'tower',
+             'lighthouse'
           )
 
         UNION ALL
@@ -211,7 +211,7 @@ Layer:
           poi_a
          WHERE
            fclass IN (
-             'camp_site'
+             'camp_site',
              'hospital',
              'swimming_pool',
              'caravan_site',

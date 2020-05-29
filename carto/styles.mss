@@ -12,7 +12,9 @@
 }
 
 #shade {
-  raster-opacity: 0.15;
+  raster-scaling: lanczos;
+  raster-comp-op: multiply;
+  raster-opacity: 0.3;
 }
 
 #contours {
@@ -324,7 +326,6 @@
     marker-ignore-placement: true;
   }
 
-  // TODO filter in query
   marker-width: 10;
   marker-fill: purple;
   marker-allow-overlap: false;
@@ -343,6 +344,7 @@
     marker-file: 'data/icons/svg/caravan_site.svg';
   }
   [fclass='supermarket'] {
+    marker-width: 8;
     marker-file: 'data/icons/maki/shop-11.svg';
   }
   [fclass='bicycle_shop'] {
@@ -362,6 +364,7 @@
     marker-file: 'data/icons/maki/viewpoint-11.svg';
   }
   [fclass='tower'] {
+    marker-width: 6;
     marker-file: 'data/icons/svg/tower.svg';
   }
   [fclass='lighthouse'] {
@@ -393,6 +396,7 @@
   [fclass='christian_protestant'],
   [fclass='christian_babtist'],
   [fclass='christian_mormon'] {
+    marker-width: 6;
     marker-file: 'data/icons/maki/religious-christian-11.svg';
   }
   [fclass='jewish'] {
