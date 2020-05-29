@@ -719,6 +719,7 @@ def envList(envString, pattern):
 
 requireEnvironment('TOP_LEFT_X')
 requireEnvironment('TOP_LEFT_Y')
+requireEnvironment('MAPNIK_CONFIGURATION')
 
 name=env('MAP_NAME', 'map')
 
@@ -763,6 +764,13 @@ print ('Generating from top left (%s, %s) to bottom right (%s, %s) (%s pages hor
 mapWidth = numPagesHorizontal * int(width * dpi)
 mapHeight = numPagesVertical * int(height * dpi)
 
+mapnikConfiguration = env('MAPNIK_CONFIGURATION')
+
+import os
+files = [f for f in os.listdir('.') if os.path.isfile(f)]
+for f in files:
+    print f
+print('using Mapnik configuration file %s' % (mapnikConfiguration,))
 # m = generateMap(mapWidth, mapHeight)
-m = loadMapFromFile('mapnik_map.xml', mapWidth, mapHeight)
+m = loadMapFromFile(mapnikConfiguration, mapWidth, mapHeight)
 renderMap(m, name, topLeft, bottomRight)

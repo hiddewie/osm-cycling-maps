@@ -65,7 +65,8 @@ Let's generate a map. Use the image `hiddewie/map-it` [![](https://images.microb
 ```bash
 docker run -ti \
   --rm \
-  -v $PROJECT_DIR:/map-it \
+  -v $PROJECT_DIR/data:/map-it/data \
+  -v $PROJECT_DIR/output:/map-it/output \
   --link postgres-osm:postgres-osm \
   -e PG_HOST=postgres-osm \
   -e PG_PORT=5432 \
