@@ -326,7 +326,7 @@
   marker-file: 'data/icons/maki/square-11.svg';
   marker-width: 2;
   marker-fill: rgb(150, 150, 150);
-  marker-allow-overlap: true;
+  marker-allow-overlap: false;
   marker-ignore-placement: true;
 }
 
@@ -398,6 +398,7 @@
   marker-fill: purple;
   marker-allow-overlap: false;
   marker-ignore-placement: true;
+  marker-file: 'data/icons/openstreetmap/place_of_worship.svg';
 
   [religion='christian'] {
     marker-width: 6;
