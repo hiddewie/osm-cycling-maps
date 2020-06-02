@@ -57,8 +57,8 @@
 
 #water {
   polygon-fill: rgb(123, 179, 232);
-  line-width: 1.0;
-  line-color: rgb(53, 134, 212);
+  line-width: 0.5;
+  line-color: rgb(123, 179, 232);
 }
 
 #springs {
