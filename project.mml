@@ -178,6 +178,28 @@ Layer:
             'airport'
           )
       ) AS data
+- id: cycling-network
+  geometry: linestring
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way,
+          name,
+          ref,
+          tags->'network' as network
+        FROM
+          planet_osm_line
+        WHERE
+          tags->'network' IN (
+            'icn',
+            'ncn',
+            'rcn',
+            'lcn'
+          )
+      ) AS data
 - id: roads
   geometry: linestring
   <<: *extents

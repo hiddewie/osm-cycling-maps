@@ -38,7 +38,6 @@
     polygon-pattern-file: url('data/background/military.svg');
     polygon-pattern-comp-op: multiply;
     polygon-pattern-alignment: global;
-    //polygon-fill: rgba(255, 51, 51, 0.6);
     line-color: rgb(255, 0, 0);
   }
 }
@@ -52,6 +51,12 @@
   line-color: rgba(0, 74, 24, 0.8);
   line-width: 1.0;
   line-dasharray: 10, 4;
+}
+
+#cycling-network {
+  line-color: rgba(255, 210, 80, 0.8);
+  line-comp-op: multiply;
+  line-width: 7.0;
 }
 
 #waterways {
