@@ -4,6 +4,7 @@
 import mapnik
 import cairo
 import os
+import sys
 import re
 
 def env(key, default=None):
@@ -720,6 +721,9 @@ def envList(envString, pattern):
         ret.append(current)
 
     return ret
+
+print('Python version %s' % (sys.version,))
+print('Mapnik version %s' % (mapnik.paths.__all__,))
 
 name=env('MAP_NAME', 'map')
 

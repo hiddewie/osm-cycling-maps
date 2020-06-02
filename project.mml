@@ -29,7 +29,7 @@ _parts:
     user: postgres
     password: postgres
     key_field: ""
-    geometry_field: "geom"
+    geometry_field: "way"
     extent: "-20037508,-20037508,20037508,20037508"
 
 Stylesheet:
@@ -47,7 +47,7 @@ Layer:
     table: |-
       (
         SELECT
-          geom,
+          way,
           fclass
         FROM
           landuse_a
@@ -68,7 +68,7 @@ Layer:
     table: |-
       (
         SELECT
-          geom,
+          way,
           height,
           CASE
             WHEN (MOD(height::int, 100) = 0) THEN 'yes'
@@ -85,7 +85,7 @@ Layer:
     table: |-
       (
         SELECT
-          geom,
+          way,
           fclass
         FROM
           landuse_a
@@ -100,7 +100,7 @@ Layer:
     table: |-
       (
         SELECT
-          geom
+          way
         FROM
           country_border
       ) AS data
@@ -112,7 +112,7 @@ Layer:
     table: |-
       (
         SELECT
-          geom
+          way
         FROM
           waterways
       ) AS data
@@ -124,7 +124,7 @@ Layer:
     table: |-
       (
         SELECT
-          geom
+          way
         FROM
           water_a
       ) AS data
@@ -136,7 +136,7 @@ Layer:
     table: |-
       (
         SELECT
-          geom
+          way
         FROM
           natural_a
         WHERE
@@ -150,7 +150,7 @@ Layer:
     table: |-
       (
         SELECT
-          geom
+          way
         FROM
           railways
         WHERE
@@ -164,7 +164,7 @@ Layer:
     table: |-
       (
         SELECT
-          geom,
+          way,
           fclass
         FROM
           transport
@@ -186,7 +186,7 @@ Layer:
     table: |-
       (
         SELECT
-          geom,
+          way,
           fclass,
           bridge,
           ref
@@ -201,7 +201,7 @@ Layer:
     table: |-
       (
         SELECT
-          way as geom
+          way
         FROM
           planet_osm_line
         WHERE
@@ -215,7 +215,7 @@ Layer:
     table: |-
       (
         SELECT
-          way as geom
+          way
         FROM
           planet_osm_point
         WHERE
@@ -229,7 +229,7 @@ Layer:
     table: |-
       (
         SELECT
-          geom,
+          way,
           fclass
         FROM
           poi
@@ -253,7 +253,7 @@ Layer:
         UNION ALL
 
         SELECT
-          ST_PointOnSurface(geom) AS geom,
+          ST_PointOnSurface(way) AS way,
           fclass
         FROM
           poi_a
@@ -282,25 +282,26 @@ Layer:
     table: |-
       (
         SELECT
-          way as geom,
+          way,
           religion
         FROM
           planet_osm_point
         WHERE
-          amenity = 'place_of_worship' AND
-          historic IS DISTINCT FROM 'wayside_shrine'
+          amenity = 'place_of_worship'AND
+          (historic IS NULL OR historic != 'wayside_shrine')
 
         UNION ALL
 
         SELECT
-          ST_PointOnSurface(way) as geom,
+          ST_PointOnSurface(way) as way,
           religion
         FROM
           planet_osm_polygon
         WHERE
           amenity = 'place_of_worship' AND
-          historic IS DISTINCT FROM 'wayside_shrine'
+          (historic IS NULL OR historic != 'wayside_shrine')
       ) AS data
+
 - id: places
   geometry: point
   <<: *extents
@@ -309,7 +310,7 @@ Layer:
     table: |-
       (
         SELECT
-          geom,
+          way,
           fclass,
           name
         FROM

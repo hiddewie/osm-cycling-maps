@@ -1,15 +1,12 @@
-FROM debian:jessie-slim
+FROM debian:buster-slim
 
 LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
 
 RUN apt-get update && apt-get install -y \
     libmapnik-dev \
-    libmapnik2-dev \
-    libmapnik2.2 \
     mapnik-doc \
     mapnik-utils \
     python-mapnik \
-    python-mapnik2 \
     curl
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get install -y nodejs \
