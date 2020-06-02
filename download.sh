@@ -62,24 +62,6 @@ echo "Done"
 sleep 1
 
 echo
-echo " -- Country borders -- "
-echo
-
-echo "Get all country borders"
-wget  "https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_admin_0_countries.zip" \
-  -O $DATA_DIR/countries.zip || exit 1
-mkdir $DATA_DIR/countries
-unzip $DATA_DIR/countries.zip -d $DATA_DIR/countries
-
-shp2pgsql -I -d -g way -s 4326 $DATA_DIR/countries/ne_10m_admin_0_countries country_border | psql $POSTGRES_ARGS | grep -v 'INSERT'
-
-rm -r $DATA_DIR/countries || exit 1
-
-echo "Done"
-
-sleep 1
-
-echo
 echo " -- Map content -- "
 echo
 

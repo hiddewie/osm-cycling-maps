@@ -94,15 +94,22 @@ Layer:
       ) AS data
 - id: country
   geometry: linestring
-  <<: *extents
+  <<: *extentsOSM
   Datasource:
     <<: *osm2pgsql
     table: |-
       (
         SELECT
-          way
+          way,
+          admin_level
         FROM
-          country_border
+          planet_osm_roads
+        WHERE
+          boundary = 'administrative' AND
+          admin_level in (
+            '2'
+          )
+          AND osm_id < 0
       ) AS data
 - id: waterways
   geometry: linestring
@@ -142,20 +149,6 @@ Layer:
         WHERE
           fclass IN ('spring')
       ) AS data
-- id: railways
-  geometry: point
-  <<: *extents
-  Datasource:
-    <<: *osm2pgsql
-    table: |-
-      (
-        SELECT
-          way
-        FROM
-          railways
-        WHERE
-          fclass IN ('rail')
-      ) AS data
 - id: cycling-network
   geometry: linestring
   <<: *extentsOSM
@@ -174,6 +167,20 @@ Layer:
             'rcn',
             'lcn'
           )
+      ) AS data
+- id: railways
+  geometry: point
+  <<: *extents
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way
+        FROM
+          railways
+        WHERE
+          fclass IN ('rail')
       ) AS data
 - id: roads
   geometry: linestring
