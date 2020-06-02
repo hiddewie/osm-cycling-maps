@@ -55,7 +55,6 @@
 
 #cycling-network {
   line-color: rgba(255, 210, 80, 0.8);
-  line-comp-op: multiply;
   line-width: 7.0;
 }
 
