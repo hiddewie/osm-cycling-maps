@@ -156,28 +156,6 @@ Layer:
         WHERE
           fclass IN ('rail')
       ) AS data
-- id: transport
-  geometry: point
-  <<: *extents
-  Datasource:
-    <<: *osm2pgsql
-    table: |-
-      (
-        SELECT
-          way,
-          fclass
-        FROM
-          transport
-        WHERE
-          fclass IN (
-            'transport',
-            'railway_station',
-            'ferry_terminal',
-            'railway_halt',
-            'airfield',
-            'airport'
-          )
-      ) AS data
 - id: cycling-network
   geometry: linestring
   <<: *extentsOSM
@@ -186,10 +164,7 @@ Layer:
     table: |-
       (
         SELECT
-          way,
-          name,
-          ref,
-          tags->'network' as network
+          way
         FROM
           planet_osm_line
         WHERE
@@ -229,6 +204,21 @@ Layer:
         WHERE
           power = 'line'
       ) AS data
+- id: cycling-nodes
+  geometry: point
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way
+        FROM
+          planet_osm_point
+        WHERE
+          (tags->'rcn_ref') is not null AND
+          (tags->'network:type') = 'node_network'
+      ) AS data
 - id: power-pole
   geometry: point
   <<: *extentsOSM
@@ -242,6 +232,72 @@ Layer:
           planet_osm_point
         WHERE
           power = 'tower'
+      ) AS data
+- id: places
+  geometry: point
+  <<: *extents
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way,
+          fclass,
+          name
+        FROM
+          places
+        WHERE
+          name IS NOT NULL
+          AND
+            fclass IN (
+              'national_capital',
+              'city',
+              'town',
+              'village',
+              'hamlet',
+              'suburb',
+              'locality'
+            )
+          AND
+            (fclass != 'locality' OR population > 0)
+      ) AS data
+- id: transport
+  geometry: point
+  <<: *extents
+  Datasource:
+   <<: *osm2pgsql
+   table: |-
+     (
+       SELECT
+         way,
+         fclass
+       FROM
+         transport
+       WHERE
+         fclass IN (
+           'transport',
+           'railway_station',
+           'ferry_terminal',
+           'railway_halt',
+           'airfield',
+           'airport'
+         )
+     ) AS data
+- id: cycling-nodes-labels
+  geometry: point
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way,
+          (tags->'rcn_ref') as ref
+        FROM
+          planet_osm_point
+        WHERE
+          (tags->'rcn_ref') is not null AND
+          (tags->'network:type') = 'node_network'
       ) AS data
 - id: poi
   geometry: point
@@ -309,7 +365,7 @@ Layer:
         FROM
           planet_osm_point
         WHERE
-          amenity = 'place_of_worship'AND
+          amenity = 'place_of_worship' AND
           (historic IS NULL OR historic != 'wayside_shrine')
 
         UNION ALL
@@ -322,33 +378,4 @@ Layer:
         WHERE
           amenity = 'place_of_worship' AND
           (historic IS NULL OR historic != 'wayside_shrine')
-      ) AS data
-
-- id: places
-  geometry: point
-  <<: *extents
-  Datasource:
-    <<: *osm2pgsql
-    table: |-
-      (
-        SELECT
-          way,
-          fclass,
-          name
-        FROM
-          places
-        WHERE
-          name IS NOT NULL
-          AND
-            fclass IN (
-              'national_capital',
-              'city',
-              'town',
-              'village',
-              'hamlet',
-              'suburb',
-              'locality'
-            )
-          AND
-            (fclass != 'locality' OR population > 0)
       ) AS data

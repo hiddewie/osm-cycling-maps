@@ -1,9 +1,11 @@
 // Font
-@font : 'DejaVu Sans Book';
-@font-bold : 'DejaVu Sans Bold';
+@font: 'DejaVu Sans Book';
+@font-bold: 'DejaVu Sans Bold';
+@font-italic: 'DejaVu Sans Oblique';
+@font-serif-italic: 'DejaVu Serif Italic';
 
 // Colors
-@forest : rgb(222, 245, 198);
+@forest: rgb(222, 245, 198);
 
 #landuse-background {
   [fclass='forest'] {
@@ -292,6 +294,13 @@
   }
 }
 
+#cycling-nodes {
+  marker-width: 3;
+  marker-fill: rgb(255, 210, 80);
+  marker-line-color: black;
+  marker-line-width: 0.5;
+}
+
 // TODO group symbolizer?
 //   see https://github.com/mapnik/mapnik/wiki/GroupSymbolizer
 
@@ -429,6 +438,10 @@
   text-fill: black;
   text-halo-radius: 1.0;
   text-halo-fill: rgba(255, 255, 220, 0.7);
+  text-placement-type: simple;
+  text-placements: 'S,N,E,W';
+  text-dx: 10;
+  text-dy: 8;
 
   [fclass='national_capital'],
   [fclass='city'] {
@@ -453,6 +466,19 @@
   [fclass='village'] {
     text-size: 10;
   }
+}
+
+#cycling-nodes-labels {
+  text-name: '[ref]';
+  text-size: 7;
+  text-face-name: @font-serif-italic;
+  text-fill: black;
+  text-halo-radius: 1.0;
+  text-halo-fill: rgba(255, 210, 80, 0.7);
+  text-placement-type: simple;
+  text-placements: 'S,N,E,W';
+  text-dx: 5;
+  text-dy: 4;
 }
 
 #roads::labels {
