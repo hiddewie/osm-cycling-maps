@@ -6,7 +6,6 @@ bounds: &world
   - -85.05112877980659
   - 180
   - 85.05112877980659
-center: [0, 0, 4]
 format: pdf
 interactivity: false
 minzoom: 13
@@ -15,15 +14,14 @@ srs: "+init=epsg:3857"
 
 # Various parts to be included later on
 _parts:
-  # Extents are used for tilemill, and dont actually make it to the generated XML
   extents: &extents
     extent: *world
     srs-name: "WGS84"
     srs: "+init=epsg:4326"
-  extents84: &extents84
+  extentsOSM: &extentsOSM
     extent: *world
-    srs-name: "WGS84"
-    srs: "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+    srs-name: "900913"
+    srs: "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over"
   osm2pgsql: &osm2pgsql
     type: postgis
     host: postgres-osm 
@@ -194,6 +192,34 @@ Layer:
           ref
         FROM
           roads
+      ) AS data
+- id: power-line
+  geometry: linestring
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way as geom
+        FROM
+          planet_osm_line
+        WHERE
+          power = 'line'
+      ) AS data
+- id: power-pole
+  geometry: point
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way as geom
+        FROM
+          planet_osm_point
+        WHERE
+          power = 'tower'
       ) AS data
 - id: poi
   geometry: point

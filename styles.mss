@@ -317,6 +317,19 @@
   }
 }
 
+#power-line {
+  line-color: rgb(150, 150, 150);
+  line-width: 1.0;
+}
+
+#power-pole {
+  marker-file: 'data/icons/maki/square-11.svg';
+  marker-width: 2;
+  marker-fill: rgb(150, 150, 150);
+  marker-allow-overlap: true;
+  marker-ignore-placement: true;
+}
+
 #poi {
   ::background {
     marker-file: 'data/icons/maki/circle-11.svg';

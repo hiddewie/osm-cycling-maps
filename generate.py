@@ -10,9 +10,13 @@ def env(key, default=None):
     return os.getenv(key, default)
 
 def requireEnvironment(name):
-    if env(name) is None:
+    value = env(name)
+
+    if value is None:
         print ("The environment variable '%s' is required" % (name,))
         exit(1)
+
+    return value
 
 BASE_PATH = 'data/'
 OUTPUT_PATH = 'output/'
@@ -717,10 +721,6 @@ def envList(envString, pattern):
 
     return ret
 
-requireEnvironment('TOP_LEFT_X')
-requireEnvironment('TOP_LEFT_Y')
-requireEnvironment('MAPNIK_CONFIGURATION')
-
 name=env('MAP_NAME', 'map')
 
 LATITUDES = envList(env('LATITUDES', 'N52'), '^[NS][0-9]{2}$')
@@ -734,8 +734,8 @@ print ('Using longitudes %s' % (LONGITUDES, ))
 
 # Choose with https://epsg.io/map#srs=3857&x=2225846.263664&y=6275978.874398&z=8&layer=streets
 # In EPSG:3857
-TOP_LEFT_X=int(env('TOP_LEFT_X', 735324))
-TOP_LEFT_Y=int(env('TOP_LEFT_Y', 6874058))
+TOP_LEFT_X=int(requireEnvironment('TOP_LEFT_X'))
+TOP_LEFT_Y=int(requireEnvironment('TOP_LEFT_Y'))
 
 OFFSET_PAGES_X=float(env('OFFSET_PAGES_X', 0))
 OFFSET_PAGES_Y=float(env('OFFSET_PAGES_Y', 0))
@@ -764,12 +764,8 @@ print ('Generating from top left (%s, %s) to bottom right (%s, %s) (%s pages hor
 mapWidth = numPagesHorizontal * int(width * dpi)
 mapHeight = numPagesVertical * int(height * dpi)
 
-mapnikConfiguration = env('MAPNIK_CONFIGURATION')
+mapnikConfiguration = requireEnvironment('MAPNIK_CONFIGURATION')
 
-import os
-files = [f for f in os.listdir('.') if os.path.isfile(f)]
-for f in files:
-    print f
 print('using Mapnik configuration file %s' % (mapnikConfiguration,))
 # m = generateMap(mapWidth, mapHeight)
 m = loadMapFromFile(mapnikConfiguration, mapWidth, mapHeight)

@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     wget \
     unzip \
     gdal-bin \
+    osm2pgsql \
     postgresql-client \
     postgis \
     python-gdal \
@@ -24,4 +25,4 @@ COPY ./download.sh /script/download.sh
 
 RUN chmod +x /script/download.sh
 
-CMD ["/script/download.sh"]
+CMD /script/download.sh

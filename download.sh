@@ -89,13 +89,13 @@ do
   mkdir -p $DATA_DIR/$COUNTRY
 
   echo "Get $COUNTRY"
-  wget http://download.geofabrik.de/$COUNTRY-latest-free.shp.zip -O $DATA_DIR/$COUNTRY.hgt.zip || exit 1
+  wget http://download.geofabrik.de/$COUNTRY-latest-free.shp.zip -O $DATA_DIR/$COUNTRY.shp.zip || exit 1
 
-  echo "Unzip $COUNTRY"
-  unzip -o $DATA_DIR/$COUNTRY.hgt.zip -d $DATA_DIR/$COUNTRY || exit 1
-  rm $DATA_DIR/$COUNTRY.hgt.zip || exit 1
+  echo "Unzip $COUNTRY (preprocessed)"
+  unzip -o $DATA_DIR/$COUNTRY.shp.zip -d $DATA_DIR/$COUNTRY || exit 1
+  rm $DATA_DIR/$COUNTRY.shp.zip || exit 1
 
-  echo "Import data $COUNTRY"
+  echo "Import data $COUNTRY (preprocessed)"
   shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_water_a_free_1.shp water_a | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
   shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_landuse_a_free_1.shp landuse_a | psql $POSTGRES_ARGS  | grep -v 'INSERT' || exit 1
   shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_waterways_free_1.shp waterways | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
@@ -109,8 +109,36 @@ do
   shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_pofw_free_1.shp pofw | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
   shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_natural_free_1.shp natural_a | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
 
-  echo "Delete shape data $COUNTRY"
+  echo "Delete shape data $COUNTRY (preprocessed)"
   rm -r $DATA_DIR/$COUNTRY || exit 1
+
+  echo "Get $COUNTRY (raw OSM)"
+  wget http://download.geofabrik.de/$COUNTRY-latest.osm.pbf -O $DATA_DIR/$COUNTRY.osm.pbf || exit 1
+
+  echo "Import data $COUNTRY (raw OSM)"
+
+  # The following values can be tweaked
+  # See https://github.com/gravitystorm/openstreetmap-carto/blob/master/scripts/docker-startup.sh
+  # TODO: specify --style? (see openstreetmap-carto.style)
+  # TODO: specify --tag-transform-script? (see openstreetmap-carto.lua)
+  # TODO: specify --multi-geometry?
+  OSM2PGSQL_CACHE=512
+  OSM2PGSQL_NUMPROC=1
+  PGPASS=$PG_PASSWORD
+  osm2pgsql \
+    --cache $OSM2PGSQL_CACHE \
+    --number-processes $OSM2PGSQL_NUMPROC \
+    --hstore \
+    --multi-geometry \
+    --host $PG_HOST \
+    --database $PG_DATABASE \
+    --username $PG_USER \
+    --slim \
+    --drop \
+    $DATA_DIR/$COUNTRY.osm.pbf
+
+  echo "Delete downloaded data $COUNTRY (raw OSM)"
+  rm $DATA_DIR/$COUNTRY.osm.pbf || exit 1
 
   echo "Done $COUNTRY"
 
