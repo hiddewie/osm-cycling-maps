@@ -84,6 +84,7 @@ echo " -- Map content -- "
 echo
 
 ARGS="-I -d"
+FILES=""
 for COUNTRY in $FEATURE_COUNTRIES
 do
   mkdir -p $DATA_DIR/$COUNTRY
@@ -114,35 +115,48 @@ do
 
   echo "Get $COUNTRY (raw OSM)"
   wget http://download.geofabrik.de/$COUNTRY-latest.osm.pbf -O $DATA_DIR/$COUNTRY.osm.pbf || exit 1
-
-  echo "Import data $COUNTRY (raw OSM)"
-
-  # The following values can be tweaked
-  # See https://github.com/gravitystorm/openstreetmap-carto/blob/master/scripts/docker-startup.sh
-  # TODO: specify --style? (see openstreetmap-carto.style)
-  # TODO: specify --tag-transform-script? (see openstreetmap-carto.lua)
-  # TODO: specify --multi-geometry?
-  OSM2PGSQL_CACHE=512
-  OSM2PGSQL_NUMPROC=1
-  PGPASS=$PG_PASSWORD
-  osm2pgsql \
-    --cache $OSM2PGSQL_CACHE \
-    --number-processes $OSM2PGSQL_NUMPROC \
-    --hstore \
-    --multi-geometry \
-    --host $PG_HOST \
-    --database $PG_DATABASE \
-    --username $PG_USER \
-    --slim \
-    --drop \
-    $DATA_DIR/$COUNTRY.osm.pbf
-
-  echo "Delete downloaded data $COUNTRY (raw OSM)"
-  rm $DATA_DIR/$COUNTRY.osm.pbf || exit 1
+  FILES="$FILES $DATA_DIR/$COUNTRY.osm.pbf"
 
   echo "Done $COUNTRY"
 
   ARGS="-a"
 done
+
+echo "Merging OSM data"
+
+echo "Merging files $FILES to $DATA_DIR/combined.osm.pbf"
+osmium merge --output=$DATA_DIR/combined.osm.pbf --overwrite $FILES
+
+echo "Done combining OSM data"
+
+echo "Importing combined OSM data"
+
+# The following values can be tweaked
+# See https://github.com/gravitystorm/openstreetmap-carto/blob/master/scripts/docker-startup.sh
+# TODO: specify --style? (see openstreetmap-carto.style)
+# TODO: specify --tag-transform-script? (see openstreetmap-carto.lua)
+# TODO: specify --multi-geometry?
+OSM2PGSQL_CACHE=512
+OSM2PGSQL_NUMPROC=1
+PGPASS=$PG_PASSWORD
+
+echo "Using OSM2PGSQL_CACHE = $OSM2PGSQL_CACHE"
+echo "Using $OSM2PGSQL_NUMPROC processes"
+
+echo "Starting import from $DATA_DIR/combined.osm.pbf"
+
+osm2pgsql \
+  --cache $OSM2PGSQL_CACHE \
+  --number-processes $OSM2PGSQL_NUMPROC \
+  --hstore \
+  --multi-geometry \
+  --host $PG_HOST \
+  --database $PG_DATABASE \
+  --username $PG_USER \
+  --slim \
+  --drop \
+  $DATA_DIR/combined.osm.pbf
+
+echo "Done importing OSM data"
 
 echo "Done"

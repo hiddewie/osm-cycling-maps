@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     postgresql-client \
     postgis \
     python-gdal \
+    osmium-tool \
   && apt-get autoclean \
   && rm -rf /var/lib/apt/lists/*
 

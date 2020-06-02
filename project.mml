@@ -287,7 +287,8 @@ Layer:
         FROM
           planet_osm_point
         WHERE
-          amenity = 'place_of_worship'
+          amenity = 'place_of_worship' AND
+          historic IS DISTINCT FROM 'wayside_shrine'
 
         UNION ALL
 
@@ -297,7 +298,8 @@ Layer:
         FROM
           planet_osm_polygon
         WHERE
-          amenity = 'place_of_worship'
+          amenity = 'place_of_worship' AND
+          historic IS DISTINCT FROM 'wayside_shrine'
       ) AS data
 - id: places
   geometry: point
