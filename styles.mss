@@ -35,7 +35,8 @@
   }
 
   [fclass='military'] {
-    polygon-fill: rgba(255, 51, 51, 0.6);
+    polygon-pattern-file: url('data/background/military.svg');
+    //polygon-fill: rgba(255, 51, 51, 0.6);
     line-color: rgb(255, 0, 0);
   }
 }
