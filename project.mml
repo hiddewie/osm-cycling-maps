@@ -276,16 +276,28 @@ Layer:
       ) AS data
 - id: religious
   geometry: point
-  <<: *extents
+  <<: *extentsOSM
   Datasource:
     <<: *osm2pgsql
     table: |-
       (
         SELECT
-          geom,
-          fclass
+          way as geom,
+          religion
         FROM
-          pofw
+          planet_osm_point
+        WHERE
+          amenity = 'place_of_worship'
+
+        UNION ALL
+
+        SELECT
+          ST_PointOnSurface(way) as geom,
+          religion
+        FROM
+          planet_osm_polygon
+        WHERE
+          amenity = 'place_of_worship'
       ) AS data
 - id: places
   geometry: point

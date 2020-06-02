@@ -399,28 +399,17 @@
   marker-allow-overlap: false;
   marker-ignore-placement: true;
 
-  [fclass='christian'],
-  [fclass='christian_anglican'],
-  [fclass='christian_catholic'],
-  [fclass='christian_evangelical'],
-  [fclass='christian_lutheran'],
-  [fclass='christian_methodist'],
-  [fclass='christian_orthodox'],
-  [fclass='christian_protestant'],
-  [fclass='christian_babtist'],
-  [fclass='christian_mormon'] {
+  [religion='christian'] {
     marker-width: 6;
     marker-file: 'data/icons/maki/religious-christian-11.svg';
   }
-  [fclass='jewish'] {
+  [religion='jewish'] {
     marker-file: 'data/icons/maki/religious-jewish-11.svg';
   }
-  [fclass='muslim'],
-  [fclass='muslim_sunni'],
-  [fclass='muslim_shia'] {
+  [religion='muslim'] {
     marker-file: 'data/icons/maki/religious-muslim-11.svg';
   }
-  [fclass='buddhist'] {
+  [religion='buddhist'] {
     marker-file: 'data/icons/maki/religious-buddhist-11.svg';
   }
 }
