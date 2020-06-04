@@ -52,6 +52,7 @@ Layer:
         FROM
           landuse_a
         WHERE
+          way && !bbox! AND
           fclass IN ('forest')
       ) AS data
 - id: shade
@@ -76,6 +77,8 @@ Layer:
           END as boundary
         FROM
           contours
+        WHERE
+          way && !bbox!
       ) AS data
 - id: landuse-foreground
   geometry: polygon
@@ -90,6 +93,7 @@ Layer:
         FROM
           landuse_a
         WHERE
+          way && !bbox! AND
           fclass IN ('residential', 'military')
       ) AS data
 - id: country
@@ -105,6 +109,7 @@ Layer:
         FROM
           planet_osm_roads
         WHERE
+          way && !bbox! AND
           boundary = 'administrative' AND
           admin_level in (
             '2'
@@ -122,6 +127,8 @@ Layer:
           way
         FROM
           waterways
+        WHERE
+          way && !bbox!
       ) AS data
 - id: water
   geometry: linestring
@@ -134,6 +141,8 @@ Layer:
           way
         FROM
           water_a
+        WHERE
+          way && !bbox!
       ) AS data
 - id: springs
   geometry: point
@@ -147,6 +156,7 @@ Layer:
         FROM
           natural_a
         WHERE
+          way && !bbox! AND
           fclass IN ('spring')
       ) AS data
 - id: cycling-network
@@ -161,7 +171,8 @@ Layer:
         FROM
           planet_osm_line
         WHERE
-          tags->'network' IN (
+          way && !bbox! AND
+          (tags->'network') IN (
             'icn',
             'ncn',
             'rcn',
@@ -180,6 +191,7 @@ Layer:
         FROM
           railways
         WHERE
+          way && !bbox! AND
           fclass IN ('rail')
       ) AS data
 - id: roads
@@ -196,6 +208,8 @@ Layer:
           ref
         FROM
           roads
+        WHERE
+          way && !bbox!
       ) AS data
 - id: power-line
   geometry: linestring
@@ -209,6 +223,7 @@ Layer:
         FROM
           planet_osm_line
         WHERE
+          way && !bbox! AND
           power = 'line'
       ) AS data
 - id: cycling-nodes
@@ -223,6 +238,7 @@ Layer:
         FROM
           planet_osm_point
         WHERE
+          way && !bbox! AND
           (tags->'rcn_ref') is not null AND
           (tags->'network:type') = 'node_network'
       ) AS data
@@ -238,6 +254,7 @@ Layer:
         FROM
           planet_osm_point
         WHERE
+          way && !bbox! AND
           power = 'tower'
       ) AS data
 - id: places
@@ -254,6 +271,7 @@ Layer:
         FROM
           places
         WHERE
+          way && !bbox! AND
           name IS NOT NULL
           AND
             fclass IN (
@@ -281,6 +299,7 @@ Layer:
        FROM
          transport
        WHERE
+         way && !bbox! AND
          fclass IN (
            'transport',
            'railway_station',
@@ -303,6 +322,7 @@ Layer:
         FROM
           planet_osm_point
         WHERE
+          way && !bbox! AND
           (tags->'rcn_ref') is not null AND
           (tags->'network:type') = 'node_network'
       ) AS data
@@ -319,6 +339,7 @@ Layer:
         FROM
           poi
         WHERE
+          way && !bbox! AND
           fclass IN (
              'camp_site',
              'hospital',
@@ -342,22 +363,23 @@ Layer:
           fclass
         FROM
           poi_a
-         WHERE
-           fclass IN (
-             'camp_site',
-             'hospital',
-             'swimming_pool',
-             'caravan_site',
-             'supermarket',
-             'bicycle_shop',
-             'castle',
-             'fort',
-             'ruins',
-             'tower_comms',
-             'tower_observation',
-             'tower',
-             'lighthouse'
-           )
+        WHERE
+          way && !bbox! AND
+          fclass IN (
+            'camp_site',
+            'hospital',
+            'swimming_pool',
+            'caravan_site',
+            'supermarket',
+            'bicycle_shop',
+            'castle',
+            'fort',
+            'ruins',
+            'tower_comms',
+            'tower_observation',
+            'tower',
+            'lighthouse'
+          )
       ) AS data
 - id: religious
   geometry: point
@@ -372,6 +394,7 @@ Layer:
         FROM
           planet_osm_point
         WHERE
+          way && !bbox! AND
           amenity = 'place_of_worship' AND
           (historic IS NULL OR historic != 'wayside_shrine')
 
@@ -383,6 +406,7 @@ Layer:
         FROM
           planet_osm_polygon
         WHERE
+          way && !bbox! AND
           amenity = 'place_of_worship' AND
           (historic IS NULL OR historic != 'wayside_shrine')
       ) AS data
