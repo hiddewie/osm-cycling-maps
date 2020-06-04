@@ -317,14 +317,22 @@ Layer:
     table: |-
       (
         SELECT
-          way,
-          (tags->'rcn_ref') as ref
-        FROM
-          planet_osm_point
-        WHERE
-          way && !bbox! AND
-          (tags->'rcn_ref') is not null AND
-          (tags->'network:type') = 'node_network'
+          ST_PointOnSurface(ST_Union(nodes.way)) as way,
+          nodes.ref
+        FROM (
+            SELECT
+              way,
+              (tags->'rcn_ref') as ref
+            FROM
+              planet_osm_point
+            WHERE
+              way && !bbox! AND
+              (tags->'rcn_ref') is not null AND
+              (tags->'network:type') = 'node_network'
+        ) nodes
+        GROUP BY
+          nodes.ref,
+          ST_SnapToGrid(ST_Transform(nodes.way, 3785), 3000)
       ) AS data
 - id: poi
   geometry: point
