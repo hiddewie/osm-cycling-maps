@@ -56,8 +56,10 @@
 }
 
 #cycling-network {
-  line-color: rgba(255, 210, 80, 0.6);
+  opacity: 0.6;
+  line-color: rgb(255, 210, 80);
   line-width: 7.0;
+  line-cap: round;
 }
 
 #waterways {

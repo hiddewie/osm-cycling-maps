@@ -113,8 +113,8 @@ Layer:
           boundary = 'administrative' AND
           admin_level in (
             '2'
-          )
-          AND osm_id < 0
+          ) AND
+          osm_id < 0
       ) AS data
 - id: waterways
   geometry: linestring
@@ -172,12 +172,7 @@ Layer:
           planet_osm_line
         WHERE
           way && !bbox! AND
-          (tags->'network') IN (
-            'icn',
-            'ncn',
-            'rcn',
-            'lcn'
-          )
+          route = 'bicycle'
       ) AS data
 - id: railways
   geometry: point
