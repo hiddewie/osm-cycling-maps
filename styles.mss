@@ -46,7 +46,7 @@
 
 #country {
   ::border {
-    line-color: rgba(0, 219, 68, 0.45);
+    line-color: rgba(0, 219, 68, 0.2);
     line-width: 9.0;
   }
 
@@ -56,7 +56,7 @@
 }
 
 #cycling-network {
-  line-color: rgba(255, 210, 80, 0.8);
+  line-color: rgba(255, 210, 80, 0.6);
   line-width: 7.0;
 }
 
