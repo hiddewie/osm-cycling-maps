@@ -33,7 +33,7 @@
 
 #landuse-foreground {
   [fclass='residential'] {
-    polygon-fill: rgb(201, 180, 133);
+    polygon-fill: rgb(205, 202, 175);
   }
 
   [fclass='military'] {

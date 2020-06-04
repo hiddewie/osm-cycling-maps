@@ -53,7 +53,9 @@ Layer:
           landuse_a
         WHERE
           way && !bbox! AND
-          fclass IN ('forest')
+          fclass IN (
+            'forest'
+          )
       ) AS data
 - id: shade
   geometry: raster
