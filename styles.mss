@@ -109,6 +109,12 @@
   line-color: rgb(123, 179, 232);
 }
 
+#ferry {
+  line-width: 1.0;
+  line-color: rgb(20, 55, 90);
+  line-dasharray: 4, 3;
+}
+
 #springs {
   marker-width: 3;
   marker-fill: rgb(123, 179, 232);

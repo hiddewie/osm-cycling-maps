@@ -185,6 +185,21 @@ Layer:
           way && !bbox! AND
           route = 'bicycle'
       ) AS data
+- id: ferry
+  geometry: linestring
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way
+        FROM
+          planet_osm_line
+        WHERE
+          way && !bbox! AND
+          route = 'ferry'
+      ) AS data
 - id: aeroway
   geometry: linestring
   <<: *extentsOSM
