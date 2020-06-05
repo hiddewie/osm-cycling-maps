@@ -116,6 +116,12 @@
   marker-line-width: 1.0;
 }
 
+#aeroway {
+  line-color: @highway;
+  line-cap: square;
+  line-width: 5;
+}
+
 #railways {
   line-color: black;
   line-width: 1.5;
@@ -343,22 +349,28 @@
 // TODO group symbolizer?
 //   see https://github.com/mapnik/mapnik/wiki/GroupSymbolizer
 
-#transport {
+#transport,
+#aerodrome,
+#poi,
+#religious {
   ::background {
     marker-file: 'data/icons/maki/circle-11.svg';
-    marker-transform: 'scale(1.2, 1.2)';
+    marker-width: 12;
     marker-fill: rgba(250, 250, 250, 0.8);
     marker-allow-overlap: false;
     marker-ignore-placement: true;
   }
+}
 
-  marker-transform: 'scale(0.68, 0.68)';
+#transport {
+  marker-width: 10;
   marker-fill: purple;
-  marker-allow-overlap: false;
+  marker-allow-overlap: true;
   marker-ignore-placement: true;
 
   [fclass='railway_station'],
   [fclass='railway_halt'] {
+    marker-width: 7;
     marker-file: 'data/icons/maki/rail-11.svg';
   }
   [fclass='ferry_terminal'] {
@@ -370,6 +382,15 @@
   [fclass='airport'] {
     marker-file: 'data/icons/maki/airport-11.svg';
   }
+}
+
+#aerodrome {
+  marker-width: 10;
+  marker-fill: purple;
+  marker-allow-overlap: true;
+  marker-ignore-placement: true;
+
+  marker-file: 'data/icons/maki/airport-11.svg';
 }
 
 #power-line {
@@ -386,14 +407,6 @@
 }
 
 #poi {
-  ::background {
-    marker-file: 'data/icons/maki/circle-11.svg';
-    marker-width: 12;
-    marker-fill: rgba(250, 250, 250, 0.8);
-    marker-allow-overlap: false;
-    marker-ignore-placement: true;
-  }
-
   marker-width: 10;
   marker-fill: purple;
   marker-allow-overlap: false;
@@ -441,14 +454,6 @@
 }
 
 #religious {
-  ::background {
-    marker-file: 'data/icons/maki/circle-11.svg';
-    marker-width: 12;
-    marker-fill: rgba(250, 250, 250, 0.8);
-    marker-allow-overlap: false;
-    marker-ignore-placement: true;
-  }
-
   marker-width: 10;
   marker-fill: purple;
   marker-allow-overlap: false;

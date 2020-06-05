@@ -185,6 +185,24 @@ Layer:
           way && !bbox! AND
           route = 'bicycle'
       ) AS data
+- id: aeroway
+  geometry: linestring
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way,
+          aeroway
+        FROM
+          planet_osm_line
+        WHERE
+          way && !bbox! AND
+          aeroway IN (
+            'runway'
+          )
+      ) AS data
 - id: railways
   geometry: point
   <<: *extents
@@ -296,25 +314,83 @@ Layer:
   geometry: point
   <<: *extents
   Datasource:
-   <<: *osm2pgsql
-   table: |-
-     (
-       SELECT
-         way,
-         fclass
-       FROM
-         transport
-       WHERE
-         way && !bbox! AND
-         fclass IN (
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way,
+          fclass
+        FROM
+          transport
+        WHERE
+          way && !bbox! AND
+          fclass IN (
            'transport',
            'railway_station',
            'ferry_terminal',
            'railway_halt',
            'airfield',
            'airport'
-         )
-     ) AS data
+          )
+
+        UNION ALL
+
+        SELECT
+          way,
+          'airport' as fclass
+        FROM
+          planet_osm_point
+        WHERE
+          way && !bbox! AND
+          aeroway IN (
+            'airport'
+          )
+
+        UNION ALL
+
+        SELECT
+          ST_PointOnSurface(way) as way,
+          'airport' as fclass
+        FROM
+          planet_osm_polygon
+        WHERE
+          way && !bbox! AND
+          aeroway IN (
+            'aerodrome'
+          )
+      ) AS data
+# TODO merge with transport layer
+- id: aerodrome
+  geometry: point
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way,
+          'airport' as fclass
+        FROM
+          planet_osm_point
+        WHERE
+          way && !bbox! AND
+          aeroway IN (
+            'airport'
+          )
+
+        UNION ALL
+
+        SELECT
+          ST_PointOnSurface(way) as way,
+          'airport' as fclass
+        FROM
+          planet_osm_polygon
+        WHERE
+          way && !bbox! AND
+          aeroway IN (
+            'aerodrome'
+          )
+      ) AS data
 - id: cycling-nodes-labels
   geometry: point
   <<: *extentsOSM
