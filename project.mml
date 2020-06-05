@@ -390,7 +390,7 @@ Layer:
         WHERE
           way && !bbox! AND
           aeroway IN (
-            'airport'
+            'aerodrome'
           )
 
         UNION ALL
