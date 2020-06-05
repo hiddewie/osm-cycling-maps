@@ -346,50 +346,54 @@
   marker-line-width: 0.5;
 }
 
-// TODO group symbolizer?
-//   see https://github.com/mapnik/mapnik/wiki/GroupSymbolizer
-
-#transport,
-#aerodrome,
-#poi,
-#religious {
-  ::background {
-    marker-file: 'data/icons/maki/circle-11.svg';
-    marker-width: 12;
-    marker-fill: rgba(250, 250, 250, 0.8);
-    marker-allow-overlap: false;
-    marker-ignore-placement: true;
-  }
-}
-
 #transport {
+  background/marker-width: 10;
+  background/marker-fill: purple;
+  background/marker-allow-overlap: false;
+  background/marker-ignore-placement: true;
+  background/marker-line-color: white;
+  background/marker-line-width: 2.0;
+
   marker-width: 10;
   marker-fill: purple;
-  marker-allow-overlap: true;
+  marker-allow-overlap: false;
   marker-ignore-placement: true;
 
   [fclass='railway_station'],
   [fclass='railway_halt'] {
+    background/marker-width: 7;
+    background/marker-file: 'data/icons/maki/rail-11.svg';
     marker-width: 7;
     marker-file: 'data/icons/maki/rail-11.svg';
   }
   [fclass='ferry_terminal'] {
+    background/marker-file: 'data/icons/maki/ferry-11.svg';
     marker-file: 'data/icons/maki/ferry-11.svg';
   }
   [fclass='airfield'] {
+    background/marker-file: 'data/icons/maki/airfield-11.svg';
     marker-file: 'data/icons/maki/airfield-11.svg';
   }
   [fclass='airport'] {
+    background/marker-file: 'data/icons/maki/airport-11.svg';
     marker-file: 'data/icons/maki/airport-11.svg';
   }
 }
 
 #aerodrome {
+  background/marker-width: 10;
+  background/marker-fill: purple;
+  background/marker-allow-overlap: false;
+  background/marker-ignore-placement: true;
+  background/marker-line-color: white;
+  background/marker-line-width: 2.0;
+
   marker-width: 10;
   marker-fill: purple;
-  marker-allow-overlap: true;
+  marker-allow-overlap: false;
   marker-ignore-placement: true;
 
+  background/marker-file: 'data/icons/maki/airport-11.svg';
   marker-file: 'data/icons/maki/airport-11.svg';
 }
 
@@ -407,53 +411,82 @@
 }
 
 #poi {
+  background/marker-width: 10;
+  background/marker-fill: purple;
+  background/marker-allow-overlap: false;
+  background/marker-ignore-placement: true;
+  background/marker-line-color: white;
+  background/marker-line-width: 2.0;
+
   marker-width: 10;
   marker-fill: purple;
   marker-allow-overlap: false;
   marker-ignore-placement: true;
 
   [fclass='camp_site'] {
+    background/marker-file: 'data/icons/maki/campsite-11.svg';
     marker-file: 'data/icons/maki/campsite-11.svg';
   }
   [fclass='hospital'] {
+    background/marker-file: 'data/icons/maki/hospital-11.svg';
     marker-file: 'data/icons/maki/hospital-11.svg';
   }
   [fclass='swimming_pool'] {
+    background/marker-file: 'data/icons/maki/swimming-11.svg';
     marker-file: 'data/icons/maki/swimming-11.svg';
   }
   [fclass='caravan_site'] {
+    background/marker-file: 'data/icons/svg/caravan_site.svg';
     marker-file: 'data/icons/svg/caravan_site.svg';
   }
   [fclass='supermarket'] {
+    background/marker-width: 8;
+    background/marker-file: 'data/icons/maki/shop-11.svg';
     marker-width: 8;
     marker-file: 'data/icons/maki/shop-11.svg';
   }
   [fclass='bicycle_shop'] {
+    background/marker-file: 'data/icons/maki/bicycle-11.svg';
     marker-file: 'data/icons/maki/bicycle-11.svg';
   }
   [fclass='castle'],
   [fclass='fort'] {
+    background/marker-file: 'data/icons/maki/castle-11.svg';
     marker-file: 'data/icons/maki/castle-11.svg';
   }
   [fclass='ruins'] {
+    background/marker-file: 'data/icons/svg/ruins.svg';
     marker-file: 'data/icons/svg/ruins.svg';
   }
   [fclass='tower_comms'] {
+    background/marker-file: 'data/icons/maki/communications-tower-11.svg';
     marker-file: 'data/icons/maki/communications-tower-11.svg';
   }
   [fclass='tower_observation'] {
+    background/marker-file: 'data/icons/maki/viewpoint-11.svg';
     marker-file: 'data/icons/maki/viewpoint-11.svg';
   }
   [fclass='tower'] {
+    background/marker-width: 6;
+    background/marker-file: 'data/icons/svg/tower.svg';
     marker-width: 6;
     marker-file: 'data/icons/svg/tower.svg';
   }
   [fclass='lighthouse'] {
+    background/marker-file: 'data/icons/maki/lighthouse-11.svg';
     marker-file: 'data/icons/maki/lighthouse-11.svg';
   }
 }
 
 #religious {
+  background/marker-width: 10;
+  background/marker-fill: purple;
+  background/marker-allow-overlap: false;
+  background/marker-ignore-placement: true;
+  background/marker-line-color: white;
+  background/marker-line-width: 2.0;
+  background/marker-file: 'data/icons/openstreetmap/place_of_worship.svg';
+
   marker-width: 10;
   marker-fill: purple;
   marker-allow-overlap: false;
@@ -461,16 +494,21 @@
   marker-file: 'data/icons/openstreetmap/place_of_worship.svg';
 
   [religion='christian'] {
+    background/marker-width: 6;
+    background/marker-file: 'data/icons/maki/religious-christian-11.svg';
     marker-width: 6;
     marker-file: 'data/icons/maki/religious-christian-11.svg';
   }
   [religion='jewish'] {
+    background/marker-file: 'data/icons/maki/religious-jewish-11.svg';
     marker-file: 'data/icons/maki/religious-jewish-11.svg';
   }
   [religion='muslim'] {
+    background/marker-file: 'data/icons/maki/religious-muslim-11.svg';
     marker-file: 'data/icons/maki/religious-muslim-11.svg';
   }
   [religion='buddhist'] {
+    background/marker-file: 'data/icons/maki/religious-buddhist-11.svg';
     marker-file: 'data/icons/maki/religious-buddhist-11.svg';
   }
 }
