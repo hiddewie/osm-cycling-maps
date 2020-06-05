@@ -44,15 +44,52 @@
   }
 }
 
-#country {
-  ::border {
-    line-color: rgba(0, 219, 68, 0.2);
-    line-width: 9.0;
+@admin-background: rgb(0, 219, 68);
+@admin-boundaries: rgb(0, 74, 24);
+
+#administrative-boundaries {
+  ::firstline {
+    background/line-join: round;
+    background/line-color: white;
+    background/line-width: 7;
   }
 
-  line-color: rgba(0, 74, 24, 0.8);
-  line-width: 1.0;
-  line-dasharray: 10, 4;
+  ::wideline {
+    background/line-join: round;
+    background/line-color: white;
+    background/line-width: 4;
+
+    opacity: 0.2;
+    line-color: @admin-background;
+    line-join: bevel;
+    line-width: 4;
+
+    [admin_level < 4] {
+      background/line-width: 7;
+      line-width: 7;
+    }
+  }
+
+  ::narrowline {
+    background/line-join: round;
+    background/line-color: white;
+    background/line-width: 1;
+
+    opacity: 0.6;
+    thin/line-color: @admin-boundaries;
+    thin/line-width: 1;
+    thin/line-dasharray: 12,3,2,3,2,3;
+
+    [admin_level >= 4] {
+      thin/line-dasharray: 12,10;
+    }
+  }
+
+  ::firstline,
+  ::wideline,
+  ::narrowline {
+    comp-op: darken;
+  }
 }
 
 #cycling-network {

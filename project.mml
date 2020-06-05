@@ -98,25 +98,34 @@ Layer:
           way && !bbox! AND
           fclass IN ('residential', 'military')
       ) AS data
-- id: country
+- id: administrative-boundaries
   geometry: linestring
   <<: *extentsOSM
   Datasource:
     <<: *osm2pgsql
+    # Levels 0 to 6 are included which has (super-)country and state administrative borders
     table: |-
       (
         SELECT
           way,
-          admin_level
+          admin_level::int as admin_level
         FROM
           planet_osm_roads
         WHERE
           way && !bbox! AND
           boundary = 'administrative' AND
           admin_level in (
-            '2'
+            '0',
+            '1',
+            '2',
+            '3',
+            '4',
+            '5',
+            '6'
           ) AND
           osm_id < 0
+        ORDER BY
+          admin_level::int DESC
       ) AS data
 - id: waterways
   geometry: linestring
