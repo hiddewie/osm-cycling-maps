@@ -529,7 +529,7 @@
   text-halo-radius: 1.0;
   text-halo-fill: rgba(255, 255, 220, 0.7);
   text-placement-type: simple;
-  text-placements: 'S,N,E,W';
+  text-placements: 'S,N,E,W,NE,NW,SE,SW';
   text-dx: 10;
   text-dy: 8;
 
