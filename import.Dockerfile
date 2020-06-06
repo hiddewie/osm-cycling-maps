@@ -21,9 +21,7 @@ RUN mkdir /script
 
 WORKDIR /data
 
-COPY ./countries.txt /script/countries.txt
 COPY ./download.sh /script/download.sh
-
 RUN chmod +x /script/download.sh
 
 CMD /script/download.sh

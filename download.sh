@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 DATA_DIR=/data
-COUNTRIES_LOCATION="/script/countries.txt"
 
 echo "Using latitudes '$LATITUDES'"
 echo "Using longitudes '$LONGITUDES'"
