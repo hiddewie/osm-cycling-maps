@@ -581,6 +581,8 @@
     text-fill: white;
     text-halo-radius: 1.0;
     text-min-path-length: 70;
+    text-min-distance: 100;
+    text-spacing: 100;
     text-placement: line;
 
     [fclass='tertiary'] {
