@@ -144,27 +144,28 @@ All combinations of latitude/longitude pairs will be downloaded.
   The Postgres database host
 - `MAP_NAME` (default `map`)
   
-  The name of the map. Used for generating filenames. Existing files will be overwritten.
-- `LATITUDES` (default empty)
-  
-  Latitude values that will be used for generating a contour and shade map layer. Of the format `[NS][0-9]{2}` (regex). Separated by whitespace. For example `N52 S01`.
-- `LONGITUDES` (default empty)
-  
-  Longitude values that will be used for generating a contour and shade map layer. Of the format `[EW][0-9]{3}` (regex). Separated by whitespace. For example `E002 W150`.
+  The name of the map. Used for generating filenames. Existing files will be overwritten. The filename will be suffixed with the index of the generated page if more than one page is generated (see `PAGES_HORIZONTAL` and `PAGES_VERTICAL`). 
 - `TOP_LEFT_X`, `TOP_LEFT_Y` (both default empty)
   
   The [EPSG:3857](https://epsg.io/3857) coordinates of the top-left corner of the map.
 - `OFFSET_PAGES_X`, `OFFSET_PAGES_Y` (both default `0`)
   
   The offset of pages to generate. Useful for automating generating multiple tiled maps.
+- `SCALE` (default `1:150000`)
+  
+  The scale of the map, when printed on the indicated paper size. The value is of the form `1:N` with `N` a number.
+- `PAPER_ORIENTATION` (default `portrait`)
+  
+  The orientation of the generated page. Valid values: `portrait` and `landscape`.
+- `PAPER_SIZE` (default `A4`)
+  
+  The size of the generated page. Valid values: `A0`, `A1`, `A2`, `A3` and `A4`, or any value of the form `A mm x B mm` (millimeters), `A in x B in` (inches) or `A m x B m` (meters) with `A` and `B` numeric values. For example `A1`, `10 mm x 100 mm` or `20 in x 5 in`.
 - `PAGES_HORIZONTAL` (default `1`)
   
-  The number of pages to generate in the horizonal direction.
+  The number of pages to generate in the horizontal direction.
 - `PAGES_VERTICAL` (default `1`)
   
   The number of pages to generate in the vertical direction.
-
-All combinations of latitude/longitude pairs will be used for generating the terrain map layer.
 
 ### Examples
 
