@@ -40,7 +40,9 @@
     polygon-pattern-file: url('data/background/military.svg');
     polygon-pattern-comp-op: multiply;
     polygon-pattern-alignment: global;
-    line-color: rgb(255, 0, 0);
+    line-color: rgb(255, 51, 51);
+    line-opacity: 0.335;
+    line-width: 1.5;
   }
 }
 
