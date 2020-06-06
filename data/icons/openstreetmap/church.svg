@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="shop-11"
+   width="11px"
+   height="11px"
+   viewBox="0 0 11 11"
+   sodipodi:docname="church.svg"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)">
+  <metadata
+     id="metadata8">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs6" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1628"
+     inkscape:window-height="860"
+     id="namedview4"
+     showgrid="false"
+     inkscape:zoom="21.454545"
+     inkscape:cx="5.1970339"
+     inkscape:cy="7.1779658"
+     inkscape:window-x="52"
+     inkscape:window-y="27"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="shop-11" />
+  <rect
+     id="rect816"
+     width="1"
+     height="4.987288"
+     x="5"
+     y="1.2180213"
+     style="stroke-width:0.88699758" />
+  <rect
+     id="rect818"
+     width="4.4745765"
+     height="1"
+     x="3.2627118"
+     y="2.8279219" />
+  <path
+     d="M 5.5000001,5.9256481 C 4.3265369,5.9254605 3.3751722,6.7888079 3.3752607,7.8538135 3.3751723,8.9188185 4.326537,9.7821657 5.5000001,9.7819787 6.6734631,9.7821657 7.6248277,8.9188185 7.6247394,7.8538135 7.6248277,6.7888079 6.6734631,5.9254606 5.5000001,5.9256481 Z"
+     id="path819-3"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccc" />
+</svg>
