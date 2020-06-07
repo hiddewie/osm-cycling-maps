@@ -485,20 +485,26 @@
     [religion='christian'] {
       background/marker-width: 4;
       background/marker-file: 'data/icons/openstreetmap/church.svg';
+      background/marker-transform: 'translate(0, -2)';
       marker-width: 4;
       marker-file: 'data/icons/openstreetmap/church.svg';
+      marker-transform: 'translate(0, -2)';
     }
     [religion='jewish'] {
       background/marker-width: 4;
       background/marker-file: 'data/icons/openstreetmap/synagogue.svg';
+      background/marker-transform: 'translate(0, -2)';
       marker-width: 4;
       marker-file: 'data/icons/openstreetmap/synagogue.svg';
+      marker-transform: 'translate(0, -2)';
     }
     [religion='muslim'] {
       background/marker-width: 4;
       background/marker-file: 'data/icons/openstreetmap/mosque.svg';
+      background/marker-transform: 'translate(0, -2)';
       marker-width: 4;
       marker-file: 'data/icons/openstreetmap/mosque.svg';
+      marker-transform: 'translate(0, -2)';
     }
     [religion='buddhist'] {
       background/marker-file: 'data/icons/maki/religious-buddhist-11.svg';
