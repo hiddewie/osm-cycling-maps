@@ -64,43 +64,14 @@ echo
 echo " -- Map content -- "
 echo
 
-ARGS="-I -d"
 FILES=""
 for COUNTRY in $FEATURE_COUNTRIES
 do
-  mkdir -p $DATA_DIR/$COUNTRY
-
-  echo "Get $COUNTRY"
-  wget http://download.geofabrik.de/$COUNTRY-latest-free.shp.zip -O $DATA_DIR/$COUNTRY.shp.zip || exit 1
-
-  echo "Unzip $COUNTRY (preprocessed)"
-  unzip -o $DATA_DIR/$COUNTRY.shp.zip -d $DATA_DIR/$COUNTRY || exit 1
-  rm $DATA_DIR/$COUNTRY.shp.zip || exit 1
-
-  echo "Import data $COUNTRY (preprocessed)"
-  shp2pgsql $ARGS -g way -s 4326 $DATA_DIR/$COUNTRY/gis_osm_water_a_free_1.shp water_a | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -g way -s 4326 $DATA_DIR/$COUNTRY/gis_osm_landuse_a_free_1.shp landuse_a | psql $POSTGRES_ARGS  | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -g way -s 4326 $DATA_DIR/$COUNTRY/gis_osm_waterways_free_1.shp waterways | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -g way -s 4326 $DATA_DIR/$COUNTRY/gis_osm_natural_free_1.shp natural | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -g way -s 4326 $DATA_DIR/$COUNTRY/gis_osm_railways_free_1.shp railways | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -g way -s 4326 $DATA_DIR/$COUNTRY/gis_osm_roads_free_1.shp roads | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -g way -s 4326 $DATA_DIR/$COUNTRY/gis_osm_places_free_1.shp places | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -g way -s 4326 $DATA_DIR/$COUNTRY/gis_osm_transport_free_1.shp transport | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -g way -s 4326 $DATA_DIR/$COUNTRY/gis_osm_pois_free_1.shp poi | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -g way -s 4326 $DATA_DIR/$COUNTRY/gis_osm_pois_a_free_1.shp poi_a | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -g way -s 4326 $DATA_DIR/$COUNTRY/gis_osm_pofw_free_1.shp pofw | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -g way -s 4326 $DATA_DIR/$COUNTRY/gis_osm_natural_free_1.shp natural_a | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-
-  echo "Delete shape data $COUNTRY (preprocessed)"
-  rm -r $DATA_DIR/$COUNTRY || exit 1
-
-  echo "Get $COUNTRY (raw OSM)"
+  echo "Downloading $COUNTRY from http://download.geofabrik.de/$COUNTRY-latest.osm.pbf"
   wget http://download.geofabrik.de/$COUNTRY-latest.osm.pbf -O $DATA_DIR/$COUNTRY.osm.pbf || exit 1
   FILES="$FILES $DATA_DIR/$COUNTRY.osm.pbf"
 
   echo "Done $COUNTRY"
-
-  ARGS="-a"
 done
 
 echo "Merging OSM data"
