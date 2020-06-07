@@ -397,8 +397,7 @@
 
   [type = 'camp_site'],
   [type = 'caravan_site'],
-  [type = 'ruins'],
-  [type = 'tower'] {
+  [type = 'ruins'] {
     background/marker-line-width: 50.0;
   }
 
@@ -446,66 +445,46 @@
     background/marker-file: 'data/icons/maki/lighthouse-11.svg';
     marker-file: 'data/icons/maki/lighthouse-11.svg';
   }
-}
-
-#towers {
-  background/marker-width: 10;
-  background/marker-ignore-placement: true;
-  background/marker-line-color: white;
-  background/marker-line-width: 2.0;
-
-  marker-width: 10;
-  marker-fill: purple;
-
-  [type = 'communication'] {
+  [type = 'tower_communication'] {
     background/marker-file: 'data/icons/openstreetmap/communication_tower.svg';
     marker-file: 'data/icons/openstreetmap/communication_tower.svg';
   }
-  [type = 'observation'] {
+  [type = 'tower_observation'] {
     background/marker-file: 'data/icons/maki/viewpoint-11.svg';
     marker-file: 'data/icons/maki/viewpoint-11.svg';
   }
-  [type = 'cooling'] {
+  [type = 'tower_cooling'] {
     background/marker-width: 7;
     background/marker-file: 'data/icons/openstreetmap/cooling_tower.svg';
     marker-width: 7;
     marker-file: 'data/icons/openstreetmap/cooling_tower.svg';
   }
-}
+  [type = 'place_of_worship'] {
+    background/marker-file: 'data/icons/openstreetmap/place_of_worship.svg';
+    marker-file: 'data/icons/openstreetmap/place_of_worship.svg';
 
-#religious {
-  background/marker-width: 10;
-  background/marker-fill: purple;
-  background/marker-ignore-placement: true;
-  background/marker-line-color: white;
-  background/marker-line-width: 2.0;
-  background/marker-file: 'data/icons/openstreetmap/place_of_worship.svg';
-
-  marker-width: 10;
-  marker-fill: purple;
-  marker-file: 'data/icons/openstreetmap/place_of_worship.svg';
-
-  [religion='christian'] {
-    background/marker-width: 4;
-    background/marker-file: 'data/icons/openstreetmap/church.svg';
-    marker-width: 4;
-    marker-file: 'data/icons/openstreetmap/church.svg';
-  }
-  [religion='jewish'] {
-    background/marker-width: 4;
-    background/marker-file: 'data/icons/openstreetmap/synagogue.svg';
-    marker-width: 4;
-    marker-file: 'data/icons/openstreetmap/synagogue.svg';
-  }
-  [religion='muslim'] {
-    background/marker-width: 4;
-    background/marker-file: 'data/icons/openstreetmap/mosque.svg';
-    marker-width: 4;
-    marker-file: 'data/icons/openstreetmap/mosque.svg';
-  }
-  [religion='buddhist'] {
-    background/marker-file: 'data/icons/maki/religious-buddhist-11.svg';
-    marker-file: 'data/icons/maki/religious-buddhist-11.svg';
+    [religion='christian'] {
+      background/marker-width: 4;
+      background/marker-file: 'data/icons/openstreetmap/church.svg';
+      marker-width: 4;
+      marker-file: 'data/icons/openstreetmap/church.svg';
+    }
+    [religion='jewish'] {
+      background/marker-width: 4;
+      background/marker-file: 'data/icons/openstreetmap/synagogue.svg';
+      marker-width: 4;
+      marker-file: 'data/icons/openstreetmap/synagogue.svg';
+    }
+    [religion='muslim'] {
+      background/marker-width: 4;
+      background/marker-file: 'data/icons/openstreetmap/mosque.svg';
+      marker-width: 4;
+      marker-file: 'data/icons/openstreetmap/mosque.svg';
+    }
+    [religion='buddhist'] {
+      background/marker-file: 'data/icons/maki/religious-buddhist-11.svg';
+      marker-file: 'data/icons/maki/religious-buddhist-11.svg';
+    }
   }
 }
 
