@@ -405,7 +405,8 @@
 
   [type = 'camp_site'],
   [type = 'caravan_site'],
-  [type = 'ruins'] {
+  [type = 'ruins'],
+  [type = 'wind_power'] {
     background/marker-line-width: 50.0;
   }
 
@@ -468,6 +469,14 @@
     background/marker-file: 'data/icons/openstreetmap/cooling_tower.svg';
     marker-width: 7;
     marker-file: 'data/icons/openstreetmap/cooling_tower.svg';
+  }
+  [type = 'wind_power'] {
+    background/marker-width: 9;
+    background/marker-file: 'data/icons/svg/wind_generator.svg';
+    background/marker-transform: 'translate(0, -4)';
+    marker-width: 9;
+    marker-file: 'data/icons/svg/wind_generator.svg';
+    marker-transform: 'translate(0, -4)';
   }
   [type = 'place_of_worship'] {
     background/marker-file: 'data/icons/openstreetmap/place_of_worship.svg';
