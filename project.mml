@@ -329,54 +329,56 @@ Layer:
       ) AS data
 - id: transport
   geometry: point
-  <<: *extents
-  Datasource:
-    <<: *osm2pgsql
-    table: |-
-      (
-        SELECT
-          way,
-          fclass
-        FROM
-          transport
-        WHERE
-          way && !bbox! AND
-          fclass IN (
-           'transport',
-           'railway_station',
-           'railway_halt'
-          )
-      ) AS data
-# TODO merge with transport layer
-- id: aerodrome
-  geometry: point
   <<: *extentsOSM
   Datasource:
     <<: *osm2pgsql
     table: |-
       (
+        WITH points AS (
+          SELECT
+            way,
+            aeroway,
+            railway
+          FROM
+            planet_osm_point
+          WHERE
+            way && !bbox! AND
+            (
+              aeroway IS NOT NULL OR
+              railway IS NOT NULL
+            )
+
+          UNION ALL
+
+          SELECT
+            ST_PointOnSurface(way) as way,
+            aeroway,
+            railway
+          FROM
+            planet_osm_polygon
+          WHERE
+            way && !bbox! AND
+            (
+              aeroway IS NOT NULL OR
+              railway IS NOT NULL
+            )
+        )
         SELECT
           way,
-          'airport' as fclass
+          CASE
+            WHEN aeroway IN ('aerodrome') THEN 'aerodrome'
+            WHEN railway IN ('station', 'halt') THEN 'train_station'
+          END as type
         FROM
-          planet_osm_point
+          points
         WHERE
           way && !bbox! AND
           aeroway IN (
             'aerodrome'
-          )
-
-        UNION ALL
-
-        SELECT
-          ST_PointOnSurface(way) as way,
-          'airport' as fclass
-        FROM
-          planet_osm_polygon
-        WHERE
-          way && !bbox! AND
-          aeroway IN (
-            'aerodrome'
+          ) OR
+          railway IN (
+            'station',
+            'halt'
           )
       ) AS data
 - id: towers

@@ -364,29 +364,17 @@
   marker-width: 10;
   marker-fill: purple;
 
-  [fclass='railway_station'],
-  [fclass='railway_halt'] {
+  [type = 'train_station'] {
     background/marker-width: 6;
     background/marker-file: 'data/icons/maki/square-11.svg';
     marker-width: 6;
     marker-file: 'data/icons/maki/square-11.svg';
   }
+  [type = 'aerodrome'] {
+    background/marker-file: 'data/icons/maki/airport-11.svg';
+    marker-file: 'data/icons/maki/airport-11.svg';
+  }
 }
-
-#aerodrome {
-  background/marker-width: 10;
-  background/marker-fill: purple;
-  background/marker-ignore-placement: true;
-  background/marker-line-color: white;
-  background/marker-line-width: 2.0;
-
-  marker-width: 10;
-  marker-fill: purple;
-
-  background/marker-file: 'data/icons/maki/airport-11.svg';
-  marker-file: 'data/icons/maki/airport-11.svg';
-}
-
 #power-line {
   line-color: rgb(150, 150, 150);
   line-width: 1.0;
