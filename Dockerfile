@@ -7,7 +7,8 @@ RUN apt-get update && apt-get install -y \
     mapnik-doc \
     mapnik-utils \
     python-mapnik \
-    curl
+    curl \
+    fonts-open-sans
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get install -y nodejs \
   && apt-get autoclean \

@@ -1,8 +1,10 @@
 // Font
-@font: 'DejaVu Sans Book';
-@font-bold: 'DejaVu Sans Bold';
-@font-italic: 'DejaVu Sans Oblique';
-@font-serif-italic: 'DejaVu Serif Italic';
+
+// Open Sans
+// Light, Regular, Semibold, Bold, Extrabold, Light Italic, Italic, Semibold Italic, Bold Italic, Extrabold Italic
+@font: 'Open Sans Regular';
+@font-bold: 'Open Sans Bold';
+@font-italic: 'Open Sans Italic';
 
 // Colors
 @forest: rgb(222, 245, 198);
@@ -357,10 +359,8 @@
 }
 
 #cycling-nodes {
-  marker-width: 3;
-  marker-fill: rgb(255, 210, 80);
-  marker-line-color: black;
-  marker-line-width: 0.5;
+  marker-width: 1.5;
+  marker-fill: rgb(30, 30, 30);
 }
 
 #transport {
@@ -548,10 +548,10 @@
 #cycling-nodes-labels {
   text-name: '[ref]';
   text-size: 7;
-  text-face-name: @font-serif-italic;
+  text-face-name: @font-italic;
   text-fill: black;
   text-halo-radius: 1.0;
-  text-halo-fill: rgba(255, 210, 80, 0.7);
+  text-halo-fill: rgba(255, 226, 143, 0.7);
   text-placement-type: simple;
   text-placements: 'S,N,E,W';
   text-dx: 5;
