@@ -465,23 +465,34 @@
     background/marker-file: 'data/icons/svg/ruins.svg';
     marker-file: 'data/icons/svg/ruins.svg';
   }
-  [fclass='tower_comms'] {
-    background/marker-file: 'data/icons/maki/communications-tower-11.svg';
-    marker-file: 'data/icons/maki/communications-tower-11.svg';
-  }
-  [fclass='tower_observation'] {
-    background/marker-file: 'data/icons/maki/viewpoint-11.svg';
-    marker-file: 'data/icons/maki/viewpoint-11.svg';
-  }
-  [fclass='tower'] {
-    background/marker-width: 6;
-    background/marker-file: 'data/icons/svg/tower.svg';
-    marker-width: 6;
-    marker-file: 'data/icons/svg/tower.svg';
-  }
   [fclass='lighthouse'] {
     background/marker-file: 'data/icons/maki/lighthouse-11.svg';
     marker-file: 'data/icons/maki/lighthouse-11.svg';
+  }
+}
+
+#towers {
+  background/marker-width: 10;
+  background/marker-ignore-placement: true;
+  background/marker-line-color: white;
+  background/marker-line-width: 2.0;
+
+  marker-width: 10;
+  marker-fill: purple;
+
+  [type = 'communication'] {
+    background/marker-file: 'data/icons/openstreetmap/communication_tower.svg';
+    marker-file: 'data/icons/openstreetmap/communication_tower.svg';
+  }
+  [type = 'observation'] {
+    background/marker-file: 'data/icons/maki/viewpoint-11.svg';
+    marker-file: 'data/icons/maki/viewpoint-11.svg';
+  }
+  [type = 'cooling'] {
+    background/marker-width: 7;
+    background/marker-file: 'data/icons/openstreetmap/cooling_tower.svg';
+    marker-width: 7;
+    marker-file: 'data/icons/openstreetmap/cooling_tower.svg';
   }
 }
 
