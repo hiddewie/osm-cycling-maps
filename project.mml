@@ -18,6 +18,7 @@ _parts:
     extent: *world
     srs-name: "WGS84"
     srs: "+init=epsg:4326"
+    srid: 4326
   extentsOSM: &extentsOSM
     extent: *world
     srs-name: "900913"
@@ -542,4 +543,74 @@ Layer:
             WHEN religion = 'muslim' THEN 2
             ELSE 100
           END ASC
+      ) AS data
+- id: scale
+  geometry: linestring
+  <<: *extents
+  Datasource:
+    <<: *osm2pgsql
+    srid: 4326
+    table: |-
+      (
+        WITH bounds AS (
+          SELECT
+            ST_XMin(!bbox!)::NUMERIC AS xmin,
+            ST_XMax(!bbox!)::NUMERIC AS xmax,
+            ST_YMin(!bbox!)::NUMERIC AS ymin,
+            ST_YMax(!bbox!)::NUMERIC AS ymax
+        ), scale AS (
+          SELECT
+            bounds.xmin + ((bounds.xmax - bounds.xmin) * 0.02) AS xbegin,
+            bounds.xmin + ((bounds.xmax - bounds.xmin) * 0.2) AS xend,
+            bounds.ymin + ((bounds.ymax - bounds.ymin) * 0.99) AS yrender
+          FROM
+            bounds
+        ), dist AS (
+          SELECT
+            ST_Distance(
+              ST_Transform(ST_SetSRID(ST_MakePoint(scale.xbegin, scale.yrender), ST_SRID(!bbox!)), 3857),
+              ST_Transform(ST_SetSRID(ST_MakePoint(scale.xend, scale.yrender), ST_SRID(!bbox!)), 3857)
+            ) * cos(
+              radians(ST_Y(ST_Transform(
+                ST_SetSRID(ST_MakePoint(scale.xbegin, scale.yrender), ST_SRID(!bbox!)),
+                4326
+              )))
+            ) as fullDistance
+          FROM
+            scale
+        ), scaleDistance AS (
+          SELECT
+            (scale.xend - scale.xbegin) * (1000 / dist.fullDistance) as xd
+          FROM
+            scale,
+            dist
+        )
+
+        SELECT
+          ST_MakeLine(
+            ST_MakePoint(scale.xbegin + number * scaleDistance.xd, scale.yrender),
+            ST_MakePoint(scale.xbegin + (number + 1) * scaleDistance.xd, scale.yrender)
+          ) as way,
+          null::text AS value
+        FROM
+          generate_series(0, 4) as number,
+          scale,
+          scaleDistance
+
+        UNION ALL
+
+        SELECT
+          ST_MakeLine(
+            ST_MakePoint(scale.xbegin + number * scaleDistance.xd, scale.yrender),
+            ST_MakePoint(scale.xbegin + number * scaleDistance.xd, scale.yrender)
+          ) as way,
+          number::text ||
+          (CASE
+            WHEN number = 0 THEN ' km'
+            ELSE ''
+          END) as value
+        FROM
+          generate_series(0, 5) as number,
+          scale,
+          scaleDistance
       ) AS data

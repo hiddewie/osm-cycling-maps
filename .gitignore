@@ -6,6 +6,7 @@ __pycache__/
 .idea
 output/
 data/
+production
 
 # C extensions
 *.so
@@ -106,3 +107,4 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+

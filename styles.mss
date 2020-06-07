@@ -621,3 +621,28 @@
     text-min-path-length: 50;
   }
 }
+
+#scale {
+  line-width: 1.0;
+  line-color: black;
+
+  ::marker {
+    marker-placement: vertex-first;
+    marker-allow-overlap: true;
+    marker-width: 2;
+    marker-fill: black;
+  }
+
+  ::text {
+    text-name: '[value]';
+    text-fill: black;
+    text-face-name: @font;
+    text-size: 8;
+    text-halo-fill: rgba(255, 255, 255, 0.7);
+    text-halo-radius: 1.0;
+    text-placement: vertex;
+    text-dy: 6;
+    text-align: left;
+    text-allow-overlap: true;
+  }
+}
