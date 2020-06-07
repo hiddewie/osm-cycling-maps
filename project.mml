@@ -170,7 +170,7 @@ Layer:
       ) AS data
 - id: springs
   geometry: point
-  <<: *extents
+  <<: *extentsOSM
   Datasource:
     <<: *osm2pgsql
     table: |-
@@ -178,10 +178,20 @@ Layer:
         SELECT
           way
         FROM
-          natural_a
+          planet_osm_point
         WHERE
           way && !bbox! AND
-          fclass IN ('spring')
+          "natural" = 'spring'
+
+        UNION ALL
+
+        SELECT
+          ST_PointOnSurface(way) as way
+        FROM
+          planet_osm_polygon
+        WHERE
+          way && !bbox! AND
+          "natural" = 'spring'
       ) AS data
 - id: cycling-network
   geometry: linestring
@@ -232,8 +242,8 @@ Layer:
           )
       ) AS data
 - id: railways
-  geometry: point
-  <<: *extents
+  geometry: linestring
+  <<: *extentsOSM
   Datasource:
     <<: *osm2pgsql
     table: |-
@@ -241,10 +251,10 @@ Layer:
         SELECT
           way
         FROM
-          railways
+          planet_osm_line
         WHERE
           way && !bbox! AND
-          fclass IN ('rail')
+          railway = 'rail'
       ) AS data
 - id: roads
   geometry: linestring
