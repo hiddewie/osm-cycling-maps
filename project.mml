@@ -249,12 +249,16 @@ Layer:
     table: |-
       (
         SELECT
-          way
+          way,
+          railway
         FROM
           planet_osm_line
         WHERE
           way && !bbox! AND
-          railway = 'rail'
+          railway IN (
+            'rail',
+            'preserved'
+          )
       ) AS data
 - id: roads
   geometry: linestring

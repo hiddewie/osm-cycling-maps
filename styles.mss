@@ -143,6 +143,14 @@
   dash/line-width: 1;
   dash/line-dasharray: 5, 5;
   dash/line-cap: square;
+
+  [railway = 'preserved'] {
+    line-color: rgb(100, 100, 100);
+
+    overlay/line-width: 0;
+    dash/line-color: rgb(200, 200, 200);
+    dash/line-dasharray: 5, 2;
+  }
 }
 
 @track: rgb(105, 105, 105);
@@ -411,7 +419,9 @@
     marker-file: 'data/icons/svg/camp_site.svg';
   }
   [type = 'hospital'] {
+    background/marker-width: 9;
     background/marker-file: 'data/icons/maki/hospital-11.svg';
+    marker-width: 9;
     marker-file: 'data/icons/maki/hospital-11.svg';
   }
   [type = 'caravan_site'] {
