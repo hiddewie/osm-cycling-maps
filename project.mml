@@ -135,7 +135,7 @@ Layer:
       ) AS data
 - id: waterways
   geometry: linestring
-  <<: *extents
+  <<: *extentsOSM
   Datasource:
     <<: *osm2pgsql
     table: |-
@@ -143,13 +143,19 @@ Layer:
         SELECT
           way
         FROM
-          waterways
+          planet_osm_line
         WHERE
-          way && !bbox!
+          way && !bbox! AND
+          waterway IN (
+            'river',
+            'stream',
+            'canal',
+            'drain'
+          )
       ) AS data
 - id: water
-  geometry: linestring
-  <<: *extents
+  geometry: polygon
+  <<: *extentsOSM
   Datasource:
     <<: *osm2pgsql
     table: |-
@@ -157,9 +163,10 @@ Layer:
         SELECT
           way
         FROM
-          water_a
+          planet_osm_polygon
         WHERE
-          way && !bbox!
+          way && !bbox! AND
+          "natural" = 'water'
       ) AS data
 - id: springs
   geometry: point
