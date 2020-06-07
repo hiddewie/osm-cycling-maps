@@ -87,19 +87,22 @@ Layer:
       ) AS data
 - id: landuse-foreground
   geometry: polygon
-  <<: *extents
+  <<: *extentsOSM
   Datasource:
     <<: *osm2pgsql
     table: |-
       (
         SELECT
           way,
-          fclass
+          landuse as type
         FROM
-          landuse_a
+          planet_osm_polygon
         WHERE
           way && !bbox! AND
-          fclass IN ('residential', 'military')
+          landuse IN (
+            'residential',
+            'military'
+          )
       ) AS data
 - id: administrative-boundaries
   geometry: linestring

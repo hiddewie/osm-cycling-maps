@@ -32,11 +32,11 @@
 }
 
 #landuse-foreground {
-  [fclass='residential'] {
-    polygon-fill: rgb(205, 202, 175);
+  [type = 'residential'] {
+    polygon-fill: rgb(222, 220, 201);
   }
 
-  [fclass='military'] {
+  [type = 'military'] {
     polygon-pattern-file: url('data/background/military.svg');
     polygon-pattern-comp-op: multiply;
     polygon-pattern-alignment: global;
