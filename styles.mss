@@ -395,54 +395,54 @@
   background/marker-line-color: white;
   background/marker-line-width: 2.0;
 
-  [fclass='camp_site'],
-  [fclass='caravan_site'],
-  [fclass='ruins'],
-  [fclass='tower'] {
+  [type = 'camp_site'],
+  [type = 'caravan_site'],
+  [type = 'ruins'],
+  [type = 'tower'] {
     background/marker-line-width: 50.0;
   }
 
   marker-width: 10;
   marker-fill: purple;
 
-  [fclass='camp_site'] {
+  [type = 'camp_site'] {
     background/marker-width: 9;
     background/marker-file: 'data/icons/svg/camp_site.svg';
     marker-width: 9;
     marker-file: 'data/icons/svg/camp_site.svg';
   }
-  [fclass='hospital'] {
+  [type = 'hospital'] {
     background/marker-file: 'data/icons/maki/hospital-11.svg';
     marker-file: 'data/icons/maki/hospital-11.svg';
   }
-  [fclass='caravan_site'] {
+  [type = 'caravan_site'] {
     background/marker-file: 'data/icons/svg/caravan_site.svg';
     marker-file: 'data/icons/svg/caravan_site.svg';
   }
-  [fclass='supermarket'] {
+  [type = 'supermarket'] {
     background/marker-width: 7;
     background/marker-file: 'data/icons/openstreetmap/shop2.svg';
     marker-width: 7;
     marker-file: 'data/icons/openstreetmap/shop2.svg';
   }
-  [fclass='bicycle_shop'] {
+  [type = 'bicycle_shop'] {
     background/marker-width: 9;
     background/marker-file: 'data/icons/maki/bicycle-11.svg';
     marker-width: 9;
     marker-file: 'data/icons/maki/bicycle-11.svg';
   }
-  [fclass='castle'],
-  [fclass='fort'] {
+  [type = 'castle'],
+  [type = 'fort'] {
     background/marker-width: 9;
     background/marker-file: 'data/icons/maki/castle-11.svg';
     marker-width: 9;
     marker-file: 'data/icons/maki/castle-11.svg';
   }
-  [fclass='ruins'] {
+  [type = 'ruins'] {
     background/marker-file: 'data/icons/svg/ruins.svg';
     marker-file: 'data/icons/svg/ruins.svg';
   }
-  [fclass='lighthouse'] {
+  [type = 'lighthouse'] {
     background/marker-file: 'data/icons/maki/lighthouse-11.svg';
     marker-file: 'data/icons/maki/lighthouse-11.svg';
   }
