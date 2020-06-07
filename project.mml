@@ -345,32 +345,38 @@ Layer:
       ) AS data
 - id: places
   geometry: point
-  <<: *extents
+  <<: *extentsOSM
   Datasource:
     <<: *osm2pgsql
     table: |-
       (
         SELECT
           way,
-          fclass,
+          place,
+          CASE
+            WHEN
+              place = 'city' AND
+              (
+                (tags->'is_capital') = 'country' OR
+                admin_level = '2' OR
+                (capital = 'yes' AND admin_level IS NULL)
+              )
+            THEN 'T'
+            ELSE 'F'
+          END as capital,
           name
         FROM
-          places
+          planet_osm_point
         WHERE
           way && !bbox! AND
-          name IS NOT NULL
-          AND
-            fclass IN (
-              'national_capital',
-              'city',
-              'town',
-              'village',
-              'hamlet',
-              'suburb',
-              'locality'
-            )
-          AND
-            (fclass != 'locality' OR population > 0)
+          name IS NOT NULL AND
+          place IN (
+            'city',
+            'town',
+            'village',
+            'hamlet',
+            'suburb'
+          )
       ) AS data
 - id: transport
   geometry: point

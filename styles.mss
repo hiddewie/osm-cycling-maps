@@ -521,27 +521,22 @@
   text-dx: 10;
   text-dy: 8;
 
-  [fclass='national_capital'],
-  [fclass='city'] {
+  [place = 'city'] {
     text-transform: uppercase;
   }
 
-  [fclass='national_capital'],
-  [fclass='city'],
-  [fclass='town'] {
+  [place = 'city'],
+  [place = 'town'] {
     text-face-name: @font-bold;
   }
 
-  [fclass='national_capital'] {
-    text-size: 18;
-  }
-  [fclass='city'] {
+  [place = 'city'] {
     text-size: 14;
   }
-  [fclass='town'] {
+  [place = 'town'] {
     text-size: 12;
   }
-  [fclass='village'] {
+  [place = 'village'] {
     text-size: 10;
   }
 }
