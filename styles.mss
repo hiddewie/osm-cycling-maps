@@ -164,118 +164,119 @@
 @bridge-border: black;
 
 #roads::track {
-  [fclass='track'],
-  [fclass='track_grade1'],
-  [fclass='track_grade2'],
-  [fclass='track_grade3'],
-  [fclass='track_grade4'],
-  [fclass='track_grade5'] {
+  [type = 'track'] {
     line-width: 1.0;
     line-color: @track;
 
-    [fclass='track_grade3'],
-    [fclass='track_grade4'],
-    [fclass='track_grade5'] {
+    [tracktype = 'grade3'],
+    [tracktype = 'grade4'],
+    [tracktype = 'grade5'] {
       line-cap: butt;
       line-dasharray: 4, 3;
     }
   }
+
+  [type = 'path'][bicycle = 'T'] {
+    line-color: @cycle;
+    line-dasharray: 4, 3;
+  }
 }
 #roads::border {
-  [fclass='unclassified'],
-  [fclass='residential'] {
+  [type = 'unclassified'],
+  [type = 'service'],
+  [type = 'residential'], {
     line-width: 2.0;
     line-color: @unclassified-border;
   }
 
-  [fclass='tertiary'] {
+  [type = 'tertiary'] {
     line-width: 3.0;
     line-color: @tertiary-border;
   }
 
-  [fclass='secondary'],
-  [fclass='secondary_link'] {
+  [type = 'secondary'],
+  [type = 'secondary_link'] {
     line-width: 3.0;
     line-color: @secondary-border;
   }
 
-  [fclass='cycleway'] {
+  [type = 'cycleway'] {
     line-width: 2.0;
     line-color: @cycle-border;
   }
 
-  [fclass='primary'],
-  [fclass='primary_link'] {
+  [type = 'primary'],
+  [type = 'primary_link'] {
     line-width: 3.0;
     line-color: @primary-border;
   }
 
-  [fclass='trunk'],
-  [fclass='trunk_link'] {
+  [type = 'trunk'],
+  [type = 'trunk_link'] {
     line-width: 3.0;
     line-color: @trunk-border;
   }
 
-  [fclass='motorway'],
-  [fclass='motorway_link'] {
+  [type = 'motorway'],
+  [type = 'motorway_link'] {
     line-width: 3.0;
     line-color: @highway-border;
   }
 }
 
 #roads::fill {
-  [fclass='secondary_link'] {
+  [type = 'secondary_link'] {
     line-width: 2.0;
     line-color: @secondary;
   }
 
-  [fclass='primary_link'] {
+  [type = 'primary_link'] {
     line-width: 2.0;
     line-color: @primary;
   }
 
-  [fclass='trunk_link'] {
+  [type = 'trunk_link'] {
     line-width: 2.0;
     line-color: @trunk;
   }
 
-  [fclass='motorway_link'] {
+  [type = 'motorway_link'] {
     line-width: 2.0;
     line-color: @highway;
   }
-
-  [fclass='unclassified'],
-  [fclass='residential'] {
+  [type = 'unclassified'],
+  [type = 'service'],
+  [type = 'residential'] {
     line-width: 0.5;
     line-color: @unclassified;
   }
 
-  [fclass='tertiary'] {
+  [type = 'tertiary'] {
     line-width: 2.0;
     line-color: @tertiary;
   }
 
-  [fclass='secondary'] {
+  [type = 'secondary'] {
     line-width: 2.0;
     line-color: @secondary;
   }
 
-  [fclass='cycleway'] {
+  [type = 'cycleway'] {
     line-width: 1.0;
     line-color: @cycle;
   }
 
-  [fclass='primary'] {
+  [type = 'primary'] {
     line-width: 2.0;
     line-color: @primary;
   }
 
-  [fclass='trunk'] {
+  [type = 'trunk'] {
     line-width: 2.0;
     line-color: @trunk;
   }
 
-  [fclass='motorway'] {
+  [type = 'motorway'] {
     line-width: 2.0;
     line-color: @highway;
   }
@@ -283,14 +284,14 @@
 
 #roads::bridge {
   [bridge='T'] {
-    [fclass='secondary'],
-    [fclass='secondary_link'],
-    [fclass='primary'],
-    [fclass='primary_link'],
-    [fclass='trunk'],
-    [fclass='trunk_link'],
-    [fclass='motorway'],
-    [fclass='motorway_link'] {
+    [type = 'secondary'],
+    [type = 'secondary_link'],
+    [type = 'primary'],
+    [type = 'primary_link'],
+    [type = 'trunk'],
+    [type = 'trunk_link'],
+    [type = 'motorway'],
+    [type = 'motorway_link'] {
       ::bridge-border {
         line-color: @bridge-border;
         line-width: 3.0;
@@ -303,44 +304,44 @@
       line-cap: butt;
     }
 
-    [fclass='secondary_link'] {
+    [type = 'secondary_link'] {
       line-width: 2.0;
       line-color: @secondary;
     }
-    [fclass='primary_link'] {
+    [type = 'primary_link'] {
       line-width: 2.0;
       line-color: @primary;
     }
-    [fclass='trunk_link'] {
+    [type = 'trunk_link'] {
       line-width: 2.0;
       line-color: @trunk;
     }
-    [fclass='motorway_link'] {
+    [type = 'motorway_link'] {
       line-width: 2.0;
       line-color: @highway;
     }
 
-    [fclass='tertiary'] {
+    [type = 'tertiary'] {
       line-width: 2.0;
       line-color: @tertiary;
     }
-    [fclass='secondary']  {
+    [type = 'secondary']  {
       line-width: 2.0;
       line-color: @secondary;
     }
-    [fclass='cycleway'] {
+    [type = 'cycleway'] {
       line-width: 1.0;
       line-color: @cycle;
     }
-    [fclass='primary'] {
+    [type = 'primary'] {
       line-width: 2.0;
       line-color: @primary;
     }
-    [fclass='trunk'] {
+    [type = 'trunk'] {
       line-width: 2.0;
       line-color: @trunk;
     }
-    [fclass='motorway'] {
+    [type = 'motorway'] {
       line-width: 2.0;
       line-color: @highway;
     }
@@ -559,11 +560,11 @@
 }
 
 #roads::labels {
-  [fclass='tertiay'],
-  [fclass='secondary'],
-  [fclass='primary'],
-  [fclass='trunk'],
-  [fclass='motorway'] {
+  [type = 'tertiay'],
+  [type = 'secondary'],
+  [type = 'primary'],
+  [type = 'trunk'],
+  [type = 'motorway'] {
     text-name: '[ref]';
     text-size: 8;
     text-face-name: @font;
@@ -574,23 +575,23 @@
     text-spacing: 100;
     text-placement: line;
 
-    [fclass='tertiary'] {
+    [type = 'tertiary'] {
       text-size: 7;
     }
 
-    [fclass='tertiary'] {
+    [type = 'tertiary'] {
       text-halo-fill: rgb(82, 82, 82);
     }
-    [fclass='secondary'] {
+    [type = 'secondary'] {
       text-halo-fill: rgb(99, 99, 6);
     }
-    [fclass='primary'] {
+    [type = 'primary'] {
       text-halo-fill: rgb(168, 109, 25);
     }
-    [fclass='trunk'] {
+    [type = 'trunk'] {
       text-halo-fill: rgb(115, 35, 17);
     }
-    [fclass='motorway'] {
+    [type = 'motorway'] {
       text-halo-fill: black;
     }
   }

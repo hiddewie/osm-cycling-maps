@@ -258,20 +258,44 @@ Layer:
       ) AS data
 - id: roads
   geometry: linestring
-  <<: *extents
+  <<: *extentsOSM
   Datasource:
     <<: *osm2pgsql
     table: |-
       (
         SELECT
           way,
-          fclass,
-          bridge,
+          CASE
+            WHEN bicycle = 'designated' THEN 'cycleway'
+            WHEN highway = 'road' THEN 'unclassified'
+            WHEN highway = 'living_street' THEN 'residential'
+            ELSE highway
+          END as type,
+          CASE
+            WHEN bicycle IN ('yes', 'designated', 'permissive') THEN 'T'
+            ELSE 'F'
+          END as bicycle,
+          CASE
+            WHEN bridge IS NOT NULL AND bridge != 'no' THEN 'T'
+            ELSE 'F'
+          END as bridge,
+          CASE
+            WHEN tunnel IS NOT NULL AND tunnel != 'no' THEN 'T'
+            ELSE 'F'
+          END as tunnel,
+          tracktype,
           ref
         FROM
-          roads
+          planet_osm_line
         WHERE
-          way && !bbox!
+          way && !bbox! AND
+          highway IS NOT NULL AND
+          highway NOT IN ('platform', 'construction', 'proposed', 'steps')
+        ORDER BY
+          CASE
+            WHEN layer IS NOT NULL AND layer ~ '-?\d+' THEN layer::int
+            ELSE 0
+          END ASC
       ) AS data
 - id: power-line
   geometry: linestring
