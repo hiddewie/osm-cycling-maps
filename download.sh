@@ -2,6 +2,12 @@
 
 DATA_DIR=/data
 
+python -V
+gdalinfo --version
+osm2pgsql --version
+psql --version
+osmium --version
+
 echo "Using latitudes '$LATITUDES'"
 echo "Using longitudes '$LONGITUDES'"
 echo "Using feature countries '$FEATURE_COUNTRIES'"
