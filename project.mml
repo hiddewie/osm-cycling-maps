@@ -43,20 +43,21 @@ Stylesheet:
 Layer:
 - id: landuse-background
   geometry: polygon
-  <<: *extents
+  <<: *extentsOSM
   Datasource:
     <<: *osm2pgsql
     table: |-
       (
         SELECT
           way,
-          fclass
+          'forest' as type
         FROM
-          landuse_a
+          planet_osm_polygon
         WHERE
           way && !bbox! AND
-          fclass IN (
-            'forest'
+          (
+            landuse = 'forest' OR
+            "natural" = 'wood'
           )
       ) AS data
 - id: shade

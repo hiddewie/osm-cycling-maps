@@ -8,7 +8,7 @@
 @forest: rgb(222, 245, 198);
 
 #landuse-background {
-  [fclass='forest'] {
+  [type = 'forest'] {
     polygon-fill: @forest;
   }
 }
