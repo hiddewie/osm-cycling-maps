@@ -344,36 +344,7 @@ Layer:
           fclass IN (
            'transport',
            'railway_station',
-           'ferry_terminal',
-           'railway_halt',
-           'airfield',
-           'airport'
-          )
-
-        UNION ALL
-
-        SELECT
-          way,
-          'airport' as fclass
-        FROM
-          planet_osm_point
-        WHERE
-          way && !bbox! AND
-          aeroway IN (
-            'airport'
-          )
-
-        UNION ALL
-
-        SELECT
-          ST_PointOnSurface(way) as way,
-          'airport' as fclass
-        FROM
-          planet_osm_polygon
-        WHERE
-          way && !bbox! AND
-          aeroway IN (
-            'aerodrome'
+           'railway_halt'
           )
       ) AS data
 # TODO merge with transport layer

@@ -113,7 +113,7 @@
 
 #ferry {
   line-width: 1.0;
-  line-color: rgb(20, 55, 90);
+  line-color: rgb(27, 74, 123);
   line-dasharray: 4, 3;
 }
 
@@ -370,18 +370,6 @@
     background/marker-file: 'data/icons/maki/square-11.svg';
     marker-width: 6;
     marker-file: 'data/icons/maki/square-11.svg';
-  }
-  [fclass='ferry_terminal'] {
-    background/marker-file: 'data/icons/maki/ferry-11.svg';
-    marker-file: 'data/icons/maki/ferry-11.svg';
-  }
-  [fclass='airfield'] {
-    background/marker-file: 'data/icons/maki/airfield-11.svg';
-    marker-file: 'data/icons/maki/airfield-11.svg';
-  }
-  [fclass='airport'] {
-    background/marker-file: 'data/icons/maki/airport-11.svg';
-    marker-file: 'data/icons/maki/airport-11.svg';
   }
 }
 
