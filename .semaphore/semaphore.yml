@@ -5,14 +5,52 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: Build Docker images
+  - name: Build and run
     task:
       jobs:
-        - name: Build import image
+        - name: Build and run Docker images
           commands:
             - checkout
+            # Build images
             - docker build -t map-it-import -f import.Dockerfile .
-        - name: Build map generation image
-          commands:
-            - checkout
             - docker build -t map-it .
+            # Run database
+            - docker run -d --name postgres-osm openfirmware/postgres-osm
+            # Run import for small area
+            - |
+              docker run \
+                -ti \
+                --rm \
+                -v $PROJECT_DIR/data:/data \
+                --link postgres-osm:postgres-osm \
+                -e PG_HOST=postgres-osm \
+                -e PG_PORT=5432 \
+                -e PG_USER="osm" \
+                -e PG_PASSWORD="" \
+                -e PG_DATABASE="gis" \
+                -e FEATURE_COUNTRIES="europe/georgia" \
+                -e LATITUDES="N41" \
+                -e LONGITUDES="E044" \
+                hiddewie/map-it-import
+            - |
+              docker run -ti \
+                --rm \
+                -v (pwd)/data:/map-it/data \
+                -v (pwd)/output:/map-it/output \
+                --link postgres-osm:postgres-osm \
+                -e PG_HOST=postgres-osm \
+                -e PG_PORT=5432 \
+                -e PG_USER="osm" \
+                -e PG_PASSWORD="" \
+                -e PG_DATABASE="gis" \
+                -e MAP_NAME="map" \
+                -e TOP_LEFT_X="644058" \
+                -e TOP_LEFT_Y="6872911" \
+                -e OFFSET_PAGES_X="0" \
+                -e OFFSET_PAGES_Y="0" \
+                -e PAPER_SIZE="A4" \
+                -e PAPER_ORIENTATION="portrait" \
+                -e SCALE="1:150000" \
+                -e PAGES_HORIZONTAL="1" \
+                -e PAGES_VERTICAL="1" \
+                map-it
