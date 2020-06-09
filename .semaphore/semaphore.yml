@@ -60,4 +60,4 @@ blocks:
                 -e PAGES_HORIZONTAL="1" \
                 -e PAGES_VERTICAL="1" \
                 map-it
-            - artifact push --expire-in 2w pipeline output/map.pdf
+            - artifact push workflow --expire-in 2w output/map.pdf
