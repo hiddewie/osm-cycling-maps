@@ -50,8 +50,8 @@ blocks:
                 -e PG_PASSWORD="" \
                 -e PG_DATABASE="gis" \
                 -e MAP_NAME="map" \
-                -e TOP_LEFT_X="4907363" \
-                -e TOP_LEFT_Y="5054315" \
+                -e TOP_LEFT_X="4954142" \
+                -e TOP_LEFT_Y="5143178" \
                 -e OFFSET_PAGES_X="0" \
                 -e OFFSET_PAGES_Y="0" \
                 -e PAPER_SIZE="A2" \
