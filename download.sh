@@ -74,6 +74,8 @@ FILES=""
 for COUNTRY in $FEATURE_COUNTRIES
 do
   echo "Downloading $COUNTRY from http://download.geofabrik.de/$COUNTRY-latest.osm.pbf"
+  FILE=$DATA_DIR/$COUNTRY.osm.pbf
+  mkdir -p -- "${FILE%/*}"
   wget http://download.geofabrik.de/$COUNTRY-latest.osm.pbf -O $DATA_DIR/$COUNTRY.osm.pbf || exit 1
   FILES="$FILES $DATA_DIR/$COUNTRY.osm.pbf"
 
