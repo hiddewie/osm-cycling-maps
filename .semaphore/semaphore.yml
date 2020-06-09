@@ -1,0 +1,63 @@
+version: v1.0
+name: Docker
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+
+auto_cancel:
+  running:
+    when: "branch != 'master'"
+
+blocks:
+  - name: Build and run
+    task:
+      jobs:
+        - name: Build and run Docker images
+          commands:
+            - checkout
+            - export PROJECT_DIR=`pwd`
+            # Build images
+            - docker build -t map-it-import -f import.Dockerfile .
+            - docker build -t map-it .
+            # Run database
+            - docker run -d --name postgres-osm openfirmware/postgres-osm
+            # Run import for small area
+            - |
+              docker run \
+                -ti \
+                --rm \
+                -v $PROJECT_DIR/data:/data \
+                --link postgres-osm:postgres-osm \
+                -e PG_HOST=postgres-osm \
+                -e PG_PORT=5432 \
+                -e PG_USER="osm" \
+                -e PG_PASSWORD="" \
+                -e PG_DATABASE="gis" \
+                -e FEATURE_COUNTRIES="europe/georgia" \
+                -e LATITUDES="N41" \
+                -e LONGITUDES="E044 E045" \
+                map-it-import
+            - |
+              docker run -ti \
+                --rm \
+                -v $PROJECT_DIR/data:/map-it/data \
+                -v $PROJECT_DIR/output:/map-it/output \
+                --link postgres-osm:postgres-osm \
+                -e PG_HOST=postgres-osm \
+                -e PG_PORT=5432 \
+                -e PG_USER="osm" \
+                -e PG_PASSWORD="" \
+                -e PG_DATABASE="gis" \
+                -e MAP_NAME="map" \
+                -e TOP_LEFT_X="4954142" \
+                -e TOP_LEFT_Y="5143178" \
+                -e OFFSET_PAGES_X="0" \
+                -e OFFSET_PAGES_Y="0" \
+                -e PAPER_SIZE="A2" \
+                -e PAPER_ORIENTATION="landscape" \
+                -e SCALE="1:150000" \
+                -e PAGES_HORIZONTAL="1" \
+                -e PAGES_VERTICAL="1" \
+                map-it
+            - artifact push workflow --expire-in 2w output/map.pdf
