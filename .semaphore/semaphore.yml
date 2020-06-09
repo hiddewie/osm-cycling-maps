@@ -4,6 +4,11 @@ agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu1804
+
+auto_cancel:
+  running:
+    when: "branch != 'master'"
+
 blocks:
   - name: Build and run
     task:
@@ -54,4 +59,4 @@ blocks:
                 -e PAGES_HORIZONTAL="1" \
                 -e PAGES_VERTICAL="1" \
                 map-it
-            - artifact push --expire-in 2w pipeline docs/map.pdf
+            - artifact push --expire-in 2w pipeline output/map.pdf
