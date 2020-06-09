@@ -5,10 +5,14 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: Build
+  - name: Build Docker images
     task:
       jobs:
-        - name: docker build
+        - name: Build import image
           commands:
             - checkout
-            - docker build -t your-image .
+            - docker build -t map-it-import -f import.Dockerfile .
+        - name: Build map generation image
+          commands:
+            - checkout
+            - docker build -t map-it .
