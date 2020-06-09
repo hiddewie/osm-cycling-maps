@@ -638,11 +638,6 @@ Layer:
             ST_Distance(
               ST_Transform(ST_SetSRID(ST_MakePoint(scale.xbegin, scale.yrender), ST_SRID(!bbox!)), 3857),
               ST_Transform(ST_SetSRID(ST_MakePoint(scale.xend, scale.yrender), ST_SRID(!bbox!)), 3857)
-            ) * cos(
-              radians(ST_Y(ST_Transform(
-                ST_SetSRID(ST_MakePoint(scale.xbegin, scale.yrender), ST_SRID(!bbox!)),
-                4326
-              )))
             ) as fullDistance
           FROM
             scale
@@ -661,7 +656,7 @@ Layer:
           ) as way,
           null::text AS value
         FROM
-          generate_series(0, 4) as number,
+          generate_series(0, 5) as number,
           scale,
           scaleDistance
 
@@ -678,7 +673,7 @@ Layer:
             ELSE ''
           END) as value
         FROM
-          generate_series(0, 5) as number,
+          generate_series(0, 6) as number,
           scale,
           scaleDistance
       ) AS data

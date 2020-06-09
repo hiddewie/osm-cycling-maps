@@ -151,7 +151,7 @@ def main():
     # Dots per inch (1 point = 1/72 inch, see https://pycairo.readthedocs.io/en/latest/reference/surfaces.html#class-pdfsurface-surface)
     dpi = 72
     # Dots per m
-    dpm = dpi * 39.37
+    dpm = dpi * 100 / 2.54
 
     numPagesHorizontal = PAGES_HORIZONTAL
     numPagesVertical = PAGES_VERTICAL
