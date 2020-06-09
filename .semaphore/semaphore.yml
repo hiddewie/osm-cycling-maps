@@ -31,7 +31,7 @@ blocks:
                 -e FEATURE_COUNTRIES="europe/georgia" \
                 -e LATITUDES="N41" \
                 -e LONGITUDES="E044" \
-                hiddewie/map-it-import
+                map-it-import
             - |
               docker run -ti \
                 --rm \
@@ -44,13 +44,14 @@ blocks:
                 -e PG_PASSWORD="" \
                 -e PG_DATABASE="gis" \
                 -e MAP_NAME="map" \
-                -e TOP_LEFT_X="644058" \
-                -e TOP_LEFT_Y="6872911" \
+                -e TOP_LEFT_X="490512" \
+                -e TOP_LEFT_Y="4615231" \
                 -e OFFSET_PAGES_X="0" \
                 -e OFFSET_PAGES_Y="0" \
-                -e PAPER_SIZE="A4" \
-                -e PAPER_ORIENTATION="portrait" \
+                -e PAPER_SIZE="A2" \
+                -e PAPER_ORIENTATION="landscape" \
                 -e SCALE="1:150000" \
                 -e PAGES_HORIZONTAL="1" \
                 -e PAGES_VERTICAL="1" \
                 map-it
+            - artifact push --expire-in 2w pipeline docs/map.pdf
