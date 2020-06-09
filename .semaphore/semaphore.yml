@@ -16,6 +16,7 @@ blocks:
         - name: Build and run Docker images
           commands:
             - checkout
+            - export PROJECT_DIR=`pwd`
             # Build images
             - docker build -t map-it-import -f import.Dockerfile .
             - docker build -t map-it .
@@ -40,8 +41,8 @@ blocks:
             - |
               docker run -ti \
                 --rm \
-                -v (pwd)/data:/map-it/data \
-                -v (pwd)/output:/map-it/output \
+                -v $PROJECT_DIR/data:/map-it/data \
+                -v $PROJECT_DIR/output:/map-it/output \
                 --link postgres-osm:postgres-osm \
                 -e PG_HOST=postgres-osm \
                 -e PG_PORT=5432 \
