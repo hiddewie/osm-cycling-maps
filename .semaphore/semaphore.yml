@@ -36,7 +36,7 @@ blocks:
                 -e PG_DATABASE="gis" \
                 -e FEATURE_COUNTRIES="europe/georgia" \
                 -e LATITUDES="N41" \
-                -e LONGITUDES="E044" \
+                -e LONGITUDES="E044 E045" \
                 map-it-import
             - |
               docker run -ti \
