@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 6 6"
+>
+    <g
+            transform="translate(-162.06 -255.16)"
+    >
+        <path
+                style="fill-opacity:.33728;fill:rgb(255, 51, 51)"
+                d="m162.06 255.16v1.4688l1.4688-1.4688h-1.4688z"
+        />
+        <path
+                style="fill-opacity:.33728;fill:rgb(255, 51, 51)"
+                d="m166.78 255.16-4.7188 4.7188v1.2812h1.5938l4.4375-4.4375v-1.5625h-1.3125z"
+        />
+        <path
+                style="fill-opacity:.33728;fill:rgb(255, 51, 51)"
+                d="m168.09 259.72-1.4375 1.4375h1.4375v-1.4375z"
+        />
+    </g
+    >
+</svg>

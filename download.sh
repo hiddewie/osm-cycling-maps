@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
 DATA_DIR=/data
-COUNTRIES_LOCATION="/script/countries.txt"
+
+python -V
+gdalinfo --version
+osm2pgsql --version
+psql --version
+osmium --version
 
 echo "Using latitudes '$LATITUDES'"
 echo "Using longitudes '$LONGITUDES'"
@@ -17,7 +22,7 @@ echo
 echo " -- Height, contours & shade -- "
 echo
 
-ARGS="-I -d"
+FILES=""
 for LAT in $LATITUDES
 do
   for LON in $LONGITUDES
@@ -37,81 +42,91 @@ do
 #    NASA_PASSWSORD="---"
 #    phyghtmap --download-only --srtm=3 --srtm-version=3 --earthexplorer-user=$NASA_USERNAME --earthexplorer-password=$NASA_PASSWSORD --hgtdir=$DATA_DIR/dem --source=view1,view3,srtm1,srtm3 --area 51.000:5.000:53.000:7.000
 
-    echo "Contours $NAME"
-    rm -f $DATA_DIR/$NAME.shp || exit 1
-    gdal_contour -i 20 -snodata -32768 -a height $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.shp || exit 1
-
-    echo "Import contours $NAME"
-    shp2pgsql $ARGS -s 4326 $DATA_DIR/$NAME.shp contours | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-
     # https://gist.github.com/cquest/8179870
     # https://wiki.openstreetmap.org/wiki/Hillshading_using_the_Alpha_Channel_of_an_Image
     # https://github.com/cyclosm/cyclosm-cartocss-style/blob/master/docs/INSTALL.md
 
-    echo "Shade $NAME"
-    rm -f $DATA_DIR/$NAME.tif || exit 1
-    gdalinfo -hist $DATA_DIR/$NAME.hgt
-    gdaldem hillshade -co compress=lzw -compute_edges $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.raw.tif || exit 1
-    gdaldem color-relief $NAME.raw.tif -alpha $DATA_DIR/shade2.ramp $DATA_DIR/$NAME.tif || exit 1
-    rm -f $DATA_DIR/$NAME.dbf $DATA_DIR/$NAME.hgt $DATA_DIR/$NAME.prj $DATA_DIR/$NAME.shp $DATA_DIR/$NAME.shx $DATA_DIR/$NAME.raw.tif || exit 1
-    gdalinfo -hist $DATA_DIR/$NAME.tif
+
+    FILES="$FILES $DATA_DIR/$NAME.hgt"
 
     echo "Done $NAME"
-
-    ARGS="-a"
   done
 done
 
-echo
-echo " -- Country borders -- "
-echo
+echo "Merge height data for combination into one height file for files $FILES"
+gdal_merge.py -o $DATA_DIR/combined.raw.hgt $FILES
+COMBINED_SIZE=$(gdalinfo combined.raw.hgt | grep -oP 'Size is \K\d+')
+rm -f combined.hgt || exit 1
+gdalwarp -ts $((4 * $COMBINED_SIZE)) 0 -r cubic -co "TFW=YES" $DATA_DIR/combined.raw.hgt $DATA_DIR/combined.hgt
 
-echo "Get all country borders"
-wget  "https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_admin_0_countries.zip" \
-  -O $DATA_DIR/countries.zip || exit 1
-mkdir $DATA_DIR/countries
-unzip $DATA_DIR/countries.zip -d $DATA_DIR/countries
+echo "Contours"
+rm -f $DATA_DIR/combined.shp || exit 1
+gdal_contour -i 20 -snodata -32768 -a height $DATA_DIR/combined.hgt $DATA_DIR/combined.shp || exit 1
 
-shp2pgsql -I -d -s 4326 $DATA_DIR/countries/ne_10m_admin_0_countries country_border | psql $POSTGRES_ARGS | grep -v 'INSERT'
+ARGS="-I -d"
+echo "Import contours"
+shp2pgsql $ARGS -g way -s 4326 $DATA_DIR/combined.shp contours | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
 
-rm -r $DATA_DIR/countries || exit 1
+echo "Shade"
+rm -f $DATA_DIR/combined.tif || exit 1
+gdaldem hillshade -s 111120 -compute_edges $DATA_DIR/combined.hgt $DATA_DIR/combined.raw.tif || exit 1
+gdaldem color-relief combined.raw.tif -alpha $DATA_DIR/shade.ramp $DATA_DIR/combined.tif || exit 1
+rm -f $DATA_DIR/combined.{dbf,hgt.aux.xml,prj,shp,shx,raw.tif,tfw} || exit 1
+
+echo "Done"
+
+sleep 1
 
 echo
 echo " -- Map content -- "
 echo
 
-ARGS="-I -d"
+FILES=""
 for COUNTRY in $FEATURE_COUNTRIES
 do
-  mkdir -p $DATA_DIR/$COUNTRY
-
-  echo "Get $COUNTRY"
-  wget http://download.geofabrik.de/$COUNTRY-latest-free.shp.zip -O $DATA_DIR/$COUNTRY.hgt.zip || exit 1
-
-  echo "Unzip $COUNTRY"
-  unzip -o $DATA_DIR/$COUNTRY.hgt.zip -d $DATA_DIR/$COUNTRY || exit 1
-  rm $DATA_DIR/$COUNTRY.hgt.zip || exit 1
-
-  echo "Import data $COUNTRY"
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_water_a_free_1.shp water_a | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_landuse_a_free_1.shp landuse_a | psql $POSTGRES_ARGS  | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_waterways_free_1.shp waterways | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_natural_free_1.shp natural | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_railways_free_1.shp railways | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_roads_free_1.shp roads | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_places_free_1.shp places | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_transport_free_1.shp transport | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_pois_free_1.shp poi | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_pois_a_free_1.shp poi_a | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_pofw_free_1.shp pofw | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-  shp2pgsql $ARGS -s 4326 $DATA_DIR/$COUNTRY/gis_osm_natural_free_1.shp natural_a | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
-
-  echo "Delete shape data $COUNTRY"
-  rm -r $DATA_DIR/$COUNTRY || exit 1
+  echo "Downloading $COUNTRY from http://download.geofabrik.de/$COUNTRY-latest.osm.pbf"
+  wget http://download.geofabrik.de/$COUNTRY-latest.osm.pbf -O $DATA_DIR/$COUNTRY.osm.pbf || exit 1
+  FILES="$FILES $DATA_DIR/$COUNTRY.osm.pbf"
 
   echo "Done $COUNTRY"
-
-  ARGS="-a"
 done
+
+echo "Merging OSM data"
+
+echo "Merging files $FILES to $DATA_DIR/combined.osm.pbf"
+osmium merge --output=$DATA_DIR/combined.osm.pbf --overwrite $FILES
+
+echo "Done combining OSM data"
+
+echo "Importing combined OSM data"
+
+# The following values can be tweaked
+# See https://github.com/gravitystorm/openstreetmap-carto/blob/master/scripts/docker-startup.sh
+# TODO: specify --style? (see openstreetmap-carto.style)
+# TODO: specify --tag-transform-script? (see openstreetmap-carto.lua)
+# TODO: specify --multi-geometry?
+OSM2PGSQL_CACHE=512
+OSM2PGSQL_NUMPROC=1
+PGPASS=$PG_PASSWORD
+
+echo "Using OSM2PGSQL_CACHE = $OSM2PGSQL_CACHE"
+echo "Using $OSM2PGSQL_NUMPROC processes"
+
+echo "Starting import from $DATA_DIR/combined.osm.pbf"
+
+osm2pgsql \
+  --cache $OSM2PGSQL_CACHE \
+  --number-processes $OSM2PGSQL_NUMPROC \
+  --hstore \
+  --multi-geometry \
+  --host $PG_HOST \
+  --database $PG_DATABASE \
+  --username $PG_USER \
+  --unlogged \
+  --slim \
+  --drop \
+  $DATA_DIR/combined.osm.pbf
+
+echo "Done importing OSM data"
 
 echo "Done"

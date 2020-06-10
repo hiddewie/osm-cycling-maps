@@ -8,11 +8,14 @@ RUN apt-get update && apt-get install -y \
     wget \
     unzip \
     gdal-bin \
+    osm2pgsql \
     postgresql-client \
-    postgis
+    postgis \
+    python-gdal \
+    osmium-tool
 
 RUN wget http://katze.tfiu.de/projects/phyghtmap/phyghtmap_2.21-1_all.deb && \
-    dpkg -i phyghtmap_2.21-1_all.deb; \
+    dpkg -i phyghtmap_2.21-1_all.deb; \ # This will fail, fix dependencies in next statement
     apt-get -f -y install && \
     rm phyghtmap_2.21-1_all.deb
 
@@ -24,9 +27,7 @@ RUN mkdir /script
 
 WORKDIR /data
 
-COPY ./countries.txt /script/countries.txt
 COPY ./download.sh /script/download.sh
-
 RUN chmod +x /script/download.sh
 
-CMD ["/script/download.sh"]
+CMD /script/download.sh
