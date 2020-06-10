@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM debian:buster-slim
 
 LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
 
