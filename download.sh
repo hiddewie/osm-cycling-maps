@@ -42,11 +42,11 @@ do
   done
 done
 
-echo "Merge height data for combination into one height file for files $FILES"
-gdal_merge.py -o $DATA_DIR/combined.raw.hgt $FILES
+echo "Merge height data for combination into one height file for files$FILES"
+gdal_merge.py -o $DATA_DIR/combined.raw.hgt -of GTiff $FILES
 COMBINED_SIZE=$(gdalinfo combined.raw.hgt | grep -oP 'Size is \K\d+')
 rm -f combined.hgt || exit 1
-gdalwarp -ts $((4 * $COMBINED_SIZE)) 0 -r cubic -co "TFW=YES" $DATA_DIR/combined.raw.hgt $DATA_DIR/combined.hgt
+gdalwarp -ts $((4 * $COMBINED_SIZE)) 0 -r cubic -co "TFW=YES" $DATA_DIR/combined.raw.hgt  -of GTiff $DATA_DIR/combined.hgt
 
 echo "Contours"
 rm -f $DATA_DIR/combined.shp || exit 1
