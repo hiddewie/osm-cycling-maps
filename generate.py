@@ -105,10 +105,23 @@ def main():
     name = env('MAP_NAME', 'map')
     print ('Using name \'%s\'' % (name, ))
 
-    # Choose with https://epsg.io/map#srs=3857&x=2225846.263664&y=6275978.874398&z=8&layer=streets
-    # In EPSG:3857
-    TOP_LEFT_X = int(requireEnvironment('TOP_LEFT_X'))
-    TOP_LEFT_Y = int(requireEnvironment('TOP_LEFT_Y'))
+    BBOX = requireEnvironment('BBOX')
+    bboxMatch = re.match(r'^(\d+\.?\d*):(\d+\.?\d*):(\d+\.?\d*):(\d+\.?\d*)$', BBOX)
+
+    if not bboxMatch:
+        exitError("The bounding box must be of the form A:B:C:D with (A, B) the bottom left corner and (C, D) the top right corner. %s was given" % (BBOX,))
+        return
+
+    EPSG_4326 = mapnik.Projection('+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
+    EPSG_3857 = mapnik.Projection('+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over')
+    latitudeLongitudeToWebMercator = mapnik.ProjTransform(EPSG_4326, EPSG_3857)
+
+    bbox = latitudeLongitudeToWebMercator.forward(mapnik.Box2d(
+        float(bboxMatch.group(1)),
+        float(bboxMatch.group(2)),
+        float(bboxMatch.group(3)),
+        float(bboxMatch.group(4)),
+    ))
 
     OFFSET_PAGES_X = float(env('OFFSET_PAGES_X', 0))
     OFFSET_PAGES_Y = float(env('OFFSET_PAGES_Y', 0))
@@ -171,7 +184,7 @@ def main():
     print('Rendering %s pages, %s horizontal and %s vertical' % (numPagesHorizontal * numPagesVertical, numPagesHorizontal, numPagesVertical))
     for i in range(numPagesHorizontal):
         for j in range(numPagesVertical):
-            topLeft = int(TOP_LEFT_X + (OFFSET_PAGES_X + i) * pageWidth), int(TOP_LEFT_Y - (OFFSET_PAGES_Y + j) * pageHeight)
+            topLeft = int(bbox.minx + (OFFSET_PAGES_X + i) * pageWidth), int(bbox.maxy - (OFFSET_PAGES_Y + j) * pageHeight)
             bottomRight = int(topLeft[0] + pageWidth), int(topLeft[1] - pageHeight)
 
             print('Generating page (%s, %s) from top left (%s, %s) to bottom right (%s, %s)' % (i + 1, j + 1, topLeft[0], topLeft[1], bottomRight[0], bottomRight[1]))

@@ -12,6 +12,8 @@ auto_cancel:
 blocks:
   - name: Build and run
     task:
+      secrets:
+        - name: usgs
       jobs:
         - name: Build and run Docker images
           commands:
@@ -34,9 +36,10 @@ blocks:
                 -e PG_USER="osm" \
                 -e PG_PASSWORD="" \
                 -e PG_DATABASE="gis" \
+                -e USGS_USERNAME="$USGS_USERNAME" \
+                -e USGS_PASSWORD="$USGS_PASSWORD" \
                 -e FEATURE_COUNTRIES="europe/georgia" \
-                -e LATITUDES="N41" \
-                -e LONGITUDES="E044 E045" \
+                -e BBOX="44.217:41.5786:45.2894:42.0024" \
                 map-it-import
             - |
               docker run -ti \
@@ -50,8 +53,7 @@ blocks:
                 -e PG_PASSWORD="" \
                 -e PG_DATABASE="gis" \
                 -e MAP_NAME="map" \
-                -e TOP_LEFT_X="4954142" \
-                -e TOP_LEFT_Y="5143178" \
+                -e BBOX="44.217:41.5786:45.2894:42.0024" \
                 -e OFFSET_PAGES_X="0" \
                 -e OFFSET_PAGES_Y="0" \
                 -e PAPER_SIZE="A2" \
