@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
     osmium-tool
 
 RUN wget http://katze.tfiu.de/projects/phyghtmap/phyghtmap_2.21-1_all.deb && \
-    dpkg -i phyghtmap_2.21-1_all.deb; \ # This will fail, fix dependencies in next statement
+    dpkg -i phyghtmap_2.21-1_all.deb; \
     apt-get -f -y install && \
     rm phyghtmap_2.21-1_all.deb
 

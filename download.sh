@@ -8,10 +8,23 @@ osm2pgsql --version
 psql --version
 osmium --version
 
-echo "Using latitudes '$LATITUDES'"
-echo "Using longitudes '$LONGITUDES'"
+if [[ ! -v USGS_USERNAME ]]; then
+  echo "Set the environment variable USGS_USERNAME"
+  exit 1
+fi
+if [[ ! -v USGS_PASSWORD ]]; then
+  echo "Set the environment variable USGS_PASSWORD"
+  exit 1
+fi
+if [[ ! -v BBOX ]]; then
+  echo "Set the environment variable BBOX"
+  exit 1
+fi
+
+echo "Using USGS username '$USGS_USERNAME'"
 echo "Using feature countries '$FEATURE_COUNTRIES'"
-echo 
+echo "Using bounding box '$BBOX'"
+echo
 
 PGPASSWORD="$PG_PASSWORD"
 POSTGRES_ARGS="-h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE""
@@ -22,42 +35,30 @@ echo
 echo " -- Height, contours & shade -- "
 echo
 
-FILES=""
-for LAT in $LATITUDES
-do
-  for LON in $LONGITUDES
-  do
-#    cp "$DATA_DIR/${LAT,,}_${LON,,}_1arc_v3.tif" "$DATA_DIR/${LAT}${LON}.hgt"
-    NAME="${LAT}${LON}"
+mkdir -p $DATA_DIR/dem
 
-    echo "Get $NAME"
-    wget https://dds.cr.usgs.gov/srtm/version2_1/SRTM3/Eurasia/$NAME.hgt.zip -O $DATA_DIR/$NAME.hgt.zip || exit 1
+echo "Downloading height data for bounding box $BBOX"
 
-    echo "Unzip $NAME"
-    unzip -o $DATA_DIR/$NAME.hgt.zip -d $DATA_DIR || exit 1
-    rm $DATA_DIR/$NAME.hgt.zip || exit 1
+phyghtmap --download-only \
+  --srtm=1 \
+  --srtm-version=3 \
+  --earthexplorer-user=$USGS_USERNAME \
+  --earthexplorer-password=$USGS_PASSWORD \
+  --hgtdir=$DATA_DIR/dem \
+  --area $BBOX \
+  | tee downloaded.txt
 
-#    mkdir -p $DATA_DIR/dem
-#    NASA_USERNAME="---"
-#    NASA_PASSWSORD="---"
-#    phyghtmap --download-only --srtm=3 --srtm-version=3 --earthexplorer-user=$NASA_USERNAME --earthexplorer-password=$NASA_PASSWSORD --hgtdir=$DATA_DIR/dem --source=view1,view3,srtm1,srtm3 --area 51.000:5.000:53.000:7.000
+FILES=$(cat downloaded.txt | grep -oP 'using file \K.*.tif' | uniq | xargs)
 
-    # https://gist.github.com/cquest/8179870
-    # https://wiki.openstreetmap.org/wiki/Hillshading_using_the_Alpha_Channel_of_an_Image
-    # https://github.com/cyclosm/cyclosm-cartocss-style/blob/master/docs/INSTALL.md
+echo "Done downloading height data"
+echo "Found downloaded files: $FILES"
 
-
-    FILES="$FILES $DATA_DIR/$NAME.hgt"
-
-    echo "Done $NAME"
-  done
-done
-
-echo "Merge height data for combination into one height file for files$FILES"
-gdal_merge.py -o $DATA_DIR/combined.raw.hgt -of GTiff $FILES
-COMBINED_SIZE=$(gdalinfo combined.raw.hgt | grep -oP 'Size is \K\d+')
+echo "Merge height data for combination into one height file"
 rm -f combined.hgt || exit 1
-gdalwarp -ts $((4 * $COMBINED_SIZE)) 0 -r cubic -co "TFW=YES" $DATA_DIR/combined.raw.hgt  -of GTiff $DATA_DIR/combined.hgt
+gdal_merge.py -o $DATA_DIR/combined.hgt -of GTiff $FILES
+echo "Done merging height data"
+
+gdalinfo $DATA_DIR/combined.hgt
 
 echo "Contours"
 rm -f $DATA_DIR/combined.shp || exit 1

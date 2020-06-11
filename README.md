@@ -90,7 +90,7 @@ The map will be written to the mapped volume in the `/output` directory. The map
 
 (You can also build it yourself using `docker build -t map-it .`)
 
-The [geofabrik tool](https://tools.geofabrik.de/calc/#type=geofabrik_standard&bbox=0.110816,47.68199,9.943825,55.331672&tab=2) can be used
+The [Geofabrik tool](https://tools.geofabrik.de/calc/#type=geofabrik_standard&bbox=0.110816,47.68199,9.943825,55.331672&tab=2) can be used
 to choose coordinates for the map. 
 
 ### Script parameters
@@ -114,17 +114,17 @@ The lists below describe the parameters used for the scripts, including defaults
 - `PG_DATABASE` (default `gis`)
   
   The Postgres database host
-- `FEATURE_COUNTRIES` (default empty)
+- `FEATURE_COUNTRIES` (required, default empty)
   
   Countries that will be downloaded from [GeoFabrik](http://download.geofabrik.de/). Separated by whitespace. For example `europe/netherlands/overijssel europe/slovakia europe/poland/slaskie europe/poland/malopolskie`.
-- `LATITUDES` (default empty)
+- `USGS_USERNAME` and `USGS_PASSWORD` (required, default empty)
   
-  Latitude values that will be downloaded from [U.S. Geological Survey](https://www.usgs.gov/) for terrain information. Of the format `[NS][0-9]{2}` (regex). Separated by whitespace. For example `N52 S01`.
-- `LONGITUDES` (default empty)
+  Create an account for accessing [U.S. Geological Survey](https://www.usgs.gov/) for terrain information. This can be done for free [here](https://store.usgs.gov/user/register). Set the credentials in these environment variables.
   
-  Longitude values that will be downloaded from [U.S. Geological Survey](https://www.usgs.gov/) for terrain information. Of the format `[EW][0-9]{3}` (regex). Separated by whitespace. For example `E002 W150`.
-
-All combinations of latitude/longitude pairs will be downloaded.
+  The [phyghtmap](http://katze.tfiu.de/projects/phyghtmap/phyghtmap.1.html) tool is used for downloading terrain information.
+- `BBOX` (required, default empty)
+  
+  Of the form `A:B:C:D`, for example `5.3:51.1:6.8:53.0056` where `(A, B)` is the lower left corner of the bounding box and `(C, D)` is the top right corner. Specify in longitude - latitude order in the [EPSG:4326](https://epsg.io/4326) coordinate system.
 
 #### Map generation script
 
@@ -146,9 +146,10 @@ All combinations of latitude/longitude pairs will be downloaded.
 - `MAP_NAME` (default `map`)
   
   The name of the map. Used for generating filenames. Existing files will be overwritten. The filename will be suffixed with the index of the generated page if more than one page is generated (see `PAGES_HORIZONTAL` and `PAGES_VERTICAL`). 
-- `TOP_LEFT_X`, `TOP_LEFT_Y` (both default empty)
+- `BBOX` (required, default empty)
   
-  The [EPSG:3857](https://epsg.io/3857) coordinates of the top-left corner of the map.
+  Of the form `A:B:C:D`, for example `5.3:51.1:6.8:53.0056` where `(A, B)` is the lower left corner of the bounding box and `(C, D)` is the top right corner. Specify in longitude - latitude order in the [EPSG:4326](https://epsg.io/4326) coordinate system.
+
 - `OFFSET_PAGES_X`, `OFFSET_PAGES_Y` (both default `0`)
   
   The offset of pages to generate. Useful for automating generating multiple tiled maps.
