@@ -16,7 +16,7 @@
 }
 
 #shade {
-  raster-scaling: bilinear;
+  raster-scaling: lanczos;
   raster-comp-op: multiply;
   raster-opacity: 1.0;
 }
