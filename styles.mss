@@ -123,20 +123,22 @@
 }
 
 #shade {
-  raster-scaling: bilinear;
+  raster-scaling: lanczos;
   raster-comp-op: multiply;
-  raster-opacity: 1.0;
+  raster-opacity: 0.75;
 }
 
 #contours {
   [boundary='no'] {
     line-color: rgba(145, 132, 83, 0.4);
     line-width: 0.5;
+    line-smooth: 1.0;
   }
 
   [boundary='yes'] {
     line-color: rgba(145, 132, 83, 0.6);
     line-width: 1.0;
+    line-smooth: 1.0;
   }
 }
 
