@@ -132,11 +132,13 @@
   [boundary='no'] {
     line-color: rgba(145, 132, 83, 0.4);
     line-width: 0.5;
+    line-smooth: 1.0;
   }
 
   [boundary='yes'] {
     line-color: rgba(145, 132, 83, 0.6);
     line-width: 1.0;
+    line-smooth: 1.0;
   }
 }
 
