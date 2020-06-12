@@ -775,3 +775,14 @@
     text-allow-overlap: true;
   }
 }
+
+#copyright {
+  text-name: '[label]';
+  text-fill: black;
+  text-face-name: @font;
+  text-size: 8;
+  text-halo-fill: rgba(255, 255, 255, 0.7);
+  text-halo-radius: 1.0;
+  text-allow-overlap: true;
+  text-horizontal-alignment: right;
+}

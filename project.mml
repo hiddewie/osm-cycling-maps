@@ -694,3 +694,26 @@ Layer:
           scale,
           scaleDistance
       ) AS data
+- id: copyright
+  geometry: point
+  <<: *extents
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        WITH bounds AS (
+          SELECT
+            ST_XMin(!bbox!)::NUMERIC AS xmin,
+            ST_XMax(!bbox!)::NUMERIC AS xmax,
+            ST_YMin(!bbox!)::NUMERIC AS ymin,
+            ST_YMax(!bbox!)::NUMERIC AS ymax
+        )
+        SELECT
+          ST_MakePoint(
+            bounds.xmin + ((bounds.xmax - bounds.xmin) * 0.01),
+            bounds.ymin + ((bounds.ymax - bounds.ymin) * 0.01)
+          ) as way,
+          '© OpenStreetMap contributors' AS label
+        FROM
+          bounds
+      ) AS data
