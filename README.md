@@ -52,18 +52,20 @@ docker run \
   -e PG_USER="osm" \
   -e PG_PASSWORD="" \
   -e PG_DATABASE="gis" \
+  -e USGS_USERNAME="$USGS_USERNAME" \
+  -e USGS_PASSWORD="$USGS_PASSWORD" \
   -e FEATURE_COUNTRIES="europe/netherlands/overijssel" \
-  -e LATITUDES="N52" \
-  -e LONGITUDES="E006" \
+  -e BBOX="6.2476:52.2157:6.9457:52.4531" \
   hiddewie/map-it-import
 ```
-where `$PROJECT_DIR` is the project directory.
+where `$PROJECT_DIR` is the project directory and `$USGS_USERNAME` and `$USGS_PASSWORD` are credentials for the [U.S. Geological Survey](https://www.usgs.gov/).
 
 (You can also build it yourself using `docker build -t map-it-import -f import.Dockerfile .`)
 
 Let's generate a map. Use the image `hiddewie/map-it` [![](https://images.microbadger.com/badges/image/hiddewie/map-it.svg)](https://hub.docker.com/r/hiddewie/map-it) and run it using 
 ```bash
-docker run -ti \
+docker run \
+  -ti \
   --rm \
   -v $PROJECT_DIR/data:/map-it/data \
   -v $PROJECT_DIR/output:/map-it/output \
@@ -74,12 +76,11 @@ docker run -ti \
   -e PG_PASSWORD="" \
   -e PG_DATABASE="gis" \
   -e MAP_NAME="map" \
-  -e TOP_LEFT_X="735324" \
-  -e TOP_LEFT_Y="6874058" \
+  -e BBOX="6.2476:52.2157:6.9457:52.4531" \
   -e OFFSET_PAGES_X="0" \
   -e OFFSET_PAGES_Y="0" \
   -e PAPER_SIZE="A2" \
-  -e PAPER_ORIENTATION="portrait" \
+  -e PAPER_ORIENTATION="landscape" \
   -e SCALE="1:150000" \
   -e PAGES_HORIZONTAL="1" \
   -e PAGES_VERTICAL="1" \
@@ -125,6 +126,15 @@ The lists below describe the parameters used for the scripts, including defaults
 - `BBOX` (required, default empty)
   
   Of the form `A:B:C:D`, for example `5.3:51.1:6.8:53.0056` where `(A, B)` is the lower left corner of the bounding box and `(C, D)` is the top right corner. Specify in longitude - latitude order in the [EPSG:4326](https://epsg.io/4326) coordinate system.
+
+Optional extra parameters for tweaking the import of downloaded OpenStreetMap data into the database:
+
+- `OSM2PGSQL_CACHE` (default `1024`)
+
+  The cache size in mega bytes that the import script may use.
+- `OSM2PGSQL_NUMPROC` (default `4`)
+
+  The number of processes that import script may use.
 
 #### Map generation script
 

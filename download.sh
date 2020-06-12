@@ -86,9 +86,14 @@ FILES=""
 for COUNTRY in $FEATURE_COUNTRIES
 do
   echo "Downloading $COUNTRY from http://download.geofabrik.de/$COUNTRY-latest.osm.pbf"
-  FILE=$DATA_DIR/$COUNTRY.osm.pbf
-  mkdir -p -- "${FILE%/*}"
-  wget http://download.geofabrik.de/$COUNTRY-latest.osm.pbf -O $DATA_DIR/$COUNTRY.osm.pbf || exit 1
+  if [[ -f $DATA_DIR/$COUNTRY.osm.pbf ]]; then
+    echo "The file $DATA_DIR/$COUNTRY.osm.pbf is already present and will not be downloaded."
+  else
+    FILE=$DATA_DIR/$COUNTRY.osm.pbf
+    mkdir -p -- "${FILE%/*}"
+    wget http://download.geofabrik.de/$COUNTRY-latest.osm.pbf -O $DATA_DIR/$COUNTRY.osm.pbf || exit 1
+  fi
+
   FILES="$FILES $DATA_DIR/$COUNTRY.osm.pbf"
 
   echo "Done $COUNTRY"
@@ -108,8 +113,8 @@ echo "Importing combined OSM data"
 # TODO: specify --style? (see openstreetmap-carto.style)
 # TODO: specify --tag-transform-script? (see openstreetmap-carto.lua)
 # TODO: specify --multi-geometry?
-OSM2PGSQL_CACHE=512
-OSM2PGSQL_NUMPROC=1
+OSM2PGSQL_CACHE=${OSM2PGSQL_CACHE:-1024}
+OSM2PGSQL_NUMPROC=${OSM2PGSQL_NUMPROC:-4}
 PGPASS=$PG_PASSWORD
 
 echo "Using OSM2PGSQL_CACHE = $OSM2PGSQL_CACHE"
