@@ -125,17 +125,17 @@
 #shade {
   raster-scaling: bilinear;
   raster-comp-op: multiply;
-  raster-opacity: 1.0;
+  raster-opacity: 0.6;
 }
 
 #contours {
   [boundary='no'] {
-    line-color: rgba(145, 132, 83, 0.4);
+    line-color: rgba(145, 132, 83, 0.3);
     line-width: 0.5;
   }
 
   [boundary='yes'] {
-    line-color: rgba(145, 132, 83, 0.6);
+    line-color: rgba(145, 132, 83, 0.5);
     line-width: 1.0;
   }
 }
@@ -517,6 +517,10 @@
     background/marker-line-width: 50.0;
   }
 
+  [type = 'mountain_pass'] {
+    background/marker-line-width: 0.5;
+  }
+
   marker-width: 10;
   marker-fill: purple;
 
@@ -547,6 +551,18 @@
     background/marker-file: 'data/icons/maki/bicycle-11.svg';
     marker-width: 9;
     marker-file: 'data/icons/maki/bicycle-11.svg';
+  }
+  [type = 'mountain_pass'] {
+    background/marker-width: 8;
+    background/marker-file: 'data/icons/openstreetmap/mountain_pass.svg';
+    marker-width: 8;
+    marker-file: 'data/icons/openstreetmap/mountain_pass.svg';
+  }
+  [type = 'peak'] {
+    background/marker-width: 5;
+    background/marker-file: 'data/icons/svg/triangle.svg';
+    marker-width: 5;
+    marker-file: 'data/icons/svg/triangle.svg';
   }
   [type = 'castle'],
   [type = 'fort'] {
@@ -699,6 +715,23 @@
     }
     [type = 'motorway'] {
       text-halo-fill: black;
+    }
+  }
+}
+
+#poi::labels {
+  [type = 'mountain_pass'],
+  [type = 'peak'] {
+    text-name: '[ele]';
+    text-size: 7;
+    text-face-name: @font-italic;
+    text-fill: purple;
+    text-halo-radius: 1.0;
+    text-halo-fill: rgba(255, 255, 220, 0.7);
+    text-dy: 7;
+
+    [type = 'peak'] {
+      text-dy: 5;
     }
   }
 }
