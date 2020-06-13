@@ -142,6 +142,18 @@ def main():
         width, height = height, width
     print('Rendering map with page width paper size %s (%s m × %s m)' % (paperSize, width, height))
 
+    pageOverlap = env('PAGE_OVERLAP', '5%')
+    pageOverlapMatch = re.match(r'^(\d+\.?\d*)%$', pageOverlap)
+
+    if not pageOverlapMatch:
+        exitError("The page overlap must be a percentage value, like '5%%' or '10.1%%'. %s was given" % (pageOverlap,))
+        return
+
+    pageOverlap = float(pageOverlap[:-1]) / 100.0
+    # The padding factor is the factor of page with that can be used for rendering map content
+    paddingFactor = (1.0 - 2 * pageOverlap)
+    print('Rendering map with %s%% and padding factor %s.' % (pageOverlap * 100, paddingFactor))
+
     # Default 1 cm on the map is 1.5 km in the world
     scale = env('SCALE', '1:150000')
     if not scale.strip().startswith('1:'):
@@ -165,12 +177,12 @@ def main():
     pageHeight = height * scale
 
     # Find number of pages to print that fit the bounding box
-    numPagesHorizontal = int(math.ceil((bbox.maxx - bbox.minx) / pageWidth))
-    numPagesVertical = int(math.ceil((bbox.maxy - bbox.miny) / pageHeight))
+    numPagesHorizontal = int(math.ceil((bbox.maxx - bbox.minx) / (pageWidth * paddingFactor)))
+    numPagesVertical = int(math.ceil((bbox.maxy - bbox.miny) / (pageHeight * paddingFactor)))
 
     # Fit the generated pages perfectly 'around' the bounding box
-    paddingX = ((numPagesHorizontal * pageWidth) - (bbox.maxx - bbox.minx)) / 2
-    paddingY = ((numPagesVertical * pageHeight) - (bbox.maxy - bbox.miny)) / 2
+    paddingX = ((numPagesHorizontal * pageWidth * paddingFactor) - (bbox.maxx - bbox.minx)) / 2 + pageOverlap * pageWidth
+    paddingY = ((numPagesVertical * pageHeight * paddingFactor) - (bbox.maxy - bbox.miny)) / 2 + pageOverlap * pageWidth
 
     mapWidth = int(width * dpm)
     mapHeight = int(height * dpm)
@@ -183,7 +195,7 @@ def main():
     print('Rendering %s pages, %s horizontal and %s vertical' % (numPagesHorizontal * numPagesVertical, numPagesHorizontal, numPagesVertical))
     for i in range(numPagesHorizontal):
         for j in range(numPagesVertical):
-            topLeft = int(bbox.minx - paddingX + i * pageWidth), int(bbox.maxy + paddingY - j * pageHeight)
+            topLeft = int(bbox.minx - paddingX + i * pageWidth * paddingFactor), int(bbox.maxy + paddingY - j * pageHeight * paddingFactor)
             bottomRight = int(topLeft[0] + pageWidth), int(topLeft[1] - pageHeight)
 
             print('Generating page (%s, %s) from top left (%s, %s) to bottom right (%s, %s)' % (i + 1, j + 1, topLeft[0], topLeft[1], bottomRight[0], bottomRight[1]))
