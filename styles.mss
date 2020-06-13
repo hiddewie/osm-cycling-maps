@@ -604,8 +604,10 @@
     marker-transform: 'translate(0, -4)';
   }
   [type = 'place_of_worship'] {
-    background/marker-file: 'data/icons/openstreetmap/place_of_worship.svg';
-    marker-file: 'data/icons/openstreetmap/place_of_worship.svg';
+    background/marker-width: 4;
+    background/marker-file: 'data/icons/openstreetmap/religion_unknown.svg';
+    marker-width: 4;
+    marker-file: 'data/icons/openstreetmap/religion_unknown.svg';
 
     [religion='christian'] {
       background/marker-width: 4;
