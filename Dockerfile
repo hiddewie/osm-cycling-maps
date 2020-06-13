@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     fonts-noto-cjk \
     fonts-noto-hinted \
     fonts-noto-unhinted \
+    fonts-hanazono \
     ttf-unifont
 
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -

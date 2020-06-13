@@ -4,7 +4,6 @@
        "Noto Sans CJK JP Regular",
        "Noto Sans Adlam Regular", "Noto Sans Adlam Unjoined Regular",
        "Noto Sans Armenian Regular",
-       "Noto Sans Balinese Regular",
        "Noto Sans Bamum Regular",
        "Noto Sans Batak Regular",
        "Noto Sans Bengali UI Regular",
@@ -63,13 +62,11 @@
        "Noto Sans Vai Regular",
        "Noto Sans Yi Regular",
        "Noto Sans Arabic UI Regular",
-       "Noto Emoji Regular",
        "Noto Naskh Arabic UI Regular",
        "DejaVu Sans Book",
        "HanaMinA Regular",
        "HanaMinB Regular",
        "Unifont Medium",
-       "unifont Medium",
        "Unifont Upper Medium";
 
 // A bold style is available for almost all scripts. Bold text is heavier than
