@@ -282,9 +282,14 @@
 @bridge: white;
 @bridge-border: black;
 
+@road-width-small: 1.2;
+@road-width-medium: 1.8;
+@road-width-large: 2.6;
+@road-border-width: 0.7;
+
 #roads::track {
   [type = 'track'] {
-    line-width: 1.0;
+    line-width: @road-width-small;
     line-color: @track;
 
     [tracktype = 'grade3'],
@@ -301,108 +306,117 @@
   }
 }
 #roads::border {
-  [type = 'unclassified'],
+  [type = 'residential'] {
+    line-width: @road-width-small + 2 * @road-border-width;
+    line-color: @unclassified-border;
+  }
+
   [type = 'service'],
-  [type = 'residential'], {
-    line-width: 2.0;
+  [type = 'unclassified'], {
+    line-width: @road-width-medium + 2 * @road-border-width;
     line-color: @unclassified-border;
   }
 
   [type = 'tertiary'] {
-    line-width: 3.0;
+    line-width: @road-width-large + 2 * @road-border-width;
     line-color: @tertiary-border;
   }
 
   [type = 'secondary'],
   [type = 'secondary_link'] {
-    line-width: 3.0;
+    line-width: @road-width-large + 2 * @road-border-width;
     line-color: @secondary-border;
   }
 
   [type = 'cycleway'] {
-    line-width: 2.0;
+    line-width: @road-width-small + 2 * @road-border-width;
     line-color: @cycle-border;
   }
 
   [type = 'primary'],
   [type = 'primary_link'] {
-    line-width: 3.0;
+    line-width: @road-width-large + 2 * @road-border-width;
     line-color: @primary-border;
   }
 
   [type = 'trunk'],
   [type = 'trunk_link'] {
-    line-width: 3.0;
+    line-width: @road-width-large + 2 * @road-border-width;
     line-color: @trunk-border;
   }
 
   [type = 'motorway'],
   [type = 'motorway_link'] {
-    line-width: 3.0;
+    line-width: @road-width-large + 2 * @road-border-width;
     line-color: @highway-border;
   }
 }
 
 #roads::fill {
   [type = 'secondary_link'] {
-    line-width: 2.0;
+    line-width: @road-width-large;
     line-color: @secondary;
   }
 
   [type = 'primary_link'] {
-    line-width: 2.0;
+    line-width: @road-width-large;
     line-color: @primary;
   }
 
   [type = 'trunk_link'] {
-    line-width: 2.0;
+    line-width: @road-width-large;
     line-color: @trunk;
   }
 
   [type = 'motorway_link'] {
-    line-width: 2.0;
+    line-width: @road-width-large;
     line-color: @highway;
   }
-  [type = 'unclassified'],
-  [type = 'service'],
+
   [type = 'residential'] {
-    line-width: 0.5;
+    line-width: @road-width-small;
+    line-color: @unclassified;
+  }
+
+  [type = 'service'],
+  [type = 'unclassified'] {
+    line-width: @road-width-medium;
     line-color: @unclassified;
   }
 
   [type = 'tertiary'] {
-    line-width: 2.0;
+    line-width: @road-width-large;
     line-color: @tertiary;
   }
 
   [type = 'secondary'] {
-    line-width: 2.0;
+    line-width: @road-width-large;
     line-color: @secondary;
   }
 
   [type = 'cycleway'] {
-    line-width: 1.0;
+    line-width: @road-width-small;
     line-color: @cycle;
   }
 
   [type = 'primary'] {
-    line-width: 2.0;
+    line-width: @road-width-large;
     line-color: @primary;
   }
 
   [type = 'trunk'] {
-    line-width: 2.0;
+    line-width: @road-width-large;
     line-color: @trunk;
   }
 
   [type = 'motorway'] {
-    line-width: 2.0;
+    line-width: @road-width-large;
     line-color: @highway;
   }
 }
 
 #roads::bridge {
-  [bridge='T'] {
+  [bridge = 'T'] {
     [type = 'secondary'],
     [type = 'secondary_link'],
     [type = 'primary'],
@@ -413,74 +427,77 @@
     [type = 'motorway_link'] {
       ::bridge-border {
         line-color: @bridge-border;
-        line-width: 3.0;
-        // TODO round?
+        line-width: @road-width-large + 2 * @road-border-width;
         line-cap: butt;
       }
 
       line-color: @bridge;
-      line-width: 1.0;
+      line-width: @road-width-small;
       line-cap: butt;
     }
 
     [type = 'secondary_link'] {
-      line-width: 2.0;
+      line-width: @road-width-large;
       line-color: @secondary;
     }
     [type = 'primary_link'] {
-      line-width: 2.0;
+      line-width: @road-width-large;
       line-color: @primary;
     }
     [type = 'trunk_link'] {
-      line-width: 2.0;
+      line-width: @road-width-large;
       line-color: @trunk;
     }
     [type = 'motorway_link'] {
-      line-width: 2.0;
+      line-width: @road-width-large;
       line-color: @highway;
     }
 
     [type = 'tertiary'] {
-      line-width: 2.0;
+      line-width: @road-width-large;
       line-color: @tertiary;
     }
     [type = 'secondary']  {
-      line-width: 2.0;
+      line-width: @road-width-large;
       line-color: @secondary;
     }
     [type = 'cycleway'] {
-      line-width: 1.0;
+      line-width: @road-width-small;
       line-color: @cycle;
     }
     [type = 'primary'] {
-      line-width: 2.0;
+      line-width: @road-width-large;
       line-color: @primary;
     }
     [type = 'trunk'] {
-      line-width: 2.0;
+      line-width: @road-width-large;
       line-color: @trunk;
     }
     [type = 'motorway'] {
-      line-width: 2.0;
+      line-width: @road-width-large;
       line-color: @highway;
     }
   }
 }
 
+@cycling-node: rgb(30, 30, 30);
+
 #cycling-nodes {
   marker-width: 1.5;
-  marker-fill: rgb(30, 30, 30);
+  marker-fill: @cycling-node;
 }
+
+@poi: purple;
 
 #transport {
   background/marker-width: 10;
-  background/marker-fill: purple;
+  background/marker-fill: @poi;
   background/marker-ignore-placement: true;
   background/marker-line-color: white;
   background/marker-line-width: 2.0;
 
   marker-width: 10;
-  marker-fill: purple;
+  marker-fill: @poi;
 
   [type = 'train_station'] {
     background/marker-width: 6;
@@ -507,7 +524,7 @@
 
 #poi {
   background/marker-width: 10;
-  background/marker-fill: purple;
+  background/marker-fill: @poi;
   background/marker-ignore-placement: true;
   background/marker-line-color: white;
   background/marker-line-width: 2.0;
@@ -524,7 +541,7 @@
   }
 
   marker-width: 10;
-  marker-fill: purple;
+  marker-fill: @poi;
 
   [type = 'camp_site'] {
     background/marker-width: 9;
@@ -729,7 +746,7 @@
     text-name: '[ele]';
     text-size: 7;
     text-face-name: @font-italic;
-    text-fill: purple;
+    text-fill: @poi;
     text-halo-radius: 1.0;
     text-halo-fill: rgba(255, 255, 220, 0.7);
     text-dy: 7;
