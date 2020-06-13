@@ -50,15 +50,26 @@ Layer:
       (
         SELECT
           way,
-          'forest' as type
+          CASE
+            WHEN landuse = 'forest' OR "natural" = 'wood' THEN 'forest'
+            WHEN aeroway IN ('aerodrome') THEN 'aerodrome'
+          END as type
         FROM
           planet_osm_polygon
         WHERE
           way && !bbox! AND
           (
-            landuse = 'forest' OR
-            "natural" = 'wood'
+            (
+              landuse = 'forest' OR
+              "natural" = 'wood'
+            ) OR
+            aeroway IN ('aerodrome')
           )
+        ORDER BY
+          CASE
+            WHEN landuse = 'residential' THEN 1
+            WHEN landuse = 'military' THEN 2
+          END ASC
       ) AS data
 - id: shade
   geometry: raster
@@ -101,8 +112,15 @@ Layer:
           way && !bbox! AND
           landuse IN (
             'residential',
+            'industrial',
             'military'
           )
+        ORDER BY
+          CASE
+            WHEN landuse = 'industrial' THEN 1
+            WHEN landuse = 'residential' THEN 2
+            WHEN landuse = 'military' THEN 3
+          END ASC
       ) AS data
 - id: administrative-boundaries
   geometry: linestring
@@ -132,6 +150,21 @@ Layer:
           osm_id < 0
         ORDER BY
           admin_level::int DESC
+      ) AS data
+- id: cycling-network
+  geometry: linestring
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way
+        FROM
+          planet_osm_line
+        WHERE
+          way && !bbox! AND
+          route = 'bicycle'
       ) AS data
 - id: waterways
   geometry: linestring
@@ -192,21 +225,6 @@ Layer:
         WHERE
           way && !bbox! AND
           "natural" = 'spring'
-      ) AS data
-- id: cycling-network
-  geometry: linestring
-  <<: *extentsOSM
-  Datasource:
-    <<: *osm2pgsql
-    table: |-
-      (
-        SELECT
-          way
-        FROM
-          planet_osm_line
-        WHERE
-          way && !bbox! AND
-          route = 'bicycle'
       ) AS data
 - id: ferry
   geometry: linestring

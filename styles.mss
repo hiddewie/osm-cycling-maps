@@ -112,6 +112,7 @@
 // Palette
 
 @black: rgb(30, 30, 30);
+@feint-gray: rgb(230, 230, 230);
 @light-gray: rgb(158, 158, 158);
 @gray: rgb(120, 120, 120);
 @medium-gray: rgb(105, 105, 105);
@@ -131,14 +132,17 @@
 @light-blue: lighten(@blue, 30%);
 @dark-blue: darken(@blue, 30%);
 @purple: rgb(176, 58, 240);
+@feint-purple: lighten(@purple, 35%);
 
 // Colors
 
 @forest: @feint-green;
+@aerodrome: @feint-purple;
 
 @contour: @ocre;
 @contour-label-halo: @white;
 
+@industrial: @feint-gray;
 @residential: @light-ocre;
 @military: @light-red;
 
@@ -200,6 +204,9 @@
   [type = 'forest'] {
     polygon-fill: @forest;
   }
+  [type = 'aerodrome'] {
+    polygon-fill: @aerodrome;
+  }
 }
 
 #shade {
@@ -227,6 +234,9 @@
 #landuse-foreground {
   [type = 'residential'] {
     polygon-fill: @residential;
+  }
+  [type = 'industrial'] {
+    polygon-fill: @industrial;
   }
 
   [type = 'military'] {
