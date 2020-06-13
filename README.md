@@ -80,8 +80,6 @@ docker run \
   -e PAPER_SIZE="A2" \
   -e PAPER_ORIENTATION="landscape" \
   -e SCALE="1:150000" \
-  -e PAGES_HORIZONTAL="1" \
-  -e PAGES_VERTICAL="1" \
   hiddewie/map-it
 ```
 
@@ -153,7 +151,7 @@ Optional extra parameters for tweaking the import of downloaded OpenStreetMap da
   The Postgres database host
 - `MAP_NAME` (default `map`)
   
-  The name of the map. Used for generating filenames. Existing files will be overwritten. The filename will be suffixed with the index of the generated page if more than one page is generated (see `PAGES_HORIZONTAL` and `PAGES_VERTICAL`). 
+  The name of the map. Used for generating filenames. Existing files will be overwritten. The filename will be suffixed with the index of the generated page if more than one page is generated because the bounding box area does not fit on one page. 
 - `BBOX` (required, default empty)
   
   Of the form `A:B:C:D`, for example `5.3:51.1:6.8:53.0056` where `(A, B)` is the lower left corner of the bounding box and `(C, D)` is the top right corner. Specify in longitude - latitude order in the [EPSG:4326](https://epsg.io/4326) coordinate system.
@@ -167,12 +165,6 @@ Optional extra parameters for tweaking the import of downloaded OpenStreetMap da
 - `PAPER_SIZE` (default `A4`)
   
   The size of the generated page. Valid values: `A0`, `A1`, `A2`, `A3` and `A4`, or any value of the form `A mm x B mm` (millimeters), `A in x B in` (inches) or `A m x B m` (meters) with `A` and `B` numeric values. For example `A1`, `10 mm x 100 mm` or `20 in x 5 in`.
-- `PAGES_HORIZONTAL` (default `1`)
-  
-  The number of pages to generate in the horizontal direction.
-- `PAGES_VERTICAL` (default `1`)
-  
-  The number of pages to generate in the vertical direction.
 
 ### Examples
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import math
 
 import mapnik
 import cairo
@@ -123,9 +124,6 @@ def main():
         float(bboxMatch.group(4)),
     ))
 
-    PAGES_HORIZONTAL = int(env('PAGES_HORIZONTAL', 1))
-    PAGES_VERTICAL = int(env('PAGES_VERTICAL', 1))
-
     ORIENTATION_LANDSCAPE = 'landscape'
     ORIENTATION_PORTRAIT = 'portrait'
     paperOrientations = {
@@ -137,7 +135,6 @@ def main():
         exitError("The paper orientation should be one of the values %s but %s was given" % (paperOrientations, orientation))
         return
 
-    # TODO allow width x height notation in m, mm or inches
     paperSize = env('PAPER_SIZE', 'A4')
     width, height = determinePaperDimensions(paperSize)
 
@@ -145,8 +142,8 @@ def main():
         width, height = height, width
     print('Rendering map with page width paper size %s (%s m × %s m)' % (paperSize, width, height))
 
-    # Default 1 cm on the map is 1 km in the world
-    scale = env('SCALE', '1:100000')
+    # Default 1 cm on the map is 1.5 km in the world
+    scale = env('SCALE', '1:150000')
     if not scale.strip().startswith('1:'):
         exitError("The scale should be of the form 1:N but %s was given" % (scale,))
         return
@@ -163,12 +160,17 @@ def main():
     # Dots per m
     dpm = dpi * 100 / 2.54
 
-    numPagesHorizontal = PAGES_HORIZONTAL
-    numPagesVertical = PAGES_VERTICAL
-
     # A 'data' pixel is 1 meter (in UTM projection)
     pageWidth = width * scale
     pageHeight = height * scale
+
+    # Find number of pages to print that fit the bounding box
+    numPagesHorizontal = int(math.ceil((bbox.maxx - bbox.minx) / pageWidth))
+    numPagesVertical = int(math.ceil((bbox.maxy - bbox.miny) / pageHeight))
+
+    # Fit the generated pages perfectly 'around' the bounding box
+    paddingX = ((numPagesHorizontal * pageWidth) - (bbox.maxx - bbox.minx)) / 2
+    paddingY = ((numPagesVertical * pageHeight) - (bbox.maxy - bbox.miny)) / 2
 
     mapWidth = int(width * dpm)
     mapHeight = int(height * dpm)
@@ -181,7 +183,7 @@ def main():
     print('Rendering %s pages, %s horizontal and %s vertical' % (numPagesHorizontal * numPagesVertical, numPagesHorizontal, numPagesVertical))
     for i in range(numPagesHorizontal):
         for j in range(numPagesVertical):
-            topLeft = int(bbox.minx + i * pageWidth), int(bbox.maxy - j * pageHeight)
+            topLeft = int(bbox.minx - paddingX + i * pageWidth), int(bbox.maxy + paddingY - j * pageHeight)
             bottomRight = int(topLeft[0] + pageWidth), int(topLeft[1] - pageHeight)
 
             print('Generating page (%s, %s) from top left (%s, %s) to bottom right (%s, %s)' % (i + 1, j + 1, topLeft[0], topLeft[1], bottomRight[0], bottomRight[1]))

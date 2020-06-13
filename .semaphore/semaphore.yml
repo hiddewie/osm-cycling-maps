@@ -57,7 +57,5 @@ blocks:
                 -e PAPER_SIZE="A2" \
                 -e PAPER_ORIENTATION="landscape" \
                 -e SCALE="1:150000" \
-                -e PAGES_HORIZONTAL="1" \
-                -e PAGES_VERTICAL="1" \
                 map-it
             - artifact push workflow --expire-in 2w output/map.pdf
