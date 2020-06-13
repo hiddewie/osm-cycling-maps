@@ -123,9 +123,6 @@ def main():
         float(bboxMatch.group(4)),
     ))
 
-    OFFSET_PAGES_X = float(env('OFFSET_PAGES_X', 0))
-    OFFSET_PAGES_Y = float(env('OFFSET_PAGES_Y', 0))
-
     PAGES_HORIZONTAL = int(env('PAGES_HORIZONTAL', 1))
     PAGES_VERTICAL = int(env('PAGES_VERTICAL', 1))
 
@@ -184,7 +181,7 @@ def main():
     print('Rendering %s pages, %s horizontal and %s vertical' % (numPagesHorizontal * numPagesVertical, numPagesHorizontal, numPagesVertical))
     for i in range(numPagesHorizontal):
         for j in range(numPagesVertical):
-            topLeft = int(bbox.minx + (OFFSET_PAGES_X + i) * pageWidth), int(bbox.maxy - (OFFSET_PAGES_Y + j) * pageHeight)
+            topLeft = int(bbox.minx + i * pageWidth), int(bbox.maxy - j * pageHeight)
             bottomRight = int(topLeft[0] + pageWidth), int(topLeft[1] - pageHeight)
 
             print('Generating page (%s, %s) from top left (%s, %s) to bottom right (%s, %s)' % (i + 1, j + 1, topLeft[0], topLeft[1], bottomRight[0], bottomRight[1]))

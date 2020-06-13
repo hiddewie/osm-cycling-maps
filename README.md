@@ -77,8 +77,6 @@ docker run \
   -e PG_DATABASE="gis" \
   -e MAP_NAME="map" \
   -e BBOX="6.2476:52.2157:6.9457:52.4531" \
-  -e OFFSET_PAGES_X="0" \
-  -e OFFSET_PAGES_Y="0" \
   -e PAPER_SIZE="A2" \
   -e PAPER_ORIENTATION="landscape" \
   -e SCALE="1:150000" \
@@ -160,9 +158,6 @@ Optional extra parameters for tweaking the import of downloaded OpenStreetMap da
   
   Of the form `A:B:C:D`, for example `5.3:51.1:6.8:53.0056` where `(A, B)` is the lower left corner of the bounding box and `(C, D)` is the top right corner. Specify in longitude - latitude order in the [EPSG:4326](https://epsg.io/4326) coordinate system.
 
-- `OFFSET_PAGES_X`, `OFFSET_PAGES_Y` (both default `0`)
-  
-  The offset of pages to generate. Useful for automating generating multiple tiled maps.
 - `SCALE` (default `1:150000`)
   
   The scale of the map, when printed on the indicated paper size. The value is of the form `1:N` with `N` a number.
