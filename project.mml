@@ -268,37 +268,50 @@ Layer:
     table: |-
       (
         SELECT
-          way,
-          CASE
-            WHEN bicycle = 'designated' THEN 'cycleway'
-            WHEN highway = 'road' THEN 'unclassified'
-            WHEN highway = 'living_street' THEN 'residential'
-            ELSE highway
-          END as type,
-          CASE
-            WHEN bicycle IN ('yes', 'designated', 'permissive') THEN 'T'
-            ELSE 'F'
-          END as bicycle,
-          CASE
-            WHEN bridge IS NOT NULL AND bridge != 'no' THEN 'T'
-            ELSE 'F'
-          END as bridge,
-          CASE
-            WHEN tunnel IS NOT NULL AND tunnel != 'no' THEN 'T'
-            ELSE 'F'
-          END as tunnel,
-          tracktype,
-          ref
-        FROM
-          planet_osm_line
-        WHERE
-          way && !bbox! AND
-          highway IS NOT NULL AND
-          highway NOT IN ('platform', 'construction', 'proposed', 'steps')
+          *
+        FROM (
+          SELECT
+            way,
+            CASE
+              WHEN bicycle = 'designated' THEN 'cycleway'
+              WHEN highway = 'road' THEN 'unclassified'
+              WHEN highway = 'living_street' THEN 'residential'
+              ELSE highway
+            END as type,
+            CASE
+              WHEN bicycle IN ('yes', 'designated', 'permissive') THEN 'T'
+              ELSE 'F'
+            END as bicycle,
+            tracktype,
+            ref,
+            layer
+          FROM
+            planet_osm_line
+          WHERE
+            way && !bbox! AND
+            highway IS NOT NULL AND
+            highway NOT IN ('platform', 'construction', 'proposed', 'steps')
+        ) AS roads
         ORDER BY
           CASE
             WHEN layer IS NOT NULL AND layer ~ '-?\d+' THEN layer::int
             ELSE 0
+          END ASC,
+          CASE
+            WHEN type = 'motorway_link' THEN 1
+            WHEN type = 'trunk_link' THEN 2
+            WHEN type = 'secondary_link' THEN 3
+            WHEN type = 'primary_link' THEN 4
+            WHEN type = 'motorway' THEN 5
+            WHEN type = 'trunk' THEN 6
+            WHEN type = 'unclassified' THEN 100
+            WHEN type = 'service' THEN 101
+            WHEN type = 'residential' THEN 102
+            WHEN type = 'cycleway' THEN 103
+            WHEN type = 'tertiary' THEN 104
+            WHEN type = 'secondary' THEN 105
+            WHEN type = 'primary' THEN 106
+            ELSE 50
           END ASC
       ) AS data
 - id: power-line
