@@ -114,7 +114,70 @@
 
 
 // Colors
+
 @forest: rgb(222, 245, 198);
+
+@contour: rgb(145, 132, 83);
+@contour-label-halo: white;
+
+@residential: rgb(222, 220, 201);
+@military: rgb(255, 51, 51);
+
+@admin-background: rgb(0, 219, 68);
+@admin-boundaries: rgb(0, 74, 24);
+
+@cycling-network: rgb(255, 210, 80);
+
+@waterway: rgb(53, 134, 212);
+@water: rgb(123, 179, 232);
+@ferry: rgb(27, 74, 123);
+
+@track: rgb(105, 105, 105);
+@cycle: rgb(176,58,240);
+@cycle-border: white;
+@unclassified: white;
+@unclassified-border: rgb(82, 82, 82);
+@tertiary: @unclassified;
+@tertiary-border: @unclassified-border;
+@secondary: rgb(232, 232, 16);
+@secondary-border: rgb(99, 99, 6);
+@primary: rgb(219, 143, 35);
+@primary-border: rgb(168, 109, 25);
+@trunk: rgb(158, 158, 158);
+@trunk-border: white;
+@highway: rgb(120, 120, 120);
+@highway-border: white;
+@bridge: white;
+@bridge-border: black;
+
+@road-label: white;
+@road-label-tertiary-halo: rgb(82, 82, 82);
+@road-label-secondary-halo: rgb(99, 99, 6);
+@road-label-primary-halo: rgb(168, 109, 25);
+@road-label-trunk-halo: rgb(115, 35, 17);
+@road-label-motorway-halo: black;
+
+@rail-dark: black;
+@rail-light: white;
+@rail-preserved-dark: rgb(100, 100, 100);
+@rail-preserved-light: rgb(200, 200, 200);
+
+@cycling-node: rgb(30, 30, 30);
+@cycling-node-label: black;
+@cycling-node-label-halo: rgba(255, 226, 143, 0.7);
+
+@poi: purple;
+@poi-label-halo: rgba(255, 255, 220, 0.7);
+
+@power: rgb(150, 150, 150);
+
+@place: black;
+@place-halo: rgba(255, 255, 220, 0.7);
+
+@scale-copyright: black;
+@scale-copyright-halo: rgba(255, 255, 255, 0.7);
+
+// Layers
 
 #landuse-background {
   [type = 'forest'] {
@@ -129,36 +192,36 @@
 }
 
 #contours {
+  line-color: @contour;
+  line-smooth: 1.0;
+  comp-op: multiply;
+
   [boundary='no'] {
-    line-color: rgba(145, 132, 83, 0.3);
+    line-opacity: 0.3;
     line-width: 0.5;
-    line-smooth: 1.0;
   }
 
   [boundary='yes'] {
-    line-color: rgba(145, 132, 83, 0.5);
+    line-opacity: 0.5;
     line-width: 1.0;
-    line-smooth: 1.0;
   }
 }
 
 #landuse-foreground {
   [type = 'residential'] {
-    polygon-fill: rgb(222, 220, 201);
+    polygon-fill: @residential;
   }
 
   [type = 'military'] {
     polygon-pattern-file: url('data/background/military.svg');
     polygon-pattern-comp-op: multiply;
     polygon-pattern-alignment: global;
-    line-color: rgb(255, 51, 51);
-    line-opacity: 0.335;
+    line-color: @military;
+    line-opacity: 0.333;
     line-width: 1.5;
   }
 }
 
-@admin-background: rgb(0, 219, 68);
-@admin-boundaries: rgb(0, 74, 24);
 
 #administrative-boundaries {
   ::firstline {
@@ -207,31 +270,31 @@
 
 #cycling-network {
   opacity: 0.6;
-  line-color: rgb(255, 210, 80);
+  line-color: @cycling-network;
   line-width: 7.0;
   line-cap: round;
 }
 
 #waterways {
-  line-color: rgb(53, 134, 212);
+  line-color: @waterway;
 }
 
 #water {
-  polygon-fill: rgb(123, 179, 232);
+  polygon-fill: @water;
   line-width: 0.5;
-  line-color: rgb(123, 179, 232);
+  line-color: @water;
 }
 
 #ferry {
   line-width: 1.0;
-  line-color: rgb(27, 74, 123);
+  line-color: @ferry;
   line-dasharray: 4, 3;
 }
 
 #springs {
   marker-width: 3;
-  marker-fill: rgb(123, 179, 232);
-  marker-line-color: rgb(53, 134, 212);
+  marker-fill: @water;
+  marker-line-color: @waterway;
   marker-line-width: 1.0;
 }
 
@@ -242,45 +305,27 @@
 }
 
 #railways {
-  line-color: black;
+  line-color: @rail-dark;
   line-width: 1.5;
   line-cap: square;
 
-  overlay/line-color: white;
+  overlay/line-color: @rail-light;
   overlay/line-width: 1;
   overlay/line-cap: square;
 
-  dash/line-color: black;
+  dash/line-color: @rail-dark;
   dash/line-width: 1;
   dash/line-dasharray: 5, 5;
   dash/line-cap: square;
 
   [railway = 'preserved'] {
-    line-color: rgb(100, 100, 100);
+    line-color: @rail-preserved-dark;
 
     overlay/line-width: 0;
-    dash/line-color: rgb(200, 200, 200);
+    dash/line-color: @rail-preserved-light;
     dash/line-dasharray: 5, 2;
   }
 }
-
-@track: rgb(105, 105, 105);
-@cycle: rgb(176,58,240);
-@cycle-border: white;
-@unclassified: white;
-@unclassified-border: rgb(82, 82, 82);
-@tertiary: @unclassified;
-@tertiary-border: @unclassified-border;
-@secondary: rgb(232, 232, 16);
-@secondary-border: rgb(99, 99, 6);
-@primary: rgb(219, 143, 35);
-@primary-border: rgb(168, 109, 25);
-@trunk: rgb(158, 158, 158);
-@trunk-border: white;
-@highway: rgb(120, 120, 120);
-@highway-border: white;
-@bridge: white;
-@bridge-border: black;
 
 @road-width-small: 1.2;
 @road-width-medium: 1.8;
@@ -480,14 +525,10 @@
   }
 }
 
-@cycling-node: rgb(30, 30, 30);
-
 #cycling-nodes {
   marker-width: 1.5;
   marker-fill: @cycling-node;
 }
-
-@poi: purple;
 
 #transport {
   background/marker-width: 10;
@@ -510,15 +551,16 @@
     marker-file: 'data/icons/maki/airport-11.svg';
   }
 }
+
 #power-line {
-  line-color: rgb(150, 150, 150);
+  line-color: @power;
   line-width: 1.0;
 }
 
 #power-pole {
   marker-file: 'data/icons/maki/square-11.svg';
   marker-width: 2;
-  marker-fill: rgb(150, 150, 150);
+  line-color: @power;
   marker-ignore-placement: true;
 }
 
@@ -661,9 +703,9 @@
   text-name: '[name]';
   text-size: 7;
   text-face-name: @font;
-  text-fill: black;
+  text-fill: @place;
   text-halo-radius: 1.0;
-  text-halo-fill: rgba(255, 255, 220, 0.7);
+  text-halo-fill: @place-halo;
   text-placement-type: simple;
   text-placements: 'S,N,E,W,NE,NW,SE,SW';
   text-dx: 10;
@@ -693,9 +735,9 @@
   text-name: '[ref]';
   text-size: 7;
   text-face-name: @font-italic;
-  text-fill: black;
+  text-fill: @cycling-node-label;
   text-halo-radius: 1.0;
-  text-halo-fill: rgba(255, 226, 143, 0.7);
+  text-halo-fill: @cycling-node-label-halo;
   text-placement-type: simple;
   text-placements: 'S,N,E,W';
   text-dx: 5;
@@ -711,7 +753,7 @@
     text-name: '[ref]';
     text-size: 8;
     text-face-name: @font;
-    text-fill: white;
+    text-fill: @road-label;
     text-halo-radius: 1.0;
     text-min-path-length: 70;
     text-min-distance: 100;
@@ -723,19 +765,19 @@
     }
 
     [type = 'tertiary'] {
-      text-halo-fill: rgb(82, 82, 82);
+      text-halo-fill: @road-label-tertiary-halo;
     }
     [type = 'secondary'] {
-      text-halo-fill: rgb(99, 99, 6);
+      text-halo-fill: @road-label-secondary-halo;
     }
     [type = 'primary'] {
-      text-halo-fill: rgb(168, 109, 25);
+      text-halo-fill: @road-label-primary-halo;
     }
     [type = 'trunk'] {
-      text-halo-fill: rgb(115, 35, 17);
+      text-halo-fill: @road-label-trunk-halo;
     }
     [type = 'motorway'] {
-      text-halo-fill: black;
+      text-halo-fill: @road-label-motorway-halo;
     }
   }
 }
@@ -748,7 +790,7 @@
     text-face-name: @font-italic;
     text-fill: @poi;
     text-halo-radius: 1.0;
-    text-halo-fill: rgba(255, 255, 220, 0.7);
+    text-halo-fill: @poi-label-halo;
     text-dy: 7;
 
     [type = 'peak'] {
@@ -760,10 +802,10 @@
 #contours {
   [boundary='yes']::label {
     text-name: '[height]';
-    text-fill: rgb(145, 132, 83);
+    text-fill: @contour;
     text-face-name: @font;
     text-size: 6;
-    text-halo-fill: white;
+    text-halo-fill: @contour-label-halo;
     text-halo-radius: 1.0;
     text-placement: line;
     text-min-path-length: 50;
@@ -772,21 +814,21 @@
 
 #scale {
   line-width: 1.0;
-  line-color: black;
+  line-color: @scale-copyright;
 
   ::marker {
     marker-placement: vertex-first;
     marker-allow-overlap: true;
     marker-width: 2;
-    marker-fill: black;
+    marker-fill: @scale-copyright;
   }
 
   ::text {
     text-name: '[value]';
-    text-fill: black;
+    text-fill: @scale-copyright;
     text-face-name: @font;
     text-size: 8;
-    text-halo-fill: rgba(255, 255, 255, 0.7);
+    text-halo-fill: @scale-copyright-halo;
     text-halo-radius: 1.0;
     text-placement: vertex;
     text-dy: 6;
@@ -797,10 +839,10 @@
 
 #copyright {
   text-name: '[label]';
-  text-fill: black;
+  text-fill: @scale-copyright;
   text-face-name: @font;
   text-size: 8;
-  text-halo-fill: rgba(255, 255, 255, 0.7);
+  text-halo-fill: @scale-copyright-halo;
   text-halo-radius: 1.0;
   text-allow-overlap: true;
   text-horizontal-alignment: right;
