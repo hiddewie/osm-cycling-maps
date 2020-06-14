@@ -44,21 +44,24 @@ def renderMap(m, name, topLeft, bottomRight):
     print 'Rendering map with dimensions %s, %s' % (m.width, m.height)
     m.zoom_to_box(mapnik.Box2d(topLeft[0], topLeft[1], bottomRight[0], bottomRight[1]))
 
+    if not mapnik.has_pycairo():
+        raise Exception('Mapnik with compiled Python Cairo bindings is required.')
+
     if not os.path.exists(OUTPUT_PATH):
         print 'Creating output directory %s' % (OUTPUT_PATH,)
         os.makedirs(OUTPUT_PATH)
 
-    if mapnik.has_pycairo():
-        print 'Rendering PDF'
+    print 'Rendering PDF'
 
-        pdf_surface = cairo.PDFSurface(OUTPUT_PATH + name + '.pdf', m.width, m.height)
-        mapnik.render(m, pdf_surface, 1 / 2.0, 0, 0)
-        pdf_surface.finish()
-        print 'Rendered PDF to %s' % (OUTPUT_PATH + name + '.pdf',)
+    pdf_surface = cairo.PDFSurface(OUTPUT_PATH + name + '.pdf', m.width, m.height)
+    mapnik.render(m, pdf_surface, 1 / 2.0, 0, 0)
+    pdf_surface.finish()
+    print 'Rendered PDF to %s' % (OUTPUT_PATH + name + '.pdf',)
 
     xmlFilename = "mapnik_" + name + ".xml"
     print 'Saving map configuration to %s' % (OUTPUT_PATH + xmlFilename,)
     mapnik.save_map(m, OUTPUT_PATH + xmlFilename)
+
     print 'Done'
 
 
