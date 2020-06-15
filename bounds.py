@@ -97,8 +97,6 @@ def determineScale(scale):
 
 
 def boundingBoxes(bbox, pageOverlap, scale, (paperWidth, paperHeight)):
-    # The padding factor is the factor of page with that can be used for rendering map content
-    paddingFactor = (1.0 - 2 * pageOverlap)
 
     # A 'data' pixel is 1 meter (in UTM projection)
     pageWidth = paperWidth * scale
@@ -108,7 +106,10 @@ def boundingBoxes(bbox, pageOverlap, scale, (paperWidth, paperHeight)):
     epsilon = 1e-3
     fitsOnOnePage = pageWidth <= (bbox.maxx - bbox.minx) + epsilon and pageHeight <= (bbox.maxy - bbox.miny) + epsilon
     if fitsOnOnePage:
-        paddingFactor = 1.0
+        pageOverlap = 0.0
+
+    # The padding factor is the factor of page with that can be used for rendering map content
+    paddingFactor = (1.0 - 2 * pageOverlap)
 
     # Find number of pages to print that fit the bounding box
     numPagesHorizontal = int(math.ceil((bbox.maxx - bbox.minx) / (pageWidth * paddingFactor)))
