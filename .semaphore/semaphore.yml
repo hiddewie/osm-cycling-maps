@@ -21,10 +21,20 @@ blocks:
             - export PROJECT_DIR=`pwd`
             # Build images
             - docker build -t map-it-import -f import.Dockerfile .
+            - docker build -t map-it-bounds -f bounds.Dockerfile .
             - docker build -t map-it .
             # Run database
             - docker run -d --name postgres-osm openfirmware/postgres-osm
             # Run import for small area
+            - |
+              docker run -ti \
+                --rm \
+                -e BBOX="43.3146:41.49:43.8202:41.8238" \
+                -e PAPER_SIZE="A2" \
+                -e PAGE_OVERLAP="5%" \
+                -e PAPER_ORIENTATION="landscape" \
+                -e SCALE="1:150000" \
+                map-it-bounds
             - |
               docker run \
                 -ti \
