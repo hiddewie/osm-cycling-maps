@@ -27,14 +27,15 @@ blocks:
             - docker run -d --name postgres-osm openfirmware/postgres-osm
             # Run import for small area
             - |
-              docker run -ti \
+              BOUNDS=$(docker run -ti \
                 --rm \
                 -e BBOX="43.3146:41.49:43.8202:41.8238" \
                 -e PAPER_SIZE="A2" \
                 -e PAGE_OVERLAP="5%" \
                 -e PAPER_ORIENTATION="landscape" \
                 -e SCALE="1:150000" \
-                map-it-bounds
+                map-it-bounds)
+            - 'echo "Bounds: $BOUNDS"'
             - |
               docker run \
                 -ti \
@@ -49,7 +50,7 @@ blocks:
                 -e USGS_USERNAME="$USGS_USERNAME" \
                 -e USGS_PASSWORD="$USGS_PASSWORD" \
                 -e FEATURE_COUNTRIES="europe/georgia" \
-                -e BBOX="43.3146:41.49:43.8202:41.8238" \
+                -e BBOX="$BBOX" \
                 map-it-import
             - |
               docker run -ti \
@@ -63,7 +64,7 @@ blocks:
                 -e PG_PASSWORD="" \
                 -e PG_DATABASE="gis" \
                 -e MAP_NAME="map" \
-                -e BBOX="43.3146:41.49:43.8202:41.8238" \
+                -e BBOX="$BBOX" \
                 -e PAPER_SIZE="A2" \
                 -e PAGE_OVERLAP="5%" \
                 -e PAPER_ORIENTATION="landscape" \

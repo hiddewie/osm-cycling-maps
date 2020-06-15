@@ -104,6 +104,12 @@ def boundingBoxes(bbox, pageOverlap, scale, (paperWidth, paperHeight)):
     pageWidth = paperWidth * scale
     pageHeight = paperHeight * scale
 
+    # If the bounding box fits on one page, then do not use padding
+    epsilon = 1e-3
+    fitsOnOnePage = pageWidth <= (bbox.maxx - bbox.minx) + epsilon and pageHeight <= (bbox.maxy - bbox.miny) + epsilon
+    if fitsOnOnePage:
+        paddingFactor = 1.0
+
     # Find number of pages to print that fit the bounding box
     numPagesHorizontal = int(math.ceil((bbox.maxx - bbox.minx) / (pageWidth * paddingFactor)))
     numPagesVertical = int(math.ceil((bbox.maxy - bbox.miny) / (pageHeight * paddingFactor)))
