@@ -26,19 +26,21 @@ blocks:
             # Import image
             - docker pull $DOCKERHUB_USERNAME/map-it-import:master || true
             - docker pull $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH || true
-            - docker build \
-                -t map-it-import \
-                -f import.Dockerfile \
-                --cache-from $DOCKERHUB_USERNAME/map-it-import:master \
-                --cache-from $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH \
-                .
+            - |
+              docker build \
+              -t map-it-import \
+              -f import.Dockerfile \
+              --cache-from $DOCKERHUB_USERNAME/map-it-import:master \
+              --cache-from $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH \
+              .
             - docker tag map-it-import $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH
             - docker push $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH
 
             # Bounds image
             - docker pull $DOCKERHUB_USERNAME/map-it-bounds:master || true
             - docker pull $DOCKERHUB_USERNAME/map-it-bounds:$SEMAPHORE_GIT_BRANCH || true
-            - docker build \
+            - |
+              docker build \
               -t map-it-bounds \
               -f import.Dockerfile \
               --cache-from $DOCKERHUB_USERNAME/map-it-bounds:master \
@@ -50,14 +52,15 @@ blocks:
             # Map image
             - docker pull $DOCKERHUB_USERNAME/map-it:master || true
             - docker pull $DOCKERHUB_USERNAME/map-it:$SEMAPHORE_GIT_BRANCH || true
-              - docker build \
+            - |
+              docker build \
               -t map-it \
               -f import.Dockerfile \
               --cache-from $DOCKERHUB_USERNAME/map-it:master \
               --cache-from $DOCKERHUB_USERNAME/map-it:$SEMAPHORE_GIT_BRANCH \
               .
-              - docker tag map-it $DOCKERHUB_USERNAME/map-it:$SEMAPHORE_GIT_BRANCH
-              - docker push $DOCKERHUB_USERNAME/map-it:$SEMAPHORE_GIT_BRANCH
+            - docker tag map-it $DOCKERHUB_USERNAME/map-it:$SEMAPHORE_GIT_BRANCH
+            - docker push $DOCKERHUB_USERNAME/map-it:$SEMAPHORE_GIT_BRANCH
 
             # Run database
             - docker run -d --name postgres-osm openfirmware/postgres-osm
