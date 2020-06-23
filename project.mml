@@ -122,34 +122,59 @@ Layer:
             WHEN landuse = 'military' THEN 3
           END ASC
       ) AS data
-- id: administrative-boundaries
+- id: boundaries
   geometry: linestring
   <<: *extentsOSM
   Datasource:
     <<: *osm2pgsql
-    # Levels 0 to 6 are included which has (super-)country and state administrative borders
+    # Administrative boundaries: Levels 0 to 6 are included which has (super-)country
+    #   and state administrative borders
     table: |-
       (
+        WITH administrative AS (
+          SELECT
+            way,
+            boundary,
+            admin_level::int as admin_level
+          FROM
+            planet_osm_roads
+          WHERE
+            way && !bbox! AND
+            boundary = 'administrative' AND
+            admin_level in (
+              '0',
+              '1',
+              '2',
+              '3',
+              '4',
+              '5',
+              '6'
+            ) AND
+            osm_id < 0
+        ),
+        national_parks AS (
+          SELECT
+            way,
+            boundary,
+            null::int as admin_level
+          FROM
+            planet_osm_polygon
+          WHERE
+            way && !bbox! AND
+            boundary = 'national_park' AND
+            building IS NULL
+        )
         SELECT
-          way,
-          admin_level::int as admin_level
+          *
         FROM
-          planet_osm_roads
-        WHERE
-          way && !bbox! AND
-          boundary = 'administrative' AND
-          admin_level in (
-            '0',
-            '1',
-            '2',
-            '3',
-            '4',
-            '5',
-            '6'
-          ) AND
-          osm_id < 0
-        ORDER BY
-          admin_level::int DESC
+          administrative
+
+        UNION ALL
+
+        SELECT
+          *
+        FROM
+          national_parks
       ) AS data
 - id: cycling-network
   geometry: linestring
@@ -660,6 +685,24 @@ Layer:
             WHEN type = 'peak' THEN 18
             ELSE 100
           END ASC
+      ) AS data
+- id: national-park-labels
+  geometry: point
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          ST_PointOnSurface(way) as way,
+          name
+        FROM
+          planet_osm_polygon
+        WHERE
+          way && !bbox! AND
+          boundary = 'national_park' AND
+          building IS NULL AND
+          name IS NOT NULL
       ) AS data
 - id: scale
   geometry: linestring

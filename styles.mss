@@ -148,6 +148,8 @@
 
 @admin-background: @light-green;
 @admin-boundaries: darken(@light-green, 50%);
+@national-park: darken(@feint-green, 50%);
+@national-park-label-halo: @white;
 
 @cycling-network: @yellow;
 
@@ -249,48 +251,57 @@
   }
 }
 
-#administrative-boundaries {
-  ::firstline {
-    background/line-join: round;
-    background/line-color: white;
-    background/line-width: 7;
-  }
-
-  ::wideline {
-    background/line-join: round;
-    background/line-color: white;
-    background/line-width: 4;
-
-    opacity: 0.2;
-    line-color: @admin-background;
-    line-join: bevel;
-    line-width: 4;
-
-    [admin_level < 4] {
+#boundaries {
+  [boundary = 'administrative'] {
+    ::firstline {
+      background/line-join: round;
+      background/line-color: white;
       background/line-width: 7;
-      line-width: 7;
+    }
+
+    ::wideline {
+      background/line-join: round;
+      background/line-color: white;
+      background/line-width: 4;
+
+      opacity: 0.2;
+      line-color: @admin-background;
+      line-join: bevel;
+      line-width: 4;
+
+      [admin_level < 4] {
+        background/line-width: 7;
+        line-width: 7;
+      }
+    }
+
+    ::narrowline {
+      background/line-join: round;
+      background/line-color: white;
+      background/line-width: 1;
+
+      opacity: 0.6;
+      thin/line-color: @admin-boundaries;
+      thin/line-width: 1;
+      thin/line-dasharray: 12,3,2,3,2,3;
+
+      [admin_level >= 4] {
+        thin/line-dasharray: 12,10;
+      }
+    }
+
+    ::firstline,
+    ::wideline,
+    ::narrowline {
+      comp-op: darken;
     }
   }
 
-  ::narrowline {
-    background/line-join: round;
-    background/line-color: white;
-    background/line-width: 1;
-
-    opacity: 0.6;
-    thin/line-color: @admin-boundaries;
-    thin/line-width: 1;
-    thin/line-dasharray: 12,3,2,3,2,3;
-
-    [admin_level >= 4] {
-      thin/line-dasharray: 12,10;
-    }
-  }
-
-  ::firstline,
-  ::wideline,
-  ::narrowline {
-    comp-op: darken;
+  [boundary = 'national_park'] {
+    opacity: 0.4;
+    line-color: @national-park;
+    line-width: 6.0;
+    line-offset: -3.0;
   }
 }
 
@@ -803,6 +814,18 @@
     text-placement: line;
     text-min-path-length: 50;
   }
+}
+
+#national-park-labels {
+  opacity: 0.8;
+  text-name: '[name]';
+  text-fill: darken(@national-park, 15%);
+  text-face-name: @font-italic;
+  text-size: 14;
+  text-halo-fill: @national-park-label-halo;
+  text-halo-radius: 1.0;
+  text-wrap-width: 50;
+  text-line-spacing: 0;
 }
 
 #scale {
