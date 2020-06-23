@@ -24,8 +24,8 @@ blocks:
             - cache restore data-`date +%Y-%m`
 
             # Import image
-            - docker pull $DOCKERHUB_USERNAME/map-it-import:master
-            - docker pull $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH
+            - docker pull $DOCKERHUB_USERNAME/map-it-import:master || true
+            - docker pull $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH || true
             - docker build \
                 -t map-it-import \
                 -f import.Dockerfile \
@@ -36,8 +36,8 @@ blocks:
             - docker push $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH
 
             # Bounds image
-            - docker pull $DOCKERHUB_USERNAME/map-it-bounds:master
-            - docker pull $DOCKERHUB_USERNAME/map-it-bounds:$SEMAPHORE_GIT_BRANCH
+            - docker pull $DOCKERHUB_USERNAME/map-it-bounds:master || true
+            - docker pull $DOCKERHUB_USERNAME/map-it-bounds:$SEMAPHORE_GIT_BRANCH || true
             - docker build \
               -t map-it-bounds \
               -f import.Dockerfile \
@@ -48,8 +48,8 @@ blocks:
             - docker push $DOCKERHUB_USERNAME/map-it-bounds:$SEMAPHORE_GIT_BRANCH
 
             # Map image
-            - docker pull $DOCKERHUB_USERNAME/map-it:master
-            - docker pull $DOCKERHUB_USERNAME/map-it:$SEMAPHORE_GIT_BRANCH
+            - docker pull $DOCKERHUB_USERNAME/map-it:master || true
+            - docker pull $DOCKERHUB_USERNAME/map-it:$SEMAPHORE_GIT_BRANCH || true
               - docker build \
               -t map-it \
               -f import.Dockerfile \
