@@ -29,6 +29,8 @@ COPY project.mml .
 COPY styles.mss .
 RUN carto project.mml > $MAPNIK_CONFIGURATION
 
+COPY environment.py .
+COPY bounds.py .
 COPY generate.py .
 
 CMD /usr/bin/python generate.py
