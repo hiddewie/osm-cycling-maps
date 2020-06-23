@@ -42,7 +42,7 @@ blocks:
             - |
               docker build \
               -t map-it-bounds \
-              -f import.Dockerfile \
+              -f bounds.Dockerfile \
               --cache-from $DOCKERHUB_USERNAME/map-it-bounds:master \
               --cache-from $DOCKERHUB_USERNAME/map-it-bounds:$SEMAPHORE_GIT_BRANCH \
               .
@@ -55,7 +55,7 @@ blocks:
             - |
               docker build \
               -t map-it \
-              -f import.Dockerfile \
+              -f Dockerfile \
               --cache-from $DOCKERHUB_USERNAME/map-it:master \
               --cache-from $DOCKERHUB_USERNAME/map-it:$SEMAPHORE_GIT_BRANCH \
               .
