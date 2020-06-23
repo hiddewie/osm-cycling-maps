@@ -19,6 +19,7 @@ blocks:
           commands:
             - checkout
             - export PROJECT_DIR=`pwd`
+            - cache restore data-`date +%Y-%m`
             # Build images
             - docker build -t map-it-import -f import.Dockerfile .
             - docker build -t map-it-bounds -f bounds.Dockerfile .
@@ -71,3 +72,4 @@ blocks:
                 -e SCALE="1:150000" \
                 map-it
             - artifact push workflow --expire-in 2w output/map.pdf
+            - cache store data-`date +%Y-%m` data
