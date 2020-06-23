@@ -333,7 +333,8 @@ Layer:
           WHERE
             way && !bbox! AND
             highway IS NOT NULL AND
-            highway NOT IN ('platform', 'construction', 'proposed', 'steps')
+            highway NOT IN ('platform', 'construction', 'proposed', 'steps') AND
+            (access IS NULL OR access != 'private')
         ) AS roads
         ORDER BY
           CASE
