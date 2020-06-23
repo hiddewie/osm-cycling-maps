@@ -97,13 +97,12 @@ def determineScale(scale):
 
 
 def boundingBoxes(bbox, pageOverlap, scale, (paperWidth, paperHeight)):
-
     # A 'data' pixel is 1 meter (in UTM projection)
     pageWidth = paperWidth * scale
     pageHeight = paperHeight * scale
 
     # If the bounding box fits on one page, then do not use padding
-    epsilon = 1e-3
+    epsilon = 1
     fitsOnOnePage = pageWidth <= (bbox.maxx - bbox.minx) + epsilon and pageHeight <= (bbox.maxy - bbox.miny) + epsilon
     if fitsOnOnePage:
         pageOverlap = 0.0
@@ -112,8 +111,10 @@ def boundingBoxes(bbox, pageOverlap, scale, (paperWidth, paperHeight)):
     paddingFactor = (1.0 - 2 * pageOverlap)
 
     # Find number of pages to print that fit the bounding box
-    numPagesHorizontal = int(math.ceil((bbox.maxx - bbox.minx) / (pageWidth * paddingFactor)))
-    numPagesVertical = int(math.ceil((bbox.maxy - bbox.miny) / (pageHeight * paddingFactor)))
+    # Due to rounding errors, the the number is multiplied by an almost-1 factor.
+    pageFactor = 0.99
+    numPagesHorizontal = int(math.ceil(pageFactor * (bbox.maxx - bbox.minx) / (pageWidth * paddingFactor)))
+    numPagesVertical = int(math.ceil(pageFactor * (bbox.maxy - bbox.miny) / (pageHeight * paddingFactor)))
 
     # Fit the generated pages perfectly 'around' the bounding box
     paddingX = ((numPagesHorizontal * pageWidth * paddingFactor) - (bbox.maxx - bbox.minx)) / 2 + pageOverlap * pageWidth
