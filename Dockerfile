@@ -3,9 +3,6 @@ FROM debian:buster-slim
 LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
 
 RUN apt-get update && apt-get install -y \
-    libmapnik-dev \
-    mapnik-doc \
-    mapnik-utils \
     python-mapnik \
     curl \
     fonts-noto-cjk \
