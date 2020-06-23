@@ -14,17 +14,57 @@ blocks:
     task:
       secrets:
         - name: usgs
+        - name: dockerhub
       jobs:
         - name: Build and run Docker images
           commands:
             - checkout
+            - echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
             - export PROJECT_DIR=`pwd`
-            # Build images
-            - docker build -t map-it-import -f import.Dockerfile .
-            - docker build -t map-it-bounds -f bounds.Dockerfile .
-            - docker build -t map-it .
+            - cache restore data-`date +%Y-%m`
+
+            # Import image
+            - docker pull $DOCKERHUB_USERNAME/map-it-import:master || true
+            - docker pull $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH || true
+            - |
+              docker build \
+              -t map-it-import \
+              -f import.Dockerfile \
+              --cache-from $DOCKERHUB_USERNAME/map-it-import:master \
+              --cache-from $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH \
+              .
+            - docker tag map-it-import $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH
+            - docker push $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH
+
+            # Bounds image
+            - docker pull $DOCKERHUB_USERNAME/map-it-bounds:master || true
+            - docker pull $DOCKERHUB_USERNAME/map-it-bounds:$SEMAPHORE_GIT_BRANCH || true
+            - |
+              docker build \
+              -t map-it-bounds \
+              -f bounds.Dockerfile \
+              --cache-from $DOCKERHUB_USERNAME/map-it-bounds:master \
+              --cache-from $DOCKERHUB_USERNAME/map-it-bounds:$SEMAPHORE_GIT_BRANCH \
+              .
+            - docker tag map-it-bounds $DOCKERHUB_USERNAME/map-it-bounds:$SEMAPHORE_GIT_BRANCH
+            - docker push $DOCKERHUB_USERNAME/map-it-bounds:$SEMAPHORE_GIT_BRANCH
+
+            # Map image
+            - docker pull $DOCKERHUB_USERNAME/map-it:master || true
+            - docker pull $DOCKERHUB_USERNAME/map-it:$SEMAPHORE_GIT_BRANCH || true
+            - |
+              docker build \
+              -t map-it \
+              -f Dockerfile \
+              --cache-from $DOCKERHUB_USERNAME/map-it:master \
+              --cache-from $DOCKERHUB_USERNAME/map-it:$SEMAPHORE_GIT_BRANCH \
+              .
+            - docker tag map-it $DOCKERHUB_USERNAME/map-it:$SEMAPHORE_GIT_BRANCH
+            - docker push $DOCKERHUB_USERNAME/map-it:$SEMAPHORE_GIT_BRANCH
+
             # Run database
             - docker run -d --name postgres-osm openfirmware/postgres-osm
+
             # Run import for small area
             - |
               BBOX=$(docker run -ti \
@@ -71,3 +111,4 @@ blocks:
                 -e SCALE="1:150000" \
                 map-it
             - artifact push workflow --expire-in 2w output/map.pdf
+            - cache store data-`date +%Y-%m` data
