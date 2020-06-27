@@ -126,7 +126,7 @@
 @light-green: rgb(0, 219, 68);
 @light-yellow: rgb(232, 232, 16);
 @transparent-light-yellow: rgba(255, 255, 220, 0.8);
-@yellow: rgb(255, 210, 80);
+@yellow: rgb(255, 191, 0);
 @orange: rgb(219, 143, 35);
 @blue: rgb(53, 134, 212);
 @light-blue: lighten(@blue, 30%);
