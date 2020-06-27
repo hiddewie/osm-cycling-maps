@@ -122,6 +122,56 @@ Layer:
             WHEN landuse = 'military' THEN 3
           END ASC
       ) AS data
+- id: cycling-network
+  geometry: linestring
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way
+        FROM
+          planet_osm_line
+        WHERE
+          way && !bbox! AND
+          route = 'bicycle'
+      ) AS data
+- id: waterways
+  geometry: linestring
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way
+        FROM
+          planet_osm_line
+        WHERE
+          way && !bbox! AND
+          waterway IN (
+            'river',
+            'stream',
+            'canal',
+            'drain'
+          )
+      ) AS data
+- id: water
+  geometry: polygon
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way
+        FROM
+          planet_osm_polygon
+        WHERE
+          way && !bbox! AND
+          "natural" = 'water'
+      ) AS data
 - id: boundaries
   geometry: linestring
   <<: *extentsOSM
@@ -175,56 +225,6 @@ Layer:
           *
         FROM
           national_parks
-      ) AS data
-- id: cycling-network
-  geometry: linestring
-  <<: *extentsOSM
-  Datasource:
-    <<: *osm2pgsql
-    table: |-
-      (
-        SELECT
-          way
-        FROM
-          planet_osm_line
-        WHERE
-          way && !bbox! AND
-          route = 'bicycle'
-      ) AS data
-- id: waterways
-  geometry: linestring
-  <<: *extentsOSM
-  Datasource:
-    <<: *osm2pgsql
-    table: |-
-      (
-        SELECT
-          way
-        FROM
-          planet_osm_line
-        WHERE
-          way && !bbox! AND
-          waterway IN (
-            'river',
-            'stream',
-            'canal',
-            'drain'
-          )
-      ) AS data
-- id: water
-  geometry: polygon
-  <<: *extentsOSM
-  Datasource:
-    <<: *osm2pgsql
-    table: |-
-      (
-        SELECT
-          way
-        FROM
-          planet_osm_polygon
-        WHERE
-          way && !bbox! AND
-          "natural" = 'water'
       ) AS data
 - id: springs
   geometry: point
