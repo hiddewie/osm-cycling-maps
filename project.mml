@@ -359,7 +359,7 @@ Layer:
               ELSE 'F'
             END as bicycle,
             tracktype,
-            ref,
+            REPLACE(ref, ';', ' / ') as ref,
             layer
           FROM
             planet_osm_line
