@@ -334,7 +334,8 @@ Layer:
             way && !bbox! AND
             highway IS NOT NULL AND
             highway NOT IN ('platform', 'construction', 'proposed', 'steps') AND
-            (access IS NULL OR access != 'private')
+            (access IS NULL OR access != 'private') AND
+            (tunnel IS NULL OR tunnel != 'yes')
         ) AS roads
         ORDER BY
           CASE
