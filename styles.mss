@@ -126,7 +126,7 @@
 @light-green: rgb(0, 219, 68);
 @light-yellow: rgb(232, 232, 16);
 @transparent-light-yellow: rgba(255, 255, 220, 0.8);
-@yellow: rgb(255, 210, 80);
+@yellow: rgb(255, 191, 0);
 @orange: rgb(219, 143, 35);
 @blue: rgb(53, 134, 212);
 @light-blue: lighten(@blue, 30%);
@@ -214,7 +214,7 @@
 #shade {
   raster-scaling: lanczos;
   raster-comp-op: multiply;
-  raster-opacity: 0.75;
+  raster-opacity: 0.5;
 }
 
 #contours {
@@ -368,6 +368,78 @@
 @road-width-medium: 1.8;
 @road-width-large: 2.6;
 @road-border-width: 0.7;
+
+#tunnels {
+  background/line-color: white;
+  background/line-dasharray: 3,2;
+
+  // Colors
+
+  [type = 'cycleway'] {
+    background/line-color: @cycle;
+  }
+  [type = 'tertiary'] {
+    background/line-color: @tertiary;
+  }
+
+  [type = 'secondary'],
+  [type = 'secondary_link'] {
+    background/line-color: @secondary;
+  }
+
+  [type = 'primary'],
+  [type = 'primary_link'] {
+    background/line-color: @primary;
+  }
+
+  [type = 'trunk'],
+  [type = 'trunk_link'] {
+    background/line-color: @trunk;
+  }
+
+  [type = 'motorway'],
+  [type = 'motorway_link'] {
+    background/line-color: @highway;
+  }
+
+  // Widths
+
+  [type = 'secondary'],
+  [type = 'secondary_link'],
+  [type = 'primary'],
+  [type = 'primary_link'] {
+    background/line-width: @road-width-medium;
+  }
+
+  [type = 'tertiary'],
+  [type = 'trunk'],
+  [type = 'trunk_link'],
+  [type = 'motorway'],
+  [type = 'motorway_link'] {
+    background/line-width: @road-width-large;
+  }
+
+  transparent/line-color: white;
+
+  // Widths
+
+  [type = 'secondary'],
+  [type = 'secondary_link'],
+  [type = 'primary'],
+  [type = 'primary_link'] {
+    transparent/line-width: @road-width-medium - 2 * @road-border-width;
+  }
+
+  [type = 'tertiary'],
+  [type = 'trunk'],
+  [type = 'trunk_link'],
+  [type = 'motorway'],
+  [type = 'motorway_link'] {
+    transparent/line-width: @road-width-large - 2 * @road-border-width;
+  }
+
+  comp-op: darken;
+}
 
 #roads::track {
   [type = 'track'] {

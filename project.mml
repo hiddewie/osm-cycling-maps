@@ -122,6 +122,56 @@ Layer:
             WHEN landuse = 'military' THEN 3
           END ASC
       ) AS data
+- id: cycling-network
+  geometry: linestring
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way
+        FROM
+          planet_osm_line
+        WHERE
+          way && !bbox! AND
+          route = 'bicycle'
+      ) AS data
+- id: waterways
+  geometry: linestring
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way
+        FROM
+          planet_osm_line
+        WHERE
+          way && !bbox! AND
+          waterway IN (
+            'river',
+            'stream',
+            'canal',
+            'drain'
+          )
+      ) AS data
+- id: water
+  geometry: polygon
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way
+        FROM
+          planet_osm_polygon
+        WHERE
+          way && !bbox! AND
+          "natural" = 'water'
+      ) AS data
 - id: boundaries
   geometry: linestring
   <<: *extentsOSM
@@ -176,56 +226,6 @@ Layer:
         FROM
           national_parks
       ) AS data
-- id: cycling-network
-  geometry: linestring
-  <<: *extentsOSM
-  Datasource:
-    <<: *osm2pgsql
-    table: |-
-      (
-        SELECT
-          way
-        FROM
-          planet_osm_line
-        WHERE
-          way && !bbox! AND
-          route = 'bicycle'
-      ) AS data
-- id: waterways
-  geometry: linestring
-  <<: *extentsOSM
-  Datasource:
-    <<: *osm2pgsql
-    table: |-
-      (
-        SELECT
-          way
-        FROM
-          planet_osm_line
-        WHERE
-          way && !bbox! AND
-          waterway IN (
-            'river',
-            'stream',
-            'canal',
-            'drain'
-          )
-      ) AS data
-- id: water
-  geometry: polygon
-  <<: *extentsOSM
-  Datasource:
-    <<: *osm2pgsql
-    table: |-
-      (
-        SELECT
-          way
-        FROM
-          planet_osm_polygon
-        WHERE
-          way && !bbox! AND
-          "natural" = 'water'
-      ) AS data
 - id: springs
   geometry: point
   <<: *extentsOSM
@@ -265,6 +265,39 @@ Layer:
         WHERE
           way && !bbox! AND
           route = 'ferry'
+      ) AS data
+- id: tunnels
+  geometry: linestring
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          *
+        FROM (
+          SELECT
+            way,
+            highway as type
+          FROM
+            planet_osm_line
+          WHERE
+            way && !bbox! AND
+            highway IN (
+              'motorway_link',
+              'trunk_link',
+              'secondary_link',
+              'primary_link',
+              'motorway',
+              'trunk',
+              'cycleway',
+              'tertiary',
+              'secondary',
+              'primary'
+            ) AND
+            (access IS NULL OR access != 'private') AND
+            (tunnel = 'yes')
+        ) AS roads
       ) AS data
 - id: aeroway
   geometry: linestring
@@ -326,7 +359,7 @@ Layer:
               ELSE 'F'
             END as bicycle,
             tracktype,
-            ref,
+            REPLACE(ref, ';', ' / ') as ref,
             layer
           FROM
             planet_osm_line
@@ -334,7 +367,8 @@ Layer:
             way && !bbox! AND
             highway IS NOT NULL AND
             highway NOT IN ('platform', 'construction', 'proposed', 'steps') AND
-            (access IS NULL OR access != 'private')
+            (access IS NULL OR access != 'private') AND
+            (tunnel IS NULL OR tunnel != 'yes')
         ) AS roads
         ORDER BY
           CASE
