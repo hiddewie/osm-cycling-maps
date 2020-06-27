@@ -214,7 +214,7 @@
 #shade {
   raster-scaling: lanczos;
   raster-comp-op: multiply;
-  raster-opacity: 0.75;
+  raster-opacity: 0.5;
 }
 
 #contours {
