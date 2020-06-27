@@ -334,7 +334,8 @@ Layer:
           railway IN (
             'rail',
             'preserved'
-          )
+          ) AND
+          (tunnel IS NULL OR tunnel != 'yes')
       ) AS data
 - id: roads
   geometry: linestring
