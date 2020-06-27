@@ -697,9 +697,9 @@
   }
   [type = 'peak'] {
     background/marker-width: 5;
-    background/marker-file: 'data/icons/svg/triangle.svg';
+    background/marker-file: 'data/icons/maki/triangle-11.svg';
     marker-width: 5;
-    marker-file: 'data/icons/svg/triangle.svg';
+    marker-file: 'data/icons/maki/triangle-11.svg';
   }
   [type = 'castle'],
   [type = 'fort'] {
