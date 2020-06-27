@@ -146,8 +146,8 @@
 @residential: @light-ocre;
 @military: @light-red;
 
-@admin-background: @light-green;
-@admin-boundaries: darken(@light-green, 50%);
+@admin-background: lighten(@purple, 10%);
+@admin-boundaries: @purple;
 @national-park: darken(@feint-green, 50%);
 @national-park-label-halo: @white;
 
