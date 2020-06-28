@@ -341,9 +341,17 @@
   line-width: 5;
 }
 
+@road-width-small: 1.2;
+@road-width-medium: 1.8;
+@road-width-large: 2.6;
+@road-border-width: 0.7;
+
+@railway-width: 1.5;
+@railway-border-width: 0.25;
+
 #railways {
   line-color: @rail-dark;
-  line-width: 1.5;
+  line-width: @railway-width + 2 * @railway-border-width;
   line-cap: square;
 
   overlay/line-color: @rail-light;
@@ -351,7 +359,7 @@
   overlay/line-cap: square;
 
   dash/line-color: @rail-dark;
-  dash/line-width: 1;
+  dash/line-width: @railway-width;
   dash/line-dasharray: 5, 5;
   dash/line-cap: square;
 
@@ -363,11 +371,6 @@
     dash/line-dasharray: 5, 2;
   }
 }
-
-@road-width-small: 1.2;
-@road-width-medium: 1.8;
-@road-width-large: 2.6;
-@road-border-width: 0.7;
 
 #tunnels {
   background/line-color: white;
@@ -402,6 +405,10 @@
     background/line-color: @highway;
   }
 
+  [type = 'railway'] {
+    background/line-color: @rail-dark;
+  }
+
   // Widths
 
   [type = 'secondary'],
@@ -417,6 +424,10 @@
   [type = 'motorway'],
   [type = 'motorway_link'] {
     background/line-width: @road-width-large;
+  }
+
+  [type = 'railway'] {
+    background/line-width: @railway-width;
   }
 
   transparent/line-color: white;
@@ -436,6 +447,10 @@
   [type = 'motorway'],
   [type = 'motorway_link'] {
     transparent/line-width: @road-width-large - 2 * @road-border-width;
+  }
+
+  [type = 'railway'] {
+    transparent/line-width: @railway-width - 6 * @railway-border-width;
   }
 
   comp-op: darken;

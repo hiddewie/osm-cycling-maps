@@ -274,30 +274,40 @@ Layer:
     table: |-
       (
         SELECT
-          *
-        FROM (
-          SELECT
-            way,
-            highway as type
-          FROM
-            planet_osm_line
-          WHERE
-            way && !bbox! AND
-            highway IN (
-              'motorway_link',
-              'trunk_link',
-              'secondary_link',
-              'primary_link',
-              'motorway',
-              'trunk',
-              'cycleway',
-              'tertiary',
-              'secondary',
-              'primary'
-            ) AND
-            (access IS NULL OR access != 'private') AND
-            (tunnel = 'yes')
-        ) AS roads
+          way,
+          highway as type
+        FROM
+          planet_osm_line
+        WHERE
+          way && !bbox! AND
+          highway IN (
+            'motorway_link',
+            'trunk_link',
+            'secondary_link',
+            'primary_link',
+            'motorway',
+            'trunk',
+            'cycleway',
+            'tertiary',
+            'secondary',
+            'primary'
+          ) AND
+          (access IS NULL OR access != 'private') AND
+          (tunnel = 'yes')
+
+        UNION ALL
+
+        SELECT
+          way,
+          'railway' as type
+        FROM
+          planet_osm_line
+        WHERE
+          way && !bbox! AND
+          railway IN (
+            'rail'
+          ) AND
+          tunnel = 'yes'
       ) AS data
 - id: aeroway
   geometry: linestring
