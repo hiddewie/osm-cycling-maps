@@ -103,7 +103,7 @@ def boundingBoxes(bbox, pageOverlap, scale, (paperWidth, paperHeight)):
 
     # If the bounding box fits on one page, then do not use padding
     epsilon = 1
-    fitsOnOnePage = pageWidth <= (bbox.maxx - bbox.minx) + epsilon and pageHeight <= (bbox.maxy - bbox.miny) + epsilon
+    fitsOnOnePage = (bbox.maxx - bbox.minx) <= pageWidth + epsilon and (bbox.maxy - bbox.miny) <= pageHeight + epsilon
     if fitsOnOnePage:
         pageOverlap = 0.0
 
