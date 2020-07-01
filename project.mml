@@ -394,12 +394,11 @@ Layer:
             WHEN type = 'motorway' THEN 5
             WHEN type = 'trunk' THEN 6
             WHEN type = 'unclassified' THEN 100
-            WHEN type = 'service' THEN 101
-            WHEN type = 'residential' THEN 102
-            WHEN type = 'cycleway' THEN 103
-            WHEN type = 'tertiary' THEN 104
-            WHEN type = 'secondary' THEN 105
-            WHEN type = 'primary' THEN 106
+            WHEN type = 'residential' THEN 101
+            WHEN type = 'cycleway' THEN 102
+            WHEN type = 'tertiary' THEN 103
+            WHEN type = 'secondary' THEN 104
+            WHEN type = 'primary' THEN 105
             ELSE 50
           END ASC
       ) AS data

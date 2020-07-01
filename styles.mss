@@ -483,7 +483,6 @@
     line-width: @road-width-small + 2 * @road-border-width;
   }
 
-  [type = 'service'],
   [type = 'unclassified'],
   [type = 'secondary'],
   [type = 'secondary_link'],
@@ -506,7 +505,6 @@
     line-color: @unclassified-border;
   }
 
-  [type = 'service'],
   [type = 'unclassified'] {
     line-color: @unclassified-border;
   }
@@ -547,7 +545,6 @@
     line-width: @road-width-small;
   }
 
-  [type = 'service'],
   [type = 'unclassified'],
   [type = 'secondary'],
   [type = 'secondary_link'],
@@ -586,7 +583,6 @@
     line-color: @unclassified;
   }
 
-  [type = 'service'],
   [type = 'unclassified'] {
     line-color: @unclassified;
   }
