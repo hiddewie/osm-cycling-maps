@@ -341,9 +341,9 @@
   line-width: 5;
 }
 
-@road-width-small: 1.2;
-@road-width-medium: 1.8;
-@road-width-large: 2.6;
+@road-width-small: 1.0;
+@road-width-medium: 1.6;
+@road-width-large: 2.2;
 @road-border-width: 0.7;
 
 @railway-width: 1.5;
