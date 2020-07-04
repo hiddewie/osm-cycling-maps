@@ -62,7 +62,7 @@ gdalinfo $DATA_DIR/combined.hgt
 
 echo "Contours"
 rm -f $DATA_DIR/combined.shp || exit 1
-gdal_contour -i 20 -snodata -32768 -a height $DATA_DIR/combined.hgt $DATA_DIR/combined.shp || exit 1
+gdal_contour -i 25 -snodata -32768 -a height $DATA_DIR/combined.hgt $DATA_DIR/combined.shp || exit 1
 
 ARGS="-I -d"
 echo "Import contours"
