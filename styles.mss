@@ -122,12 +122,12 @@
 @ocre: rgb(145, 132, 83);
 @light-ocre: lighten(@ocre, 40%);
 @light-red: rgb(255, 51, 51);
-@dark-red: rgb(180, 30, 0);
+@dark-red: rgb(180, 30, 30);
 @light-green: rgb(0, 219, 68);
 @light-yellow: rgb(232, 232, 16);
 @transparent-light-yellow: rgba(255, 255, 220, 0.8);
-@yellow: rgb(255, 191, 0);
-@orange: rgb(219, 143, 35);
+@yellow-green: rgb(210, 240, 0);
+@orange: rgb(219, 170, 35);
 @blue: rgb(53, 134, 212);
 @light-blue: lighten(@blue, 30%);
 @dark-blue: darken(@blue, 30%);
@@ -151,7 +151,7 @@
 @national-park: darken(@feint-green, 50%);
 @national-park-label-halo: @white;
 
-@cycling-network: @yellow;
+@cycling-network: @yellow-green;
 
 @waterway: @blue;
 @water: @light-blue;
@@ -165,9 +165,9 @@
 @tertiary: @unclassified;
 @tertiary-border: @unclassified-border;
 @secondary: @light-yellow;
-@secondary-border: darken(@light-yellow, 30%);
+@secondary-border: darken(@light-yellow, 20%);
 @primary: @orange;
-@primary-border: darken(@orange, 30%);
+@primary-border: darken(@orange, 20%);
 @trunk: @light-gray;
 @trunk-border: @white;
 @highway: @gray;
@@ -306,9 +306,9 @@
 }
 
 #cycling-network {
-  opacity: 0.6;
+  opacity: 0.8;
   line-color: @cycling-network;
-  line-width: 7.0;
+  line-width: 8.0;
   line-cap: round;
 }
 
