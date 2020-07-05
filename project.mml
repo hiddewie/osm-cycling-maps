@@ -531,9 +531,17 @@ Layer:
           aeroway IN (
             'aerodrome'
           ) OR
-          railway IN (
-            'station',
-            'halt'
+          (
+            railway IN (
+              'station',
+              'halt'
+            ) AND
+            ((tags->'station') IS NULL OR (tags->'station') NOT IN (
+              'subway',
+              'light_rail',
+              'monorail',
+              'funicular'
+            ))
           )
       ) AS data
 - id: cycling-nodes-labels
