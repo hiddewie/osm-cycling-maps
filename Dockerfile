@@ -8,12 +8,12 @@ COPY project.mml .
 COPY styles.mss .
 RUN carto project.mml > mapnik.xml
 
-FROM debian:buster-slim
+FROM ubuntu:focal
 
 LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
 
 RUN apt-get update && apt-get install -y \
-    python-mapnik \
+    python3-mapnik \
     curl \
     fonts-noto-cjk \
     fonts-noto-hinted \
@@ -33,4 +33,4 @@ COPY environment.py .
 COPY bounds.py .
 COPY generate.py .
 
-CMD /usr/bin/python generate.py
+CMD /usr/bin/python3 generate.py

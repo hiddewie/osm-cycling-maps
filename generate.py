@@ -15,31 +15,31 @@ OUTPUT_PATH = 'output/'
 
 def loadMapFromFile(file, mapWidth, mapHeight):
     m = mapnik.Map(mapWidth, mapHeight)
-    print 'Loading map from file %s' % (file,)
+    print('Loading map from file %s' % (file,))
     mapnik.load_map(m, file)
     return m
 
 
 def renderMap(m, name, bbox):
-    print 'Rendering map with dimensions %s, %s' % (m.width, m.height)
+    print('Rendering map with dimensions %s, %s' % (m.width, m.height))
     m.zoom_to_box(bbox)
 
     if not os.path.exists(OUTPUT_PATH):
-        print 'Creating output directory %s' % (OUTPUT_PATH,)
+        print('Creating output directory %s' % (OUTPUT_PATH,))
         os.makedirs(OUTPUT_PATH)
 
     if mapnik.has_pycairo():
-        print 'Rendering PDF'
+        print('Rendering PDF')
 
         pdf_surface = cairo.PDFSurface(OUTPUT_PATH + name + '.pdf', m.width, m.height)
         mapnik.render(m, pdf_surface, 1 / 2.0, 0, 0)
         pdf_surface.finish()
-        print 'Rendered PDF to %s' % (OUTPUT_PATH + name + '.pdf',)
+        print('Rendered PDF to %s' % (OUTPUT_PATH + name + '.pdf',))
 
     xmlFilename = "mapnik_" + name + ".xml"
-    print 'Saving map configuration to %s' % (OUTPUT_PATH + xmlFilename,)
+    print('Saving map configuration to %s' % (OUTPUT_PATH + xmlFilename,))
     mapnik.save_map(m, OUTPUT_PATH + xmlFilename)
-    print 'Done'
+    print('Done')
 
 
 def main():

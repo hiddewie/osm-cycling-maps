@@ -53,7 +53,8 @@ def determineOrientation(orientation):
     return orientation
 
 
-def rotatePaper((width, height), orientation):
+def rotatePaper(bounds, orientation):
+    width, height = bounds
     if orientation == ORIENTATION_LANDSCAPE:
         width, height = height, width
 
@@ -96,7 +97,8 @@ def determineScale(scale):
         return
 
 
-def boundingBoxes(bbox, pageOverlap, scale, (paperWidth, paperHeight)):
+def boundingBoxes(bbox, pageOverlap, scale, paperDimensions):
+    paperWidth, paperHeight = paperDimensions
     # A 'data' pixel is 1 meter (in UTM projection)
     pageWidth = paperWidth * scale
     pageHeight = paperHeight * scale
@@ -137,7 +139,8 @@ def boundingBoxes(bbox, pageOverlap, scale, (paperWidth, paperHeight)):
     return boundingBoxes
 
 
-def mapDimensions((width, height)):
+def mapDimensions(dimensions):
+    width, height = dimensions
     print('Rendering map with page width paper size (%s m × %s m)' % (width, height))
 
     # Dots per inch (1 point = 1/72 inch, see https://pycairo.readthedocs.io/en/latest/reference/surfaces.html#class-pdfsurface-surface)
