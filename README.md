@@ -24,13 +24,13 @@ See the environment variables which can be configured for the scripts below.
 Make sure you have a running Postgres database, with a `gis` schema with GIS extensions enabled.
 
 Run the command
-```shell script
+```bash
 ./download.sh
 ```
 to download the data and insert it into the database. Make sure that the environment variables listed below are set.
 
 Run the command 
-```shell script
+```bash
 carto project.mml > mapnik.xml
 ./generate.py mapnik.xml
 ```
