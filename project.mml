@@ -479,8 +479,7 @@ Layer:
             'city',
             'town',
             'village',
-            'hamlet',
-            'suburb'
+            'hamlet'
           )
       ) AS data
 - id: transport
