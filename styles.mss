@@ -660,13 +660,16 @@
 
   [type = 'camp_site'],
   [type = 'caravan_site'],
-  [type = 'ruins'],
   [type = 'wind_power'] {
     background/marker-line-width: 50.0;
   }
 
   [type = 'mountain_pass'] {
     background/marker-line-width: 0.5;
+  }
+
+  [type = 'ruins'] {
+    background/marker-line-width: 20.0;
   }
 
   marker-width: 10;
@@ -720,8 +723,10 @@
     marker-file: 'data/icons/maki/castle-11.svg';
   }
   [type = 'ruins'] {
-    background/marker-file: 'data/icons/svg/ruins.svg';
-    marker-file: 'data/icons/svg/ruins.svg';
+    background/marker-width: 9;
+    background/marker-file: 'data/icons/openstreetmap/ruins.svg';
+    marker-width: 9;
+    marker-file: 'data/icons/openstreetmap/ruins.svg';
   }
   [type = 'lighthouse'] {
     background/marker-file: 'data/icons/maki/lighthouse-11.svg';
