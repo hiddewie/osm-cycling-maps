@@ -47,7 +47,6 @@
        "Noto Sans Sundanese Regular",
        "Noto Sans Symbols Regular",
        "Noto Sans Symbols2 Regular",
-       "Noto Sans Syriac Eastern Regular",
        "Noto Sans Tagalog Regular",
        "Noto Sans Tagbanwa Regular",
        "Noto Sans Tai Le Regular",
