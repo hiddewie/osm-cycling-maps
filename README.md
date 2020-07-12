@@ -47,9 +47,13 @@ docker run -d --name postgres-osm openfirmware/postgres-osm
 
 #### Map bounds
 
-Determine the bounding box of the region you want to print. The tool [Geofabrik tool](https://tools.geofabrik.de/calc/#type=geofabrik_standard&bbox=0.110816,47.68199,9.943825,55.331672&tab=2) can be used to choose coordinates on a map. The bounding box will be used to determine the number of pages to print. If everything fits on one page (of the configured paper size) then padding is added until the page is filled exactly. If the content needs more than one page, then multiple tiled pages are generated to cover the bounding box area, with the configured page overlap (5% by default).
+Determine the bounding box of the region you want to print. The bounding box will be used to determine the number of pages to print. If everything fits on one page (of the configured paper size) then padding is added until the page is filled exactly. If the content needs more than one page, then multiple tiled pages are generated to cover the bounding box area, with the configured page overlap (5% by default).
 
-To assist with finding the correct bounding boxes that will fit exactly on a page of the correct size, the following script container can be used. The output will contain the bounding boxes for each page that will be generated. These values can be used for other commands. 
+The [Map bounds tool](https://hiddewieringa.nl/map-bounds) can be used to choose coordinates on a map in a visual manner.
+
+[![](assets/bounds.png)](https://hiddewieringa.nl/map-bounds)
+
+In addition to the visual tool, the following script container can be used. This commandline tool contains the same logic in the visual tool and as in the map generation script. The output will contain the bounding boxes for each page that will be generated. These values can be used for other commands. 
 ```bash
 docker run \ 
   -ti \
