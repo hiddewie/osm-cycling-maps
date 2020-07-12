@@ -155,7 +155,8 @@ Layer:
             'stream',
             'canal',
             'drain'
-          )
+          ) AND
+          (tunnel IS NULL OR tunnel != 'yes')
       ) AS data
 - id: water
   geometry: polygon
