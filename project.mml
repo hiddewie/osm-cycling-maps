@@ -452,7 +452,7 @@ Layer:
           way && !bbox! AND
           power = 'tower'
       ) AS data
-- id: places
+- id: places-important
   geometry: point
   <<: *extentsOSM
   Datasource:
@@ -462,17 +462,6 @@ Layer:
         SELECT
           way,
           place,
-          CASE
-            WHEN
-              place = 'city' AND
-              (
-                (tags->'is_capital') = 'country' OR
-                admin_level = '2' OR
-                (capital = 'yes' AND admin_level IS NULL)
-              )
-            THEN 'T'
-            ELSE 'F'
-          END as capital,
           name
         FROM
           planet_osm_point
@@ -482,8 +471,7 @@ Layer:
           place IN (
             'city',
             'town',
-            'village',
-            'hamlet'
+            'village'
           )
       ) AS data
 - id: transport
@@ -765,6 +753,26 @@ Layer:
           building IS NULL AND
           name IS NOT NULL AND
           way_area >= 2e6
+      ) AS data
+- id: places-non-important
+  geometry: point
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way,
+          place,
+          name
+        FROM
+          planet_osm_point
+        WHERE
+          way && !bbox! AND
+          name IS NOT NULL AND
+          place IN (
+            'hamlet'
+          )
       ) AS data
 - id: contour-labels
   geometry: linestring

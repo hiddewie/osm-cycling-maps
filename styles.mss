@@ -790,7 +790,7 @@
   }
 }
 
-#places {
+#places-important, #places-non-important {
   text-name: '[name]';
   text-size: 7;
   text-face-name: @font;
