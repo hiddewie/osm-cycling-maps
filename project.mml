@@ -473,6 +473,15 @@ Layer:
             'town',
             'village'
           )
+        ORDER BY
+          CASE
+            WHEN (tags->'population' ~ '^[0-9]{1,8}$') THEN (tags->'population')::INTEGER
+            WHEN (place = 'city') THEN 100000
+            WHEN (place = 'town') THEN 1000
+            ELSE 1
+          END DESC,
+          length(name) DESC,
+          name
       ) AS data
 - id: transport
   geometry: point
