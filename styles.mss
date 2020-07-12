@@ -890,17 +890,15 @@
   }
 }
 
-#contours {
-  [boundary='yes']::label {
-    text-name: '[height]';
-    text-fill: @contour;
-    text-face-name: @font;
-    text-size: 6;
-    text-halo-fill: @contour-label-halo;
-    text-halo-radius: 1.0;
-    text-placement: line;
-    text-min-path-length: 50;
-  }
+#contour-labels {
+  text-name: '[height]';
+  text-fill: @contour;
+  text-face-name: @font;
+  text-size: 6;
+  text-halo-fill: @contour-label-halo;
+  text-halo-radius: 1.0;
+  text-placement: line;
+  text-min-path-length: 50;
 }
 
 #national-park-labels {

@@ -86,7 +86,6 @@ Layer:
       (
         SELECT
           way,
-          height,
           CASE
             WHEN (MOD(height::int, 100) = 0) THEN 'yes'
             ELSE 'no'
@@ -766,6 +765,22 @@ Layer:
           building IS NULL AND
           name IS NOT NULL AND
           way_area >= 2e6
+      ) AS data
+- id: contour-labels
+  geometry: linestring
+  <<: *extents
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way,
+          height
+        FROM
+          contours
+        WHERE
+          way && !bbox! AND
+          MOD(height::int, 100) = 0
       ) AS data
 - id: scale
   geometry: linestring
