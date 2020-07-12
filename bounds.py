@@ -105,28 +105,23 @@ def boundingBoxes(bbox, pageOverlap, scale, paperDimensions):
 
     # If the bounding box fits on one page, then do not use padding
     epsilon = 1
-    fitsOnOnePage = (bbox.maxx - bbox.minx) <= pageWidth + epsilon and (bbox.maxy - bbox.miny) <= pageHeight + epsilon
-    if fitsOnOnePage:
-        pageOverlap = 0.0
+    fitsOnOnePageHorizontal = (bbox.maxx - bbox.minx) <= pageWidth + epsilon
+    fitsOnOnePageVertical = (bbox.maxy - bbox.miny) <= pageHeight + epsilon
 
-    # The padding factor is the factor of page with that can be used for rendering map content
-    paddingFactor = (1.0 - 2 * pageOverlap)
-
-    # Find number of pages to print that fit the bounding box
-    # Due to rounding errors, the the number is multiplied by an almost-1 factor.
-    pageFactor = 0.99
-    numPagesHorizontal = int(math.ceil(pageFactor * (bbox.maxx - bbox.minx) / (pageWidth * paddingFactor)))
-    numPagesVertical = int(math.ceil(pageFactor * (bbox.maxy - bbox.miny) / (pageHeight * paddingFactor)))
+    numPagesHorizontal = 1 if fitsOnOnePageHorizontal else 1 + int(math.ceil(((bbox.maxx - bbox.minx) - pageWidth) / ((1.0 - pageOverlap) * pageWidth)))
+    numPagesVertical = 1 if fitsOnOnePageVertical else 1 + int(math.ceil(((bbox.maxy - bbox.miny) - pageHeight) / ((1.0 - pageOverlap) * pageHeight)))
 
     # Fit the generated pages perfectly 'around' the bounding box
-    paddingX = ((numPagesHorizontal * pageWidth * paddingFactor) - (bbox.maxx - bbox.minx)) / 2 + pageOverlap * pageWidth
-    paddingY = ((numPagesVertical * pageHeight * paddingFactor) - (bbox.maxy - bbox.miny)) / 2 + pageOverlap * pageWidth
+    paddingX = ((numPagesHorizontal * pageWidth - (numPagesHorizontal - 1) * pageOverlap * pageWidth) - (bbox.maxx - bbox.minx)) / 2
+    paddingY = ((numPagesVertical * pageHeight - (numPagesVertical - 1) * pageOverlap * pageHeight) - (bbox.maxy - bbox.miny)) / 2
 
     boundingBoxes = []
     for i in range(numPagesHorizontal):
         for j in range(numPagesVertical):
-            topLeft = int(bbox.minx - paddingX + i * pageWidth * paddingFactor), int(bbox.maxy + paddingY - j * pageHeight * paddingFactor)
-            bottomRight = int(topLeft[0] + pageWidth), int(topLeft[1] - pageHeight)
+            topLeft = int(bbox.minx - paddingX + i * pageWidth - i * pageOverlap * pageWidth), \
+                      int(bbox.maxy + paddingY - j * pageHeight + j * pageOverlap * pageHeight)
+            bottomRight = int(topLeft[0] + pageWidth), \
+                          int(topLeft[1] - pageHeight)
 
             tileBoundingBox = latitudeLongitudeToWebMercator.backward(mapnik.Box2d(
                 topLeft[0],
