@@ -122,15 +122,17 @@ echo "Using $OSM2PGSQL_NUMPROC processes"
 
 echo "Starting import from $DATA_DIR/combined.osm.pbf"
 
+# No --hstore is used, because no tag data is needed
+# Everything that is needed should be put into map-it.style
 osm2pgsql \
   --cache $OSM2PGSQL_CACHE \
   --number-processes $OSM2PGSQL_NUMPROC \
-  --hstore \
   --multi-geometry \
   --host $PG_HOST \
   --database $PG_DATABASE \
   --username $PG_USER \
   --unlogged \
+  --style /script/map-it.style \
   --slim \
   --drop \
   $DATA_DIR/combined.osm.pbf

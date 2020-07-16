@@ -25,7 +25,8 @@ RUN mkdir /script
 
 WORKDIR /data
 
-COPY ./download.sh /script/download.sh
+COPY map-it.style /script/map-it.style
+COPY download.sh /script/download.sh
 RUN chmod +x /script/download.sh
 
 CMD /script/download.sh

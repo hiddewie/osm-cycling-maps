@@ -213,9 +213,8 @@ Layer:
             way && !bbox! AND
             (
               boundary = 'national_park' OR
-              (boundary = 'protected_area' AND (tags->'protect_class') IN ('1','1a','1b','2','3','4','5','6'))
+              (boundary = 'protected_area' AND protect_class IN ('1','1a','1b','2','3','4','5','6'))
             ) AND
-            building IS NULL AND
             way_area >= 5e5
         )
         SELECT
@@ -434,8 +433,8 @@ Layer:
           planet_osm_point
         WHERE
           way && !bbox! AND
-          (tags->'rcn_ref') is not null AND
-          (tags->'network:type') = 'node_network'
+          rcn_ref is not null AND
+          "network:type" = 'node_network'
       ) AS data
 - id: power-pole
   geometry: point
@@ -475,7 +474,7 @@ Layer:
           )
         ORDER BY
           CASE
-            WHEN (tags->'population' ~ '^[0-9]{1,8}$') THEN (tags->'population')::INTEGER
+            WHEN (population ~ '^[0-9]{1,8}$') THEN population::INTEGER
             WHEN (place = 'city') THEN 100000
             WHEN (place = 'town') THEN 1000
             ELSE 1
@@ -495,7 +494,7 @@ Layer:
             way,
             aeroway,
             railway,
-            tags
+            station
           FROM
             planet_osm_point
           WHERE
@@ -511,7 +510,7 @@ Layer:
             ST_PointOnSurface(way) as way,
             aeroway,
             railway,
-            tags
+            station
           FROM
             planet_osm_polygon
           WHERE
@@ -539,7 +538,7 @@ Layer:
               'station',
               'halt'
             ) AND
-            ((tags->'station') IS NULL OR (tags->'station') NOT IN (
+            (station IS NULL OR station NOT IN (
               'subway',
               'light_rail',
               'monorail',
@@ -560,13 +559,13 @@ Layer:
         FROM (
             SELECT
               way,
-              (tags->'rcn_ref') as ref
+              rcn_ref as ref
             FROM
               planet_osm_point
             WHERE
               way && !bbox! AND
-              (tags->'rcn_ref') is not null AND
-              (tags->'network:type') = 'node_network'
+              rcn_ref is not null AND
+              "network:type" = 'node_network'
         ) nodes
         GROUP BY
           nodes.ref,
@@ -592,14 +591,14 @@ Layer:
             power,
             "tower:type",
             CASE
-              WHEN (tags ? 'height') AND (tags->'height') ~ '^\d{1,3}(\.\d+)?( m)?$' THEN (SUBSTRING(tags->'height', '^(\d{1,3}(\.\d+)?)( m)?$'))::NUMERIC
+              WHEN height IS NOT NULL AND height ~ '^\d{1,3}(\.\d+)?( m)?$' THEN (SUBSTRING(height, '^(\d{1,3}(\.\d+)?)( m)?$'))::NUMERIC
             END as height,
             CASE
               WHEN ele ~ '^-?\d{1,4}(\.\d+)?$' THEN (ROUND(ele::NUMERIC)::TEXT) || ' m'
             END as ele,
-            (tags->'location') as location,
+            location,
             "generator:source",
-            (tags->'mountain_pass') as mountain_pass
+            mountain_pass as mountain_pass
           FROM
             planet_osm_point
           WHERE
@@ -613,7 +612,7 @@ Layer:
               power IS NOT NULL OR
               religion IS NOT NULL OR
               "natural" IS NOT NULL OR
-              (tags ? 'mountain_pass')
+              mountain_pass IS NOT NULL
             )
 
           UNION ALL
@@ -630,10 +629,10 @@ Layer:
             power,
             "tower:type",
             CASE
-              WHEN (tags ? 'height') AND (tags->'height') ~ '^\d{1,3}(\.\d+)?( m)?$' THEN (SUBSTRING(tags->'height', '^(\d{1,3}(\.\d+)?)( m)?$'))::NUMERIC
+              WHEN height IS NOT NULL AND height ~ '^\d{1,3}(\.\d+)?( m)?$' THEN (SUBSTRING(height, '^(\d{1,3}(\.\d+)?)( m)?$'))::NUMERIC
             END as height,
             NULL as ele,
-            (tags->'location') as location,
+            location,
             "generator:source",
             NULL as mountain_pass
           FROM
@@ -757,9 +756,8 @@ Layer:
           way && !bbox! AND
           (
             boundary = 'national_park' OR
-            (boundary = 'protected_area' AND (tags->'protect_class') IN ('1','1a','1b','2','3','4','5','6'))
+            (boundary = 'protected_area' AND protect_class IN ('1','1a','1b','2','3','4','5','6'))
           ) AND
-          building IS NULL AND
           name IS NOT NULL AND
           way_area >= 2e6
       ) AS data
