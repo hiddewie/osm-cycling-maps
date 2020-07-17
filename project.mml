@@ -761,6 +761,28 @@ Layer:
           name IS NOT NULL AND
           way_area >= 2e6
       ) AS data
+- id: water-labels
+  geometry: point
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way,
+          name
+        FROM
+          planet_osm_polygon
+        WHERE
+          way && !bbox! AND
+          "natural" = 'water' AND
+          water IN (
+            'lake',
+            'lagoon'
+          ) AND
+          name IS NOT NULL AND
+          way_area >= 2e6
+      ) AS data
 - id: places-non-important
   geometry: point
   <<: *extentsOSM

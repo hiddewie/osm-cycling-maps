@@ -154,6 +154,7 @@
 
 @waterway: @blue;
 @water: @light-blue;
+@water-label-halo: @white;
 @ferry: @dark-blue;
 
 @track: @medium-gray;
@@ -897,6 +898,20 @@
   text-halo-radius: 1.0;
   text-wrap-width: 50;
   text-line-spacing: 0;
+  text-placement: interior;
+}
+
+#water-labels {
+  opacity: 0.8;
+  text-name: '[name]';
+  text-fill: darken(@waterway, 15%);
+  text-face-name: @font-italic;
+  text-halo-fill: @water-label-halo;
+  text-halo-radius: 1.0;
+  text-wrap-width: 50;
+  text-line-spacing: 0;
+  text-placement: interior;
+  text-size: 14;
 }
 
 #scale {
