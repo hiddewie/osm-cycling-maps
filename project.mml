@@ -711,7 +711,29 @@ Layer:
                 power = 'generator' AND
                 "generator:source" = 'wind'
               ) OR
-              mountain_pass = 'yes' OR
+              (
+                mountain_pass = 'yes' AND
+                EXISTS(
+                  SELECT
+                    road.way
+                  FROM
+                    planet_osm_line as road
+                  WHERE
+                    ST_DWithin(points.way, road.way, 50) AND
+                    highway IN (
+                      'motorway_link',
+                      'trunk_link',
+                      'secondary_link',
+                      'primary_link',
+                      'motorway',
+                      'trunk',
+                      'cycleway',
+                      'tertiary',
+                      'secondary',
+                      'primary'
+                    )
+                )
+              ) OR
               "natural" = 'peak'
             ) AND
             (historic IS NULL OR historic != 'wayside_shrine') AND
