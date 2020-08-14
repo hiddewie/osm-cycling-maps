@@ -308,7 +308,8 @@ Layer:
         WHERE
           way && !bbox! AND
           railway IN (
-            'rail'
+            'rail',
+            'narrow_gauge'
           ) AND
           tunnel = 'yes'
       ) AS data
@@ -346,6 +347,7 @@ Layer:
           way && !bbox! AND
           railway IN (
             'rail',
+            'narrow_gauge',
             'preserved'
           ) AND
           (tunnel IS NULL OR tunnel != 'yes')
