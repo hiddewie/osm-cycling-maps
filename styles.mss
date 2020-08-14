@@ -606,10 +606,14 @@
   marker-fill: @poi;
 
   [type = 'train_station'] {
-    background/marker-width: 6;
+    background/marker-width: 5;
     background/marker-file: 'data/icons/maki/square-11.svg';
-    marker-width: 6;
+    background/marker-transform: 'rotate(45)';
+    background/marker-fill: @black;
+    marker-width: 5;
     marker-file: 'data/icons/maki/square-11.svg';
+    marker-transform: 'rotate(45)';
+    marker-fill: @black;
   }
   [type = 'aerodrome'] {
     background/marker-file: 'data/icons/maki/airport-11.svg';
