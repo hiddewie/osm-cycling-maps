@@ -313,13 +313,14 @@
 }
 
 #waterways {
+  line-width: 1.0;
   line-color: @waterway;
 }
 
 #water {
   polygon-fill: @water;
   line-width: 0.5;
-  line-color: @water;
+  line-color: @waterway;
 }
 
 #ferry {
