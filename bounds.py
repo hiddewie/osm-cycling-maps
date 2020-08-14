@@ -18,6 +18,7 @@ ORIENTATION_PORTRAIT = 'portrait'
 def determinePaperDimensions(paperSize):
     # Paper sizes in meter
     paperSizes = {
+        'A5': {'width': 0.149, 'height': 0.210},
         'A4': {'width': 0.210, 'height': 0.297},
         'A3': {'width': 0.297, 'height': 0.420},
         'A2': {'width': 0.420, 'height': 0.594},
@@ -37,7 +38,7 @@ def determinePaperDimensions(paperSize):
     elif inches:
         return float(inches.group(1)) * 0.0254, float(inches.group(2)) * 0.0254
     else:
-        environment.exitError("The paper size should be one of the values %s or of the form `A mm x B mm`, `A m x B m` or `A in x B in`, but %s was given" % (paperSizes.keys(), paperSize))
+        environment.exitError("The paper size should be one of the values %s or of the form `A mm x B mm`, `A m x B m` or `A in x B in`, but %s was given" % (list(paperSizes.keys()), paperSize))
         return
 
 

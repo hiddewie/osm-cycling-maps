@@ -198,7 +198,7 @@ Optional extra parameters for tweaking the import of downloaded OpenStreetMap da
   The orientation of the generated page. Valid values: `portrait` and `landscape`.
 - `PAPER_SIZE` (default `A4`)
   
-  The size of the generated page. Valid values: `A0`, `A1`, `A2`, `A3` and `A4`, or any value of the form `A mm x B mm` (millimeters), `A in x B in` (inches) or `A m x B m` (meters) with `A` and `B` numeric values. For example `A1`, `10 mm x 100 mm` or `20 in x 5 in`.
+  The size of the generated page. Valid values: `A0`, `A1`, `A2`, `A3`, `A4` and `A5`, or any value of the form `A mm x B mm` (millimeters), `A in x B in` (inches) or `A m x B m` (meters) with `A` and `B` numeric values. For example `A1`, `10 mm x 100 mm` or `20 in x 5 in`.
 - `PAGE_OVERLAP` (default `5%`)
   
   A percentage of the form '5%' or '10.1%'. The percentage of each page is taken on all four sides of the paper as padding. When multiple pages are generated the padding will cause overlap between the pages. 
