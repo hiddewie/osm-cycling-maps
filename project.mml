@@ -340,36 +340,6 @@ Layer:
             'runway'
           )
       ) AS data
-- id: railways
-  geometry: linestring
-  <<: *extentsOSM
-  Datasource:
-    <<: *osm2pgsql
-    table: |-
-      (
-        SELECT
-          way,
-          railway
-        FROM
-          planet_osm_line
-        WHERE
-          way && !bbox! AND
-          railway IN (
-            'rail',
-            'narrow_gauge',
-            'preserved'
-          ) AND
-          (tunnel IS NULL OR tunnel != 'yes') AND
-          (
-            service IS NULL OR
-            service NOT IN (
-              'crossover',
-              'siding',
-              'spur',
-              'yard'
-            )
-          )
-      ) AS data
 - id: roads
   geometry: linestring
   <<: *extentsOSM
@@ -388,6 +358,7 @@ Layer:
               WHEN highway = 'living_street' THEN 'residential'
               ELSE highway
             END as type,
+            NULL as railway,
             CASE
               WHEN bicycle IN ('yes', 'designated', 'permissive') THEN 'T'
               ELSE 'F'
@@ -403,6 +374,36 @@ Layer:
             highway NOT IN ('platform', 'construction', 'proposed', 'steps') AND
             (access IS NULL OR access != 'private') AND
             (tunnel IS NULL OR tunnel != 'yes')
+
+          UNION ALL
+
+          SELECT
+            way,
+            'railway' as type,
+            railway,
+            'F' as bicycle,
+            NULL as tracktype,
+            NULL as ref,
+            layer
+          FROM
+            planet_osm_line
+          WHERE
+            way && !bbox! AND
+            railway IN (
+              'rail',
+              'narrow_gauge',
+              'preserved'
+            ) AND
+            (tunnel IS NULL OR tunnel != 'yes') AND
+            (
+              service IS NULL OR
+              service NOT IN (
+                'crossover',
+                'siding',
+                'spur',
+                'yard'
+              )
+            )
         ) AS roads
         ORDER BY
           CASE
@@ -410,12 +411,13 @@ Layer:
             ELSE 0
           END ASC,
           CASE
-            WHEN type = 'motorway_link' THEN 1
-            WHEN type = 'trunk_link' THEN 2
-            WHEN type = 'secondary_link' THEN 3
-            WHEN type = 'primary_link' THEN 4
-            WHEN type = 'motorway' THEN 5
-            WHEN type = 'trunk' THEN 6
+            WHEN type = 'railway' THEN 1
+            WHEN type = 'motorway_link' THEN 10
+            WHEN type = 'trunk_link' THEN 11
+            WHEN type = 'secondary_link' THEN 12
+            WHEN type = 'primary_link' THEN 13
+            WHEN type = 'motorway' THEN 14
+            WHEN type = 'trunk' THEN 15
             WHEN type = 'unclassified' THEN 100
             WHEN type = 'residential' THEN 101
             WHEN type = 'cycleway' THEN 102

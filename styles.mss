@@ -348,22 +348,6 @@
 
 @railway-width: 1.2;
 
-#railways {
-  line-color: @rail-dark;
-  line-width: @railway-width;
-  line-cap: square;
-
-  dash/line-color: @rail-dark;
-  dash/line-width: @railway-width;
-
-  [railway = 'preserved'] {
-    line-color: @rail-preserved-dark;
-
-    dash/line-color: @rail-preserved-light;
-    dash/line-dasharray: 5, 2;
-  }
-}
-
 #tunnels {
   background/line-color: white;
   background/line-dasharray: 3,2;
@@ -516,7 +500,17 @@
 }
 
 #roads::fill {
+
   // Widths
+
+  [type = 'railway'] {
+    line-width: @railway-width;
+    line-cap: square;
+
+    [railway = 'preserved'] {
+      dash/line-dasharray: 5, 2;
+    }
+  }
 
   [type = 'residential'],
   [type = 'cycleway'] {
@@ -540,6 +534,15 @@
   }
 
   // Colors
+
+  [type = 'railway'] {
+    line-color: @rail-dark;
+
+    [railway = 'preserved'] {
+      line-color: @rail-preserved-dark;
+      dash/line-color: @rail-preserved-light;
+    }
+  }
 
   [type = 'secondary_link'] {
     line-color: @secondary;
