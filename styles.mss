@@ -614,6 +614,7 @@
     background/marker-file: 'data/icons/maki/square-11.svg';
     background/marker-transform: 'rotate(45)';
     background/marker-fill: @black;
+    background/marker-line-width: 4.0;
     marker-width: 5;
     marker-file: 'data/icons/maki/square-11.svg';
     marker-transform: 'rotate(45)';
@@ -652,6 +653,10 @@
 
   [type = 'mountain_pass'] {
     background/marker-line-width: 0.5;
+  }
+
+  [type = 'ferry_terminal'] {
+    background/marker-line-width: 4.0;
   }
 
   [type = 'ruins'] {
@@ -694,6 +699,16 @@
     background/marker-file: 'data/icons/openstreetmap/mountain_pass.svg';
     marker-width: 8;
     marker-file: 'data/icons/openstreetmap/mountain_pass.svg';
+  }
+  [type = 'ferry_terminal'] {
+    background/marker-width: 4;
+    background/marker-file: 'data/icons/maki/square-11.svg';
+    background/marker-transform: 'rotate(45)';
+    background/marker-fill: @waterway;
+    marker-width: 4;
+    marker-file: 'data/icons/maki/square-11.svg';
+    marker-transform: 'rotate(45)';
+    marker-fill: @waterway;
   }
   [type = 'peak'] {
     background/marker-width: 5;
