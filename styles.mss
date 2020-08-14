@@ -283,10 +283,11 @@
       opacity: 0.6;
       thin/line-color: @admin-boundaries;
       thin/line-width: 1;
-      thin/line-dasharray: 12,3,2,3,2,3;
+      thin/line-dasharray: 12,10;
 
-      [admin_level >= 4] {
-        thin/line-dasharray: 12,10;
+      [admin_level < 4] {
+        thin/line-width: 2;
+        thin/line-dasharray: 12,3,2,3,2,3;
       }
     }
 

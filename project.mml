@@ -220,14 +220,25 @@ Layer:
         SELECT
           *
         FROM
-          administrative
+          (
+            SELECT
+              *
+            FROM
+              administrative
+            UNION ALL
 
-        UNION ALL
-
-        SELECT
-          *
-        FROM
-          national_parks
+            SELECT
+              *
+            FROM
+              national_parks
+          ) AS bondaries
+        ORDER BY
+          CASE
+            WHEN boundary = 'administrative' then 1
+            WHEN boundary = 'national_park' then 2
+            ELSE 100
+          END ASC,
+          admin_level::int DESC
       ) AS data
 - id: springs
   geometry: point
