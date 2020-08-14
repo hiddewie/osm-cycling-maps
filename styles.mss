@@ -346,27 +346,19 @@
 @road-width-large: 2.2;
 @road-border-width: 0.7;
 
-@railway-width: 1.5;
-@railway-border-width: 0.25;
+@railway-width: 1.2;
 
 #railways {
   line-color: @rail-dark;
-  line-width: @railway-width + 2 * @railway-border-width;
+  line-width: @railway-width;
   line-cap: square;
-
-  overlay/line-color: @rail-light;
-  overlay/line-width: 1;
-  overlay/line-cap: square;
 
   dash/line-color: @rail-dark;
   dash/line-width: @railway-width;
-  dash/line-dasharray: 5, 5;
-  dash/line-cap: square;
 
   [railway = 'preserved'] {
     line-color: @rail-preserved-dark;
 
-    overlay/line-width: 0;
     dash/line-color: @rail-preserved-light;
     dash/line-dasharray: 5, 2;
   }
@@ -436,7 +428,7 @@
   }
 
   [type = 'railway'] {
-    transparent/line-width: @railway-width - 6 * @railway-border-width;
+    transparent/line-width: @railway-width;
   }
 
   comp-op: darken;
