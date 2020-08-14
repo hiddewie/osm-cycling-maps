@@ -324,9 +324,26 @@
 }
 
 #ferry {
-  line-width: 1.0;
-  line-color: @ferry;
-  line-dasharray: 4, 3;
+  ::firstline {
+    background/line-width: 1.0;
+    background/line-join: round;
+    background/line-color: white;
+  }
+
+  ::line {
+    background/line-width: 1.0;
+    background/line-join: round;
+    background/line-color: white;
+
+    line/line-width: 1.0;
+    line/line-color: @ferry;
+    line/line-dasharray: 4, 3;
+  }
+
+  ::firstline,
+  ::line {
+    comp-op: darken;
+  }
 }
 
 #springs {
