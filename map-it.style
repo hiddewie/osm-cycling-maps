@@ -142,7 +142,7 @@ node,way   rcn_ref          text         linear
 node,way   ref          text         linear
 node,way   religion     text         linear
 node,way   route        text         linear
-# node,way   service      text         linear
+node,way   service      text         linear
 node,way   shop         text         polygon
 node,way   station         text         linear
 # node,way   sport        text         polygon

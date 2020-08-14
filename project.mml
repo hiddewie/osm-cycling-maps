@@ -311,7 +311,16 @@ Layer:
             'rail',
             'narrow_gauge'
           ) AND
-          tunnel = 'yes'
+          tunnel = 'yes' AND
+          (
+            service IS NULL OR
+            service NOT IN (
+              'crossover',
+              'siding',
+              'spur',
+              'yard'
+            )
+          )
       ) AS data
 - id: aeroway
   geometry: linestring
@@ -350,7 +359,16 @@ Layer:
             'narrow_gauge',
             'preserved'
           ) AND
-          (tunnel IS NULL OR tunnel != 'yes')
+          (tunnel IS NULL OR tunnel != 'yes') AND
+          (
+            service IS NULL OR
+            service NOT IN (
+              'crossover',
+              'siding',
+              'spur',
+              'yard'
+            )
+          )
       ) AS data
 - id: roads
   geometry: linestring
