@@ -484,37 +484,6 @@ Layer:
           way && !bbox! AND
           power = 'tower'
       ) AS data
-- id: places-important
-  geometry: point
-  <<: *extentsOSM
-  Datasource:
-    <<: *osm2pgsql
-    table: |-
-      (
-        SELECT
-          way,
-          place,
-          name
-        FROM
-          planet_osm_point
-        WHERE
-          way && !bbox! AND
-          name IS NOT NULL AND
-          place IN (
-            'city',
-            'town',
-            'village'
-          )
-        ORDER BY
-          CASE
-            WHEN (population ~ '^[0-9]{1,8}$') THEN population::INTEGER
-            WHEN (place = 'city') THEN 100000
-            WHEN (place = 'town') THEN 1000
-            ELSE 1
-          END DESC,
-          length(name) DESC,
-          name
-      ) AS data
 - id: transport
   geometry: point
   <<: *extentsOSM
@@ -631,7 +600,9 @@ Layer:
             END as ele,
             location,
             "generator:source",
-            mountain_pass as mountain_pass
+            mountain_pass as mountain_pass,
+            tents,
+            surface
           FROM
             planet_osm_point
           WHERE
@@ -667,7 +638,9 @@ Layer:
             NULL as ele,
             location,
             "generator:source",
-            NULL as mountain_pass
+            NULL as mountain_pass,
+            tents,
+            surface
           FROM
             planet_osm_polygon
           WHERE
@@ -689,8 +662,9 @@ Layer:
             way,
             CASE
               WHEN tourism = 'camp_site' THEN 'camp_site'
-              WHEN shop = 'supermarket' THEN 'supermarket'
+              WHEN tourism = 'caravan_site' AND tents = 'yes' THEN 'camp_site'
               WHEN tourism = 'caravan_site' THEN 'caravan_site'
+              WHEN shop = 'supermarket' THEN 'supermarket'
               WHEN shop = 'bicycle_shop' THEN 'bicycle_shop'
               WHEN amenity = 'hospital' THEN 'hospital'
               WHEN historic = 'castle' THEN 'castle'
@@ -712,8 +686,18 @@ Layer:
           WHERE
             (
               tourism IN (
-                'camp_site',
-                'caravan_site'
+                'camp_site'
+              ) OR
+              (
+                tourism = 'caravan_site' AND
+                (tents IS NULL OR tents != 'no') AND
+                (amenity IS NULL OR amenity != 'parking') AND
+                (surface IS NULL OR (
+                  surface NOT IN ('asphalt', 'paved', 'sett') AND
+                  surface !~ 'stone' AND
+                  surface !~ 'concrete' AND
+                  surface !~ 'cobblestone'
+                ))
               ) OR
               shop IN (
                 'supermarket',
@@ -777,8 +761,8 @@ Layer:
         ORDER BY
           CASE
             WHEN type = 'camp_site' THEN 1
-            WHEN type = 'supermarket' THEN 2
-            WHEN type = 'caravan_site' THEN 3
+            WHEN type = 'caravan_site' THEN 2
+            WHEN type = 'supermarket' THEN 3
             WHEN type = 'bicycle_shop' THEN 4
             WHEN type = 'mountain_pass' THEN 5
             WHEN type = 'ferry_terminal' THEN 6
@@ -797,6 +781,37 @@ Layer:
             WHEN type = 'peak' THEN 19
             ELSE 100
           END ASC
+      ) AS data
+- id: places-important
+  geometry: point
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way,
+          place,
+          name
+        FROM
+          planet_osm_point
+        WHERE
+          way && !bbox! AND
+          name IS NOT NULL AND
+          place IN (
+            'city',
+            'town',
+            'village'
+          )
+        ORDER BY
+          CASE
+            WHEN (population ~ '^[0-9]{1,8}$') THEN population::INTEGER
+            WHEN (place = 'city') THEN 100000
+            WHEN (place = 'town') THEN 1000
+            ELSE 1
+          END DESC,
+          length(name) DESC,
+          name
       ) AS data
 - id: national-park-labels
   geometry: point
