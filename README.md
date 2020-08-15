@@ -1,7 +1,13 @@
 
 ## Generating a custom cycling map with Mapnik and Carto
 
-View blogpost at https://dev.to/hiddewie/creating-a-custom-cycling-map-3g2a.
+View the blogpost describing this project at https://dev.to/hiddewie/creating-a-custom-cycling-map-3g2a.
+
+## Cartography and features
+
+[Cartography](docs/cartography.md)
+
+[Features](docs/features.md)
 
 ## Getting started
 
