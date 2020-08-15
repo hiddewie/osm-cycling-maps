@@ -319,9 +319,14 @@
 }
 
 #water {
-  polygon-fill: @water;
-  line-width: 0.5;
-  line-color: @waterway;
+  ::border {
+    line-width: 1;
+    line-color: @waterway;
+  }
+
+  ::fill {
+    polygon-fill: @water;
+  }
 }
 
 #ferry {
@@ -940,6 +945,12 @@
   text-line-spacing: 0;
   text-placement: interior;
   text-size: 14;
+
+  [type = 'river'] {
+    text-placement: line;
+    text-min-distance: 400;
+    text-size: 10;
+  }
 }
 
 #scale {

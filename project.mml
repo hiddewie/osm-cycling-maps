@@ -837,7 +837,7 @@ Layer:
           way_area >= 2e6
       ) AS data
 - id: water-labels
-  geometry: point
+  geometry: line
   <<: *extentsOSM
   Datasource:
     <<: *osm2pgsql
@@ -845,7 +845,8 @@ Layer:
       (
         SELECT
           way,
-          name
+          name,
+          water as type
         FROM
           planet_osm_polygon
         WHERE
@@ -857,6 +858,22 @@ Layer:
           ) AND
           name IS NOT NULL AND
           way_area >= 2e6
+
+        UNION ALL
+
+        SELECT
+          way,
+          name,
+          waterway as type
+        FROM
+          planet_osm_line
+        WHERE
+          way && !bbox! AND
+          waterway IN (
+            'river'
+          ) AND
+          (tunnel IS NULL OR tunnel != 'yes') AND
+          name IS NOT NULL
       ) AS data
 - id: places-non-important
   geometry: point
