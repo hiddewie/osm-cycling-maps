@@ -347,13 +347,6 @@
   }
 }
 
-#springs {
-  marker-width: 3;
-  marker-fill: @water;
-  marker-line-color: @waterway;
-  marker-line-width: 1.0;
-}
-
 #aeroway {
   line-color: @highway;
   line-cap: square;

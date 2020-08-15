@@ -240,31 +240,6 @@ Layer:
           END ASC,
           admin_level::int DESC
       ) AS data
-- id: springs
-  geometry: point
-  <<: *extentsOSM
-  Datasource:
-    <<: *osm2pgsql
-    table: |-
-      (
-        SELECT
-          way
-        FROM
-          planet_osm_point
-        WHERE
-          way && !bbox! AND
-          "natural" = 'spring'
-
-        UNION ALL
-
-        SELECT
-          ST_PointOnSurface(way) as way
-        FROM
-          planet_osm_polygon
-        WHERE
-          way && !bbox! AND
-          "natural" = 'spring'
-      ) AS data
 - id: ferry
   geometry: linestring
   <<: *extentsOSM
