@@ -804,16 +804,15 @@
 }
 
 #places-important, #places-non-important {
-  text-name: '[name]';
+  // The placeholder will be replaced with XML after the Mapnik XML configuration has been
+  // generated. See placements.py for the generation of a grid of name placements.
+  text-name: "[name]--PLACEMENTS--";
   text-size: 8;
   text-face-name: @font;
   text-fill: @place;
   text-halo-radius: 1.0;
   text-halo-fill: @place-halo;
-  text-placement-type: simple;
-  text-placements: 'S,N,E,W,NE,NW,SE,SW';
-  text-dx: 20;
-  text-dy: 12;
+  text-placement-type: list;
   text-wrap-width: 100;
   text-wrap-before: true;
 
@@ -829,15 +828,12 @@
 
   [place = 'city'] {
     text-size: 14;
-    text-placements: 'S,N,E,W,NE,NW,SE,SW,14,12';
   }
   [place = 'town'] {
     text-size: 12;
-    text-placements: 'S,N,E,W,NE,NW,SE,SW,12,10';
   }
   [place = 'village'] {
     text-size: 10;
-    text-placements: 'S,N,E,W,NE,NW,SE,SW,10,8';
   }
 }
 

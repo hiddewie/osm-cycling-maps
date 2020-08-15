@@ -1,12 +1,34 @@
+FROM ubuntu:focal as generation
+
+RUN mkdir -p /generation
+WORKDIR /generation
+
+RUN apt-get update && apt-get install -y \
+    python3 \
+  && apt-get autoclean \
+  && rm -rf /var/lib/apt/lists/*
+
+COPY placements.py .
+RUN /usr/bin/python3 placements.py > placements.xml
+RUN cat placements.xml
+
 FROM node:14-buster-slim as build
 
 RUN mkdir -p /build
 WORKDIR /build
 
 RUN npm install -g carto
+
+COPY --from=generation /generation/placements.xml placements.xml
 COPY project.mml .
 COPY styles.mss .
-RUN carto project.mml > mapnik.xml
+
+# Generate Mapnik XML
+# The CDATA tags are stripped of symbolizers where <Placement/> tags are inserted from placements.xml
+# Also see https://github.com/mapbox/carto/issues/238#issuecomment-19673987
+RUN carto project.mml \
+    | sed -E "s@<!\[CDATA\[(.*)--PLACEMENTS--]]>@\1$(cat placements.xml)@g" \
+    > mapnik.xml
 
 FROM ubuntu:focal
 
