@@ -52,7 +52,6 @@ Amenities:
 - camp sites and caravan sites
 - supermarkets
 - bicycle shops
-- hospitals
 - castles, forts and ruins
 
 Printing features:

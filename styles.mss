@@ -688,12 +688,6 @@
     marker-width: 9;
     marker-file: 'data/icons/svg/camp_site.svg';
   }
-  [type = 'hospital'] {
-    background/marker-width: 9;
-    background/marker-file: 'data/icons/maki/hospital-11.svg';
-    marker-width: 9;
-    marker-file: 'data/icons/maki/hospital-11.svg';
-  }
   [type = 'caravan_site'] {
     background/marker-file: 'data/icons/svg/caravan_site.svg';
     marker-file: 'data/icons/svg/caravan_site.svg';
