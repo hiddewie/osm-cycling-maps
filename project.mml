@@ -263,50 +263,77 @@ Layer:
     table: |-
       (
         SELECT
-          way,
-          highway as type
-        FROM
-          planet_osm_line
-        WHERE
-          way && !bbox! AND
-          highway IN (
-            'motorway_link',
-            'trunk_link',
-            'secondary_link',
-            'primary_link',
-            'motorway',
-            'trunk',
-            'cycleway',
-            'tertiary',
-            'secondary',
-            'primary'
-          ) AND
-          (access IS NULL OR access != 'private') AND
-          (tunnel = 'yes')
+          *
+        FROM (
+          SELECT
+            way,
+            layer,
+            highway as type
+          FROM
+            planet_osm_line
+          WHERE
+            way && !bbox! AND
+            highway IN (
+              'motorway_link',
+              'trunk_link',
+              'secondary_link',
+              'primary_link',
+              'motorway',
+              'trunk',
+              'cycleway',
+              'tertiary',
+              'secondary',
+              'primary'
+            ) AND
+            (access IS NULL OR access != 'private') AND
+            (tunnel = 'yes')
 
-        UNION ALL
+          UNION ALL
 
-        SELECT
-          way,
-          'railway' as type
-        FROM
-          planet_osm_line
-        WHERE
-          way && !bbox! AND
-          railway IN (
-            'rail',
-            'narrow_gauge'
-          ) AND
-          tunnel = 'yes' AND
-          (
-            service IS NULL OR
-            service NOT IN (
-              'crossover',
-              'siding',
-              'spur',
-              'yard'
+          SELECT
+            way,
+            layer,
+            'railway' as type
+          FROM
+            planet_osm_line
+          WHERE
+            way && !bbox! AND
+            railway IN (
+              'rail',
+              'narrow_gauge'
+            ) AND
+            tunnel = 'yes' AND
+            (
+              service IS NULL OR
+              service NOT IN (
+                'crossover',
+                'siding',
+                'spur',
+                'yard'
+              )
             )
-          )
+          ) AS tunnels
+        ORDER BY
+          CASE
+            WHEN layer IS NOT NULL AND layer ~ '-?\d+' THEN layer::int
+            ELSE -1
+          END ASC,
+          CASE
+            WHEN type = 'railway' THEN 1
+            WHEN type = 'motorway_link' THEN 10
+            WHEN type = 'trunk_link' THEN 11
+            WHEN type = 'secondary_link' THEN 12
+            WHEN type = 'primary_link' THEN 13
+            WHEN type = 'motorway' THEN 14
+            WHEN type = 'trunk' THEN 15
+            WHEN type = 'unclassified' THEN 100
+            WHEN type = 'residential' THEN 101
+            WHEN type = 'cycleway' THEN 102
+            WHEN type = 'tertiary' THEN 103
+            WHEN type = 'secondary' THEN 104
+            WHEN type = 'primary' THEN 105
+            ELSE 50
+          END ASC
       ) AS data
 - id: aeroway
   geometry: linestring

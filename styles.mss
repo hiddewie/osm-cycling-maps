@@ -424,7 +424,7 @@
   }
 
   [type = 'railway'] {
-    transparent/line-width: @railway-width;
+    transparent/line-width: 0;
   }
 
   comp-op: darken;
