@@ -328,6 +328,18 @@
   }
 }
 
+#dams {
+  [type = 'line'] {
+    line-width: 4;
+    line-color: @black;
+  }
+  [type = 'polygon'] {
+    line-width: 1;
+    line-color: @black;
+    polygon-fill: @black;
+  }
+}
+
 #ferry {
   ::firstline {
     background/line-width: 1.0;

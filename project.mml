@@ -172,6 +172,33 @@ Layer:
           way && !bbox! AND
           "natural" = 'water'
       ) AS data
+- id: dams
+  geometry: polygon
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way,
+          'line' AS type
+        FROM
+          planet_osm_line
+        WHERE
+          way && !bbox! AND
+          waterway = 'dam'
+
+        UNION ALL
+
+        SELECT
+          way,
+          'polygon' AS type
+        FROM
+          planet_osm_polygon
+        WHERE
+          way && !bbox! AND
+          waterway = 'dam'
+      ) AS data
 - id: boundaries
   geometry: linestring
   <<: *extentsOSM
