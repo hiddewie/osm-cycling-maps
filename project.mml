@@ -155,7 +155,10 @@ Layer:
           planet_osm_polygon
         WHERE
           way && !bbox! AND
-          "natural" = 'water'
+          (
+            "natural" = 'water' OR
+            waterway = 'riverbank'
+          )
       ) AS data
 - id: dams
   geometry: polygon
