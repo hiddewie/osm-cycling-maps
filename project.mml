@@ -121,21 +121,6 @@ Layer:
             WHEN landuse = 'military' THEN 3
           END ASC
       ) AS data
-- id: cycling-network
-  geometry: linestring
-  <<: *extentsOSM
-  Datasource:
-    <<: *osm2pgsql
-    table: |-
-      (
-        SELECT
-          way
-        FROM
-          planet_osm_line
-        WHERE
-          way && !bbox! AND
-          route = 'bicycle'
-      ) AS data
 - id: waterways
   geometry: linestring
   <<: *extentsOSM
@@ -510,6 +495,21 @@ Layer:
         WHERE
           way && !bbox! AND
           power = 'tower'
+      ) AS data
+- id: cycling-network
+  geometry: linestring
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way
+        FROM
+          planet_osm_line
+        WHERE
+          way && !bbox! AND
+          route = 'bicycle'
       ) AS data
 - id: transport
   geometry: point

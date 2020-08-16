@@ -150,7 +150,7 @@
 @national-park: darken(@feint-green, 50%);
 @national-park-label-halo: @white;
 
-@cycling-network: @yellow-green;
+@cycling-network: rgb(0, 59, 148);
 
 @waterway: @blue;
 @water: @light-blue;
@@ -306,10 +306,15 @@
 }
 
 #cycling-network {
-  opacity: 0.8;
+  background/line-color: white;
+  background/line-width: 1.9;
+
   line-color: @cycling-network;
-  line-width: 8.0;
+  line-dasharray: 10,10;
+  line-width: 1.8;
   line-cap: round;
+
+  comp-op: darken;
 }
 
 #waterways {
