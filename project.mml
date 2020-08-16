@@ -377,7 +377,6 @@ Layer:
               ELSE 'F'
             END as bicycle,
             tracktype,
-            REPLACE(ref, ';', ' / ') as ref,
             layer
           FROM
             planet_osm_line
@@ -396,7 +395,6 @@ Layer:
             railway,
             'F' as bicycle,
             NULL as tracktype,
-            NULL as ref,
             layer
           FROM
             planet_osm_line
@@ -832,6 +830,42 @@ Layer:
           ) AND
           name IS NOT NULL AND
           way_area >= 2e6
+      ) AS data
+- id: roads-labels
+  geometry: linestring
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way,
+          highway as type,
+          array_length(refs, 1) as height,
+          (SELECT MAX(char_length(ref)) FROM unnest(refs) AS u(ref)) as width,
+          array_to_string(refs, E'\n') as ref
+        FROM (
+          SELECT
+            way,
+            highway,
+            access,
+            tunnel,
+            string_to_array(ref, ';') AS refs
+          FROM
+            planet_osm_line
+          WHERE
+            way && !bbox! AND
+            ref IS NOT NULL AND
+            highway IN (
+              'tertiary',
+              'secondary',
+              'primary',
+              'trunk',
+              'motorway'
+            ) AND
+            (access IS NULL OR access != 'private') AND
+            (tunnel IS NULL OR tunnel != 'yes')
+        ) AS splitrefs
       ) AS data
 - id: water-labels
   geometry: line

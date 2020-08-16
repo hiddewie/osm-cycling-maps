@@ -168,17 +168,16 @@
 @secondary-border: darken(@light-yellow, 20%);
 @primary: @orange;
 @primary-border: darken(@orange, 20%);
-@trunk: @light-gray;
+@trunk: @gray;
 @trunk-border: @white;
 @highway: @gray;
 @highway-border: @white;
 
-@road-label: white;
-@road-label-tertiary-halo: darken(@tertiary, 30%);
-@road-label-secondary-halo: darken(@secondary, 30%);
-@road-label-primary-halo: darken(@primary, 30%);
-@road-label-trunk-halo: darken(@trunk, 30%);
-@road-label-motorway-halo: @black;
+@road-shield-tertiary-label: darken(@tertiary, 60%);
+@road-shield-secondary-label: darken(@secondary, 30%);
+@road-shield-primary-label: darken(@primary, 30%);
+@road-shield-trunk-label: darken(@trunk, 30%);
+@road-shield-motorway-label: @black;
 
 @rail-dark: @black;
 @rail-light: @white;
@@ -849,41 +848,36 @@
   text-dy: 4;
 }
 
-#roads::labels {
-  [type = 'tertiay'],
-  [type = 'secondary'],
-  [type = 'primary'],
-  [type = 'trunk'],
+#roads-labels {
+  shield-name: '[ref]';
+  shield-size: 7;
+  shield-line-spacing: -1.5;
+  shield-face-name: @font;
+  shield-repeat-distance: 250;
+  shield-spacing: 100;
+  shield-margin: 40;
+  shield-placement: line;
+  shield-clip: false;
+
+  // tertiary is the default
+  shield-file: url("symbols/shields/tertiary_[width]x[height].svg");
+  shield-fill: @road-shield-tertiary-label;
+
+  [type = 'secondary'] {
+    shield-file: url("symbols/shields/secondary_[width]x[height].svg");
+    shield-fill: @road-shield-secondary-label;
+  }
+  [type = 'primary'] {
+    shield-file: url("symbols/shields/primary_[width]x[height].svg");
+    shield-fill: @road-shield-primary-label;
+  }
+  [type = 'trunk'] {
+    shield-file: url("symbols/shields/trunk_[width]x[height].svg");
+    shield-fill: @road-shield-trunk-label;
+  }
   [type = 'motorway'] {
-    text-name: '[ref]';
-    text-size: 8;
-    text-face-name: @font;
-    text-fill: @road-label;
-    text-halo-radius: 1.0;
-    text-min-path-length: 70;
-    text-min-distance: 100;
-    text-spacing: 100;
-    text-placement: line;
-
-    [type = 'tertiary'] {
-      text-size: 7;
-    }
-
-    [type = 'tertiary'] {
-      text-halo-fill: @road-label-tertiary-halo;
-    }
-    [type = 'secondary'] {
-      text-halo-fill: @road-label-secondary-halo;
-    }
-    [type = 'primary'] {
-      text-halo-fill: @road-label-primary-halo;
-    }
-    [type = 'trunk'] {
-      text-halo-fill: @road-label-trunk-halo;
-    }
-    [type = 'motorway'] {
-      text-halo-fill: @road-label-motorway-halo;
-    }
+    shield-file: url("symbols/shields/motorway_[width]x[height].svg");
+    shield-fill: @road-shield-motorway-label;
   }
 }
 
