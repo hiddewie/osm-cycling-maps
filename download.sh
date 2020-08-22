@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -o pipefail
+
 DATA_DIR=/data
 
 python -V
@@ -46,7 +48,8 @@ phyghtmap --download-only \
   --earthexplorer-password=$USGS_PASSWORD \
   --hgtdir=$DATA_DIR/dem \
   --area $BBOX \
-  | tee downloaded.txt
+  | tee downloaded.txt \
+  || exit 1
 
 FILES=$(cat downloaded.txt | grep -oP 'using file \K.*.tif' | uniq | xargs)
 
@@ -55,7 +58,7 @@ echo "Found downloaded files: $FILES"
 
 echo "Merge height data for combination into one height file"
 rm -f combined.hgt || exit 1
-gdal_merge.py -o $DATA_DIR/combined.hgt -n -32767 -a_nodata -32767 -of GTiff $FILES
+gdal_merge.py -o $DATA_DIR/combined.hgt -n -32767 -a_nodata -32767 -of GTiff $FILES || exit 1
 echo "Done merging height data"
 
 gdalinfo $DATA_DIR/combined.hgt
@@ -102,7 +105,7 @@ done
 echo "Merging OSM data"
 
 echo "Merging files $FILES to $DATA_DIR/combined.osm.pbf"
-osmium merge --output=$DATA_DIR/combined.osm.pbf --overwrite $FILES
+osmium merge --output=$DATA_DIR/combined.osm.pbf --overwrite $FILES || exit 1
 
 echo "Done combining OSM data"
 
@@ -110,9 +113,6 @@ echo "Importing combined OSM data"
 
 # The following values can be tweaked
 # See https://github.com/gravitystorm/openstreetmap-carto/blob/master/scripts/docker-startup.sh
-# TODO: specify --style? (see openstreetmap-carto.style)
-# TODO: specify --tag-transform-script? (see openstreetmap-carto.lua)
-# TODO: specify --multi-geometry?
 OSM2PGSQL_CACHE=${OSM2PGSQL_CACHE:-1024}
 OSM2PGSQL_NUMPROC=${OSM2PGSQL_NUMPROC:-4}
 PGPASS=$PG_PASSWORD
@@ -135,7 +135,8 @@ osm2pgsql \
   --style /script/map-it.style \
   --slim \
   --drop \
-  $DATA_DIR/combined.osm.pbf
+  $DATA_DIR/combined.osm.pbf \
+  || exit 1
 
 echo "Done importing OSM data"
 
