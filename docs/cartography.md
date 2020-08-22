@@ -2,7 +2,7 @@
 
 Choices have been made for this project that influence the output map. An incomplete list of assumptions is documented here, which influenced these choices.
 
-### Usage asumptions
+### Usage assumptions
 
 - The map will be printed on paper.
 - The map will be used primarily for travelling on a bicycle, although other means of transport may also find the map useful. 

@@ -683,16 +683,18 @@
     background/marker-line-width: 50.0;
   }
 
+  [type = 'castle'],
+  [type = 'fort'],
+  [type = 'ruins'] {
+    background/marker-line-width: 1.5;
+  }
+
   [type = 'mountain_pass'] {
     background/marker-line-width: 0.5;
   }
 
   [type = 'ferry_terminal'] {
     background/marker-line-width: 4.0;
-  }
-
-  [type = 'ruins'] {
-    background/marker-line-width: 20.0;
   }
 
   marker-width: 10;
@@ -744,16 +746,20 @@
   }
   [type = 'castle'],
   [type = 'fort'] {
-    background/marker-width: 9;
-    background/marker-file: 'data/icons/maki/castle-11.svg';
-    marker-width: 9;
-    marker-file: 'data/icons/maki/castle-11.svg';
+    background/marker-width: 7;
+    background/marker-file: 'data/icons/openstreetmap/castle.svg';
+    background/marker-transform: 'translate(0, -2)';
+    marker-width: 7;
+    marker-file: 'data/icons/openstreetmap/castle.svg';
+    marker-transform: 'translate(0, -2)';
   }
   [type = 'ruins'] {
-    background/marker-width: 9;
-    background/marker-file: 'data/icons/openstreetmap/ruins.svg';
-    marker-width: 9;
-    marker-file: 'data/icons/openstreetmap/ruins.svg';
+    background/marker-width: 8;
+    background/marker-file: 'data/icons/openstreetmap/castle.svg';
+    background/marker-transform: 'rotate(30), translate(-1, -2)';
+    marker-width: 8;
+    marker-file: 'data/icons/openstreetmap/castle.svg';
+    marker-transform: 'rotate(30), translate(-1, -2)';
   }
   [type = 'lighthouse'] {
     background/marker-file: 'data/icons/maki/lighthouse-11.svg';
