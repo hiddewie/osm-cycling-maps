@@ -41,9 +41,12 @@ mkdir -p $DATA_DIR/dem
 
 echo "Downloading height data for bounding box $BBOX"
 
+# Revert to
+#  --srtm=1 \
+#  --srtm-version=3.0 \
+# when downloading of SRTM 3.0 works again
 phyghtmap --download-only \
-  --srtm=1 \
-  --srtm-version=3 \
+  --source=view3 \
   --earthexplorer-user=$USGS_USERNAME \
   --earthexplorer-password=$USGS_PASSWORD \
   --hgtdir=$DATA_DIR/dem \
@@ -51,7 +54,7 @@ phyghtmap --download-only \
   | tee downloaded.txt \
   || exit 1
 
-FILES=$(cat downloaded.txt | grep -oP 'using file \K.*.tif' | uniq | xargs)
+FILES=$(cat downloaded.txt | grep -oP 'using (existing )?file \K.*' | sed 's/\.$//' | uniq | xargs)
 
 echo "Done downloading height data"
 echo "Found downloaded files: $FILES"
