@@ -213,6 +213,6 @@ Optional extra parameters for tweaking the import of downloaded OpenStreetMap da
 
 [Example PDF Output](https://github.com/hiddewie/map-it/releases/download/v1.0.0/output.pdf)
 
-![Expected output](assets/cover.jpg)
+![Expected output](assets/cover.png)
 
 ![Printed map](assets/printed.jpg)
