@@ -215,4 +215,4 @@ Optional extra parameters for tweaking the import of downloaded OpenStreetMap da
 
 ![Expected output](assets/cover.png)
 
-![Printed map](assets/printed.jpg)
+![Printed map](assets/printed2.jpg)
