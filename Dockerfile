@@ -58,5 +58,6 @@ COPY --from=build /build/mapnik.xml mapnik.xml
 COPY environment.py .
 COPY bounds.py .
 COPY generate.py .
+COPY tiles.py .
 
 CMD /usr/bin/python3 generate.py
