@@ -64,6 +64,11 @@ blocks:
 
             # Run database
             - docker run -d --name postgres-osm openfirmware/postgres-osm
+            - |
+              while ! nc -z 172.17.0.2 5432; do
+                echo "Sleeping 1 second"
+                sleep 1
+              done
 
             # Run import for small area
             - |
@@ -93,7 +98,7 @@ blocks:
                 -e BBOX="${BBOX%%[[:space:]]}" \
                 map-it-import
             - |
-              docker run -ti \
+                docker run -ti \
                 --rm \
                 -v $PROJECT_DIR/data:/map-it/data \
                 -v $PROJECT_DIR/output:/map-it/output \
