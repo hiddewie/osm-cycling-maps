@@ -111,4 +111,23 @@ blocks:
                 -e SCALE="1:150000" \
                 map-it
             - artifact push workflow --expire-in 2w output/map.pdf
+            - export TILE_BBOX="43.4715:41.3965:43.5077:41.4180"
+            - |
+              docker run -ti \
+                --rm \
+                -v $PROJECT_DIR/data:/map-it/data \
+                -v $PROJECT_DIR/output:/map-it/output \
+                --link postgres-osm:postgres-osm \
+                -e PG_HOST=postgres-osm \
+                -e PG_PORT=5432 \
+                -e PG_USER="osm" \
+                -e PG_PASSWORD="" \
+                -e PG_DATABASE="gis" \
+                -e BBOX="$TILE_BBOX" \
+                -e MIN_ZOOM="12" \
+                -e MAX_ZOOM="12" \
+                -e NUM_THREADS="1" \
+                map-it \
+                /usr/bin/python3 tiles.py
+#            - artifact push workflow --expire-in 2w output/tiles/12/.pdf
             - cache store data-`date +%Y-%m` data
