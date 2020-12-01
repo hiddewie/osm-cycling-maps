@@ -130,6 +130,30 @@ The bounding box does not need to fit perfectly on one page. If it does not, pad
 
 (You can also build it yourself using `docker build -t map-it .`)
 
+##### Tiles
+
+The same Docker image can also generate tiles in the output folder. Instead of generating a PDF map, these tiles can be used
+for a sliding online map.
+
+```bash
+docker run \
+  -ti \
+  --rm \
+  -v $PROJECT_DIR/data:/map-it/data \
+  -v $PROJECT_DIR/output:/map-it/output \
+  --link postgres-osm:postgres-osm \
+  -e PG_HOST=postgres-osm \
+  -e PG_PORT=5432 \
+  -e PG_USER="osm" \
+  -e PG_PASSWORD="" \
+  -e PG_DATABASE="gis" \
+  -e BBOX="5.7352:52.0218:7.2960:52.6958"
+  hiddewie/map-it \
+  /usr/bin/python3 tiles.py
+```
+
+The tiles will be generated in the `$PROJECT_DIR/output/tiles` directory.
+
 ### Script parameters
 
 The lists below describe the parameters used for the scripts, including defaults.
@@ -208,6 +232,38 @@ Optional extra parameters for tweaking the import of downloaded OpenStreetMap da
 - `PAGE_OVERLAP` (default `5%`)
   
   A percentage of the form '5%' or '10.1%'. The percentage of each page is taken on all four sides of the paper as padding. When multiple pages are generated the padding will cause overlap between the pages. 
+
+#### Tile generation script
+
+- `PG_HOST` (default `localhost`)
+  
+  The Postgres database host
+- `PG_PORT` (default `5432`)
+  
+  The Postgres database port
+- `PG_USER` (default `osm`)
+  
+  The Postgres database user
+- `PG_PASSWORD` (default empty)
+  
+  The Postgres database password
+- `PG_DATABASE` (default `gis`)
+  
+  The Postgres database host
+- `BBOX` (required, default empty)
+  
+  Of the form `A:B:C:D`, for example `5.3:51.1:6.8:53.0056` where `(A, B)` is the lower left corner of the bounding box and `(C, D)` is the top right corner. Specify in longitude - latitude order in the [EPSG:4326](https://epsg.io/4326) coordinate system.
+
+- `NUM_THREADS` (required, default `6`)
+
+  The number of threads that will be used to concurrently render tiles.
+- `MIN_ZOOM`, `MAX_ZOOM` (required, both default `12`)
+
+  The minimum and maximum zoom level to generate.
+  
+- `TMS_SCHEME`
+  
+  Generate tiles for schemes with the TMS format of the y coordinate.
 
 ### Examples
 
