@@ -324,7 +324,7 @@
 
 #water {
   ::border {
-    line-width: 1;
+    line-width: 0.15;
     line-color: @waterway;
   }
 
