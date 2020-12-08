@@ -330,7 +330,7 @@ Layer:
           ) AS tunnels
         ORDER BY
           CASE
-            WHEN layer IS NOT NULL AND layer ~ '-?\d+' THEN layer::int
+            WHEN layer IS NOT NULL AND layer ~ '^-?\d+$' THEN layer::int
             ELSE -1
           END ASC,
           CASE
@@ -433,7 +433,7 @@ Layer:
         ) AS roads
         ORDER BY
           CASE
-            WHEN layer IS NOT NULL AND layer ~ '-?\d+' THEN layer::int
+            WHEN layer IS NOT NULL AND layer ~ '^-?\d+$' THEN layer::int
             ELSE 0
           END ASC,
           CASE
