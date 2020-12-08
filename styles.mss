@@ -186,7 +186,7 @@
 
 @cycling-node: @black;
 @cycling-node-label: @black;
-@cycling-node-label-halo: mix(@transparent-light-yellow, @cycling-network, 60%);
+@cycling-node-label-halo: mix(@transparent-light-yellow, @cycling-network, 90%);
 
 @poi: @dark-red;
 @poi-label-halo: @transparent-light-yellow;
