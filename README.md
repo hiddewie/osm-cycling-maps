@@ -261,9 +261,12 @@ Optional extra parameters for tweaking the import of downloaded OpenStreetMap da
 
   The minimum and maximum zoom level to generate.
   
-- `TMS_SCHEME`
+- `TMS_SCHEME` (`true` or `false`, default `false`)
   
   Generate tiles for schemes with the TMS format of the y coordinate.
+- `SKIP_IF_EXISTS` (`true` or `false`, default `true`)
+  
+  Whether tile generation should be skipped if the tile file already exists.
 
 ### Examples
 

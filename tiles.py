@@ -78,9 +78,10 @@ class GoogleProjection:
 
 
 class RenderThread:
-    def __init__(self, tile_dir, mapfile, queue, maxZoom):
+    def __init__(self, tile_dir, mapfile, queue, maxZoom, skipIfExists):
         self.tileDirectory = tile_dir
         self.queue = queue
+        self.skipIfExists = skipIfExists
         self.map = mapnik.Map(256, 256)
         self.map.background = mapnik.Color('white')
         # Load style XML
@@ -128,7 +129,7 @@ class RenderThread:
             else:
                 (tileFilename, x, y, z) = r
 
-            if os.path.isfile(tileFilename):
+            if self.skipIfExists and os.path.isfile(tileFilename):
                 logger.info('Skipping {z = %s, x = %s, y = %s}, file exists', z, x, y)
             else:
                 start = time.perf_counter()
@@ -138,14 +139,14 @@ class RenderThread:
         logger.info('RenderThread finished')
 
 
-def renderTiles(bbox, mapnikConfiguration, tileDirectory, minZoom, maxZoom, numThreads, tmsScheme):
+def renderTiles(bbox, mapnikConfiguration, tileDirectory, minZoom, maxZoom, numThreads, tmsScheme, skipIfExists):
     logger.info('Rendering tiles for bounding box %s, map file %s, output directory %s, zoom levels [%s, %s]', bbox, mapnikConfiguration, tileDirectory, minZoom, maxZoom)
 
     queue = Queue(32)
     renderers = {}
     logger.info('Launching %s rendering threads', numThreads)
     for i in range(numThreads):
-        renderer = RenderThread(tileDirectory, mapnikConfiguration, queue, maxZoom)
+        renderer = RenderThread(tileDirectory, mapnikConfiguration, queue, maxZoom, skipIfExists)
         render_thread = threading.Thread(target=renderer.loop, name='Rendering-%s' % (i + 1,))
         render_thread.start()
         renderers[i] = render_thread
@@ -242,7 +243,11 @@ def main():
     if tmsScheme:
         logger.info('Using TMS scheme')
 
-    renderTiles(bbox, mapnikConfiguration, OUTPUT_PATH, minZoom, maxZoom, numThreads, tmsScheme)
+    skipIfExists = environment.env('SKIP_IF_EXISTS', 'true') != 'false'
+    if skipIfExists:
+        logger.info('Skipping tile generation if tile exists')
+
+    renderTiles(bbox, mapnikConfiguration, OUTPUT_PATH, minZoom, maxZoom, numThreads, tmsScheme, skipIfExists)
 
 
 if __name__ == '__main__':
