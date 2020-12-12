@@ -241,7 +241,7 @@
   }
 
   [type = 'military'] {
-    polygon-pattern-file: url('data/background/military.svg');
+    polygon-pattern-file: url('style/background/military.svg');
     polygon-pattern-comp-op: multiply;
     polygon-pattern-alignment: global;
     line-color: @military;
