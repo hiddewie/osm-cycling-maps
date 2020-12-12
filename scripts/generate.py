@@ -7,9 +7,10 @@ import sys
 import cairo
 import mapnik
 
-from scripts import bounds, environment
+import bounds
+import environment
 
-OUTPUT_PATH = '../output/'
+OUTPUT_PATH = 'output/'
 
 
 def loadMapFromFile(file, mapWidth, mapHeight):

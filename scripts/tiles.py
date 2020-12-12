@@ -10,7 +10,7 @@ from queue import Queue
 
 import mapnik
 
-from scripts import environment
+import environment
 
 # Followed https://wiki.openstreetmap.org/wiki/Creating_your_own_tiles
 # This script is adapted from https://raw.githubusercontent.com/openstreetmap/mapnik-stylesheets/master/generate_tiles.py
@@ -36,7 +36,7 @@ def closeLoggingStreamHandlers():
 DEG_TO_RAD = pi / 180
 RAD_TO_DEG = 180 / pi
 
-OUTPUT_PATH = '../output/tiles/'
+OUTPUT_PATH = 'output/tiles/'
 
 
 def constrain(x, mi, ma):
