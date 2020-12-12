@@ -7,8 +7,9 @@ DATA_DIR=/data
 python -V
 gdalinfo --version
 osm2pgsql --version
-psql --version
-osmium --version
+psql --version | grep psql
+osmium --version | grep version
+echo -n "shp2pgsql " && shp2pgsql | grep RELEASE
 
 if [[ ! -v USGS_USERNAME ]]; then
   echo "Set the environment variable USGS_USERNAME"
@@ -145,5 +146,30 @@ osm2pgsql \
   || exit 1
 
 echo "Done importing OSM data"
+
+echo "Importing coastlines"
+
+mkdir -p $DATA_DIR/coastlines
+
+if [[ -f $DATA_DIR/coastlines/coastlines.zip ]]; then
+  echo "The file $DATA_DIR/coastlines/coastlines.zip is already present and will not be downloaded."
+else
+  wget https://osmdata.openstreetmap.de/download/water-polygons-split-3857.zip -O $DATA_DIR/coastlines/coastlines.zip || exit 1
+fi
+
+if [[ -f $DATA_DIR/coastlines/water-polygons-split-3857/water_polygons.shp ]]; then
+  echo "The file $DATA_DIR/coastlines/water-polygons-split-3857/water_polygons.shp is already present and will not be unzipped."
+else
+  unzip -o $DATA_DIR/coastlines/coastlines.zip -d $DATA_DIR/coastlines
+fi
+
+if psql $POSTGRES_ARGS -c "select count(*) from coastlines" > /dev/null; then
+  echo "Coastlines table exists and will not be reimported. Remove the coastlines table to reimport the data."
+else
+  shp2pgsql -I -d -g way -s 3857 $DATA_DIR/coastlines/water-polygons-split-3857/water_polygons.shp coastlines \
+    | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
+fi
+
+echo "Done importing coastlines"
 
 echo "Done"

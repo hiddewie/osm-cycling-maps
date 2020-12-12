@@ -159,6 +159,15 @@ Layer:
             "natural" = 'water' OR
             waterway = 'riverbank'
           )
+
+        UNION ALL
+
+        SELECT
+          way
+        FROM
+          coastlines
+        WHERE
+          way && !bbox!
       ) AS data
 - id: dams
   geometry: polygon
