@@ -9,10 +9,10 @@ RUN apt-get update && apt-get install -y \
   && apt-get autoclean \
   && rm -rf /var/lib/apt/lists/*
 
-COPY placements.py .
+COPY scripts/placements.py .
 RUN /usr/bin/python3 placements.py > placements.xml
 
-COPY generate/shields.py .
+COPY scripts/generate/shields.py .
 RUN /usr/bin/python3 shields.py
 
 FROM node:14-buster-slim as build
@@ -56,10 +56,10 @@ ENV MAPNIK_CONFIGURATION mapnik.xml
 RUN mkdir style
 COPY --from=generation /generation/symbols/shields style/symbols/shields
 COPY --from=build /build/mapnik.xml mapnik.xml
-COPY environment.py .
-COPY bounds.py .
-COPY generate.py .
-COPY tiles.py .
+COPY scripts/environment.py .
+COPY scripts/bounds.py .
+COPY scripts/generate.py .
+COPY scripts/tiles.py .
 COPY style style
 
 CMD /usr/bin/python3 generate.py
