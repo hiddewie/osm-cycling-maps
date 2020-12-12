@@ -59,5 +59,6 @@ COPY environment.py .
 COPY bounds.py .
 COPY generate.py .
 COPY tiles.py .
+COPY style style
 
 CMD /usr/bin/python3 generate.py

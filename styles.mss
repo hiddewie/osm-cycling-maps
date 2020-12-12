@@ -643,18 +643,18 @@
 
   [type = 'train_station'] {
     background/marker-width: 5;
-    background/marker-file: 'data/icons/maki/square-11.svg';
+    background/marker-file: 'style/icons/maki/square-11.svg';
     background/marker-transform: 'rotate(45)';
     background/marker-fill: @black;
     background/marker-line-width: 4.0;
     marker-width: 5;
-    marker-file: 'data/icons/maki/square-11.svg';
+    marker-file: 'style/icons/maki/square-11.svg';
     marker-transform: 'rotate(45)';
     marker-fill: @black;
   }
   [type = 'aerodrome'] {
-    background/marker-file: 'data/icons/maki/airport-11.svg';
-    marker-file: 'data/icons/maki/airport-11.svg';
+    background/marker-file: 'style/icons/maki/airport-11.svg';
+    marker-file: 'style/icons/maki/airport-11.svg';
   }
 }
 
@@ -664,7 +664,7 @@
 }
 
 #power-pole {
-  marker-file: 'data/icons/maki/square-11.svg';
+  marker-file: 'style/icons/maki/square-11.svg';
   marker-width: 2;
   marker-fill: @power;
   marker-ignore-placement: true;
@@ -702,136 +702,136 @@
 
   [type = 'camp_site'] {
     background/marker-width: 9;
-    background/marker-file: 'data/icons/svg/camp_site.svg';
+    background/marker-file: 'style/icons/svg/camp_site.svg';
     marker-width: 9;
-    marker-file: 'data/icons/svg/camp_site.svg';
+    marker-file: 'style/icons/svg/camp_site.svg';
 
     [scout = 'yes'] {
-      background/marker-file: 'data/icons/svg/scout.svg';
-      marker-file: 'data/icons/svg/scout.svg';
+      background/marker-file: 'style/icons/svg/scout.svg';
+      marker-file: 'style/icons/svg/scout.svg';
     }
   }
 
   [type = 'caravan_site'] {
-    background/marker-file: 'data/icons/svg/caravan_site.svg';
-    marker-file: 'data/icons/svg/caravan_site.svg';
+    background/marker-file: 'style/icons/svg/caravan_site.svg';
+    marker-file: 'style/icons/svg/caravan_site.svg';
   }
   [type = 'supermarket'] {
     background/marker-width: 7;
-    background/marker-file: 'data/icons/openstreetmap/shop2.svg';
+    background/marker-file: 'style/icons/openstreetmap/shop2.svg';
     marker-width: 7;
-    marker-file: 'data/icons/openstreetmap/shop2.svg';
+    marker-file: 'style/icons/openstreetmap/shop2.svg';
   }
   [type = 'bicycle_shop'] {
     background/marker-width: 9;
-    background/marker-file: 'data/icons/maki/bicycle-11.svg';
+    background/marker-file: 'style/icons/maki/bicycle-11.svg';
     marker-width: 9;
-    marker-file: 'data/icons/maki/bicycle-11.svg';
+    marker-file: 'style/icons/maki/bicycle-11.svg';
   }
   [type = 'mountain_pass'] {
     background/marker-width: 8;
-    background/marker-file: 'data/icons/openstreetmap/mountain_pass.svg';
+    background/marker-file: 'style/icons/openstreetmap/mountain_pass.svg';
     marker-width: 8;
-    marker-file: 'data/icons/openstreetmap/mountain_pass.svg';
+    marker-file: 'style/icons/openstreetmap/mountain_pass.svg';
   }
   [type = 'ferry_terminal'] {
     background/marker-width: 4;
-    background/marker-file: 'data/icons/maki/square-11.svg';
+    background/marker-file: 'style/icons/maki/square-11.svg';
     background/marker-transform: 'rotate(45)';
     background/marker-fill: @waterway;
     marker-width: 4;
-    marker-file: 'data/icons/maki/square-11.svg';
+    marker-file: 'style/icons/maki/square-11.svg';
     marker-transform: 'rotate(45)';
     marker-fill: @waterway;
   }
   [type = 'peak'] {
     background/marker-width: 5;
-    background/marker-file: 'data/icons/maki/triangle-11.svg';
+    background/marker-file: 'style/icons/maki/triangle-11.svg';
     marker-width: 5;
-    marker-file: 'data/icons/maki/triangle-11.svg';
+    marker-file: 'style/icons/maki/triangle-11.svg';
   }
   [type = 'castle'],
   [type = 'fort'] {
     background/marker-width: 7;
-    background/marker-file: 'data/icons/openstreetmap/castle.svg';
+    background/marker-file: 'style/icons/openstreetmap/castle.svg';
     background/marker-transform: 'translate(0, -2)';
     marker-width: 7;
-    marker-file: 'data/icons/openstreetmap/castle.svg';
+    marker-file: 'style/icons/openstreetmap/castle.svg';
     marker-transform: 'translate(0, -2)';
   }
   [type = 'ruins'] {
     background/marker-width: 8;
-    background/marker-file: 'data/icons/openstreetmap/castle.svg';
+    background/marker-file: 'style/icons/openstreetmap/castle.svg';
     background/marker-transform: 'rotate(30), translate(-1, -2)';
     marker-width: 8;
-    marker-file: 'data/icons/openstreetmap/castle.svg';
+    marker-file: 'style/icons/openstreetmap/castle.svg';
     marker-transform: 'rotate(30), translate(-1, -2)';
   }
   [type = 'lighthouse'] {
-    background/marker-file: 'data/icons/maki/lighthouse-11.svg';
-    marker-file: 'data/icons/maki/lighthouse-11.svg';
+    background/marker-file: 'style/icons/maki/lighthouse-11.svg';
+    marker-file: 'style/icons/maki/lighthouse-11.svg';
   }
   [type = 'tower_communication'] {
-    background/marker-file: 'data/icons/openstreetmap/communication_tower.svg';
-    marker-file: 'data/icons/openstreetmap/communication_tower.svg';
+    background/marker-file: 'style/icons/openstreetmap/communication_tower.svg';
+    marker-file: 'style/icons/openstreetmap/communication_tower.svg';
   }
   [type = 'tower_observation'] {
-    background/marker-file: 'data/icons/maki/viewpoint-11.svg';
-    marker-file: 'data/icons/maki/viewpoint-11.svg';
+    background/marker-file: 'style/icons/maki/viewpoint-11.svg';
+    marker-file: 'style/icons/maki/viewpoint-11.svg';
   }
   [type = 'tower_cooling'] {
     background/marker-width: 7;
-    background/marker-file: 'data/icons/openstreetmap/cooling_tower.svg';
+    background/marker-file: 'style/icons/openstreetmap/cooling_tower.svg';
     marker-width: 7;
-    marker-file: 'data/icons/openstreetmap/cooling_tower.svg';
+    marker-file: 'style/icons/openstreetmap/cooling_tower.svg';
   }
   [type = 'tower_chimney'] {
     background/marker-width: 9;
-    background/marker-file: 'data/icons/openstreetmap/chimney.svg';
+    background/marker-file: 'style/icons/openstreetmap/chimney.svg';
     marker-width: 9;
-    marker-file: 'data/icons/openstreetmap/chimney.svg';
+    marker-file: 'style/icons/openstreetmap/chimney.svg';
   }
   [type = 'wind_power'] {
     background/marker-width: 9;
-    background/marker-file: 'data/icons/svg/wind_generator.svg';
+    background/marker-file: 'style/icons/svg/wind_generator.svg';
     background/marker-transform: 'translate(0, -4)';
     marker-width: 9;
-    marker-file: 'data/icons/svg/wind_generator.svg';
+    marker-file: 'style/icons/svg/wind_generator.svg';
     marker-transform: 'translate(0, -4)';
   }
   [type = 'place_of_worship'] {
     background/marker-width: 4;
-    background/marker-file: 'data/icons/openstreetmap/religion_unknown.svg';
+    background/marker-file: 'style/icons/openstreetmap/religion_unknown.svg';
     marker-width: 4;
-    marker-file: 'data/icons/openstreetmap/religion_unknown.svg';
+    marker-file: 'style/icons/openstreetmap/religion_unknown.svg';
 
     [religion='christian'] {
       background/marker-width: 4;
-      background/marker-file: 'data/icons/openstreetmap/church.svg';
+      background/marker-file: 'style/icons/openstreetmap/church.svg';
       background/marker-transform: 'translate(0, -2)';
       marker-width: 4;
-      marker-file: 'data/icons/openstreetmap/church.svg';
+      marker-file: 'style/icons/openstreetmap/church.svg';
       marker-transform: 'translate(0, -2)';
     }
     [religion='jewish'] {
       background/marker-width: 4;
-      background/marker-file: 'data/icons/openstreetmap/synagogue.svg';
+      background/marker-file: 'style/icons/openstreetmap/synagogue.svg';
       background/marker-transform: 'translate(0, -2)';
       marker-width: 4;
-      marker-file: 'data/icons/openstreetmap/synagogue.svg';
+      marker-file: 'style/icons/openstreetmap/synagogue.svg';
       marker-transform: 'translate(0, -2)';
     }
     [religion='muslim'] {
       background/marker-width: 4;
-      background/marker-file: 'data/icons/openstreetmap/mosque.svg';
+      background/marker-file: 'style/icons/openstreetmap/mosque.svg';
       background/marker-transform: 'translate(0, -2)';
       marker-width: 4;
-      marker-file: 'data/icons/openstreetmap/mosque.svg';
+      marker-file: 'style/icons/openstreetmap/mosque.svg';
       marker-transform: 'translate(0, -2)';
     }
     [religion='buddhist'] {
-      background/marker-file: 'data/icons/maki/religious-buddhist-11.svg';
-      marker-file: 'data/icons/maki/religious-buddhist-11.svg';
+      background/marker-file: 'style/icons/maki/religious-buddhist-11.svg';
+      marker-file: 'style/icons/maki/religious-buddhist-11.svg';
     }
   }
 }
