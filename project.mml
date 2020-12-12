@@ -632,6 +632,10 @@ Layer:
             "generator:source",
             mountain_pass as mountain_pass,
             tents,
+            CASE
+              WHEN scout = 'yes' THEN 'yes'
+              ELSE 'no'
+            END as scout,
             surface
           FROM
             planet_osm_point
@@ -670,6 +674,10 @@ Layer:
             "generator:source",
             NULL as mountain_pass,
             tents,
+            CASE
+              WHEN scout = 'yes' THEN 'yes'
+              ELSE 'no'
+            END as scout,
             surface
           FROM
             planet_osm_polygon
@@ -709,7 +717,8 @@ Layer:
               WHEN "natural" = 'peak' THEN 'peak'
             END as type,
             religion,
-            ele
+            ele,
+            scout
           FROM
             points
           WHERE

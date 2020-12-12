@@ -705,7 +705,13 @@
     background/marker-file: 'data/icons/svg/camp_site.svg';
     marker-width: 9;
     marker-file: 'data/icons/svg/camp_site.svg';
+
+    [scout = 'yes'] {
+      background/marker-file: 'data/icons/svg/scout.svg';
+      marker-file: 'data/icons/svg/scout.svg';
+    }
   }
+
   [type = 'caravan_site'] {
     background/marker-file: 'data/icons/svg/caravan_site.svg';
     marker-file: 'data/icons/svg/caravan_site.svg';

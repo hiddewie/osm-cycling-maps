@@ -150,6 +150,7 @@ node,way   surface      text         linear
 node,way   tents         text         linear
 # node,way   toll         text         linear
 node,way   tourism      text         polygon
+node,way   scout      text         linear
 node,way   tower:type   text         linear
 way        tracktype    text         linear
 node,way   tunnel       text         linear
