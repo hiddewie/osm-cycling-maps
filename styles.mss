@@ -895,23 +895,23 @@
   shield-clip: false;
 
   // tertiary is the default
-  shield-file: url("symbols/shields/tertiary_[width]x[height].svg");
+  shield-file: url("style/symbols/shields/tertiary_[width]x[height].svg");
   shield-fill: @road-shield-tertiary-label;
 
   [type = 'secondary'] {
-    shield-file: url("symbols/shields/secondary_[width]x[height].svg");
+    shield-file: url("style/symbols/shields/secondary_[width]x[height].svg");
     shield-fill: @road-shield-secondary-label;
   }
   [type = 'primary'] {
-    shield-file: url("symbols/shields/primary_[width]x[height].svg");
+    shield-file: url("style/symbols/shields/primary_[width]x[height].svg");
     shield-fill: @road-shield-primary-label;
   }
   [type = 'trunk'] {
-    shield-file: url("symbols/shields/trunk_[width]x[height].svg");
+    shield-file: url("style/symbols/shields/trunk_[width]x[height].svg");
     shield-fill: @road-shield-trunk-label;
   }
   [type = 'motorway'] {
-    shield-file: url("symbols/shields/motorway_[width]x[height].svg");
+    shield-file: url("style/symbols/shields/motorway_[width]x[height].svg");
     shield-fill: @road-shield-motorway-label;
   }
 }

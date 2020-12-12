@@ -53,7 +53,8 @@ WORKDIR /map-it
 
 ENV MAPNIK_CONFIGURATION mapnik.xml
 
-COPY --from=generation /generation/symbols/shields symbols/shields
+RUN mkdir style
+COPY --from=generation /generation/symbols/shields style/symbols/shields
 COPY --from=build /build/mapnik.xml mapnik.xml
 COPY environment.py .
 COPY bounds.py .
