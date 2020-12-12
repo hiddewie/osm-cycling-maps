@@ -3,6 +3,7 @@
 set -o pipefail
 
 DATA_DIR=/data
+STYLE_DIR=/style
 
 python -V
 gdalinfo --version
@@ -78,7 +79,7 @@ shp2pgsql $ARGS -g way -s 4326 $DATA_DIR/combined.shp contours | psql $POSTGRES_
 echo "Shade"
 rm -f $DATA_DIR/combined.tif || exit 1
 gdaldem hillshade -s 111120 -compute_edges $DATA_DIR/combined.hgt $DATA_DIR/combined.raw.tif || exit 1
-gdaldem color-relief combined.raw.tif -alpha $DATA_DIR/shade.ramp $DATA_DIR/combined.tif || exit 1
+gdaldem color-relief combined.raw.tif -alpha $STYLE_DIR/shade/shade.ramp $DATA_DIR/combined.tif || exit 1
 rm -f $DATA_DIR/combined.{dbf,hgt.aux.xml,prj,shp,shx,raw.tif,tfw} || exit 1
 
 echo "Done"

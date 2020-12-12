@@ -21,12 +21,14 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /data
+RUN mkdir /style
 RUN mkdir /script
 
 WORKDIR /data
 
 COPY map-it.style /script/map-it.style
 COPY download.sh /script/download.sh
+COPY style/shade /style/shade
 RUN chmod +x /script/download.sh
 
 CMD /script/download.sh
