@@ -105,11 +105,14 @@ do
   echo "Done $COUNTRY"
 done
 
-echo "Merging OSM data"
-
-echo "Merging files $FILES to $DATA_DIR/combined.osm.pbf"
-osmium merge --output=$DATA_DIR/combined.osm.pbf --overwrite $FILES || exit 1
-
+echo "Combining OSM data"
+if [ "$(echo $FILES | wc -w)" = "1" ]; then
+  echo "Copying $FILES to $DATA_DIR/combined.osm.pbf"
+  cp $FILES $DATA_DIR/combined.osm.pbf
+else
+  echo "Merging files $FILES to $DATA_DIR/combined.osm.pbf"
+  osmium merge --output=$DATA_DIR/combined.osm.pbf --overwrite $FILES || exit 1
+fi
 echo "Done combining OSM data"
 
 echo "Importing combined OSM data"
