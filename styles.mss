@@ -785,6 +785,12 @@
     marker-width: 7;
     marker-file: 'data/icons/openstreetmap/cooling_tower.svg';
   }
+  [type = 'tower_chimney'] {
+    background/marker-width: 9;
+    background/marker-file: 'data/icons/openstreetmap/chimney.svg';
+    marker-width: 9;
+    marker-file: 'data/icons/openstreetmap/chimney.svg';
+  }
   [type = 'wind_power'] {
     background/marker-width: 9;
     background/marker-file: 'data/icons/svg/wind_generator.svg';
