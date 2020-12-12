@@ -23,8 +23,8 @@ WORKDIR /build
 RUN npm install -g carto
 
 COPY --from=generation /generation/placements.xml placements.xml
-COPY project.mml .
-COPY styles.mss .
+COPY carto/map-it/project.mml .
+COPY carto/map-it/styles.mss .
 
 # Generate Mapnik XML using Carto
 RUN carto project.mml > mapnik.xml
