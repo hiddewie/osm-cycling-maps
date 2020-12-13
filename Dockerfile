@@ -43,7 +43,7 @@ RUN apt-get update && apt-get install -y \
     fonts-noto-hinted \
     fonts-noto-unhinted \
     fonts-hanazono \
-    ttf-unifont \ \
+    ttf-unifont \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /map-it
