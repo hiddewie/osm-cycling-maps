@@ -126,6 +126,7 @@
 @light-yellow: rgb(232, 232, 16);
 @transparent-light-yellow: rgba(255, 255, 220, 0.8);
 @yellow-green: rgb(210, 240, 0);
+@light-orange: rgb(255, 204, 153);
 @orange: rgb(219, 170, 35);
 @blue: rgb(53, 134, 212);
 @light-blue: lighten(@blue, 30%);
@@ -191,7 +192,7 @@
 @poi: @dark-red;
 @poi-label-halo: @transparent-light-yellow;
 
-@power: @light-gray;
+@power: @light-orange;
 
 @place: @black;
 @place-halo: @transparent-light-yellow;
