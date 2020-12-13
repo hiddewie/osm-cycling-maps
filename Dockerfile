@@ -6,8 +6,7 @@ WORKDIR /generation
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-lxml \
-  && apt-get autoclean \
-  && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
 COPY scripts/placements.py .
 RUN /usr/bin/python3 placements.py > placements.xml
@@ -44,9 +43,8 @@ RUN apt-get update && apt-get install -y \
     fonts-noto-hinted \
     fonts-noto-unhinted \
     fonts-hanazono \
-    ttf-unifont \
-  && apt-get autoclean \
-  && rm -rf /var/lib/apt/lists/*
+    ttf-unifont \ \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /map-it
 WORKDIR /map-it

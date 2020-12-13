@@ -17,7 +17,6 @@ RUN apt-get update && apt-get install -y \
     dpkg -i phyghtmap_2.21-1_all.deb; \
     apt-get -f -y install && \
     rm phyghtmap_2.21-1_all.deb && \
-    apt-get autoclean && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /data

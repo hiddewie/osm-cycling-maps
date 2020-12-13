@@ -3,7 +3,8 @@ FROM debian:buster-slim
 LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
 
 RUN apt-get update && apt-get install -y \
-    python-mapnik
+    python-mapnik \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY scripts/environment.py .
 COPY scripts/bounds.py .
