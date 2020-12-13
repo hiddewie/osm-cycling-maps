@@ -157,7 +157,11 @@ Layer:
           way && !bbox! AND
           (
             "natural" = 'water' OR
-            waterway = 'riverbank'
+            waterway = 'riverbank' OR
+            landuse IN (
+              'reservoir',
+              'basin'
+            )
           )
 
         UNION ALL
@@ -931,15 +935,24 @@ Layer:
         SELECT
           way,
           name,
-          water as type
+          CASE
+            WHEN water IN ('lake', 'lagoon') THEN water
+            WHEN landuse IN ('reservoir', 'basin') then landuse
+          END as type
         FROM
           planet_osm_polygon
         WHERE
           way && !bbox! AND
           "natural" = 'water' AND
-          water IN (
-            'lake',
-            'lagoon'
+          (
+            water IN (
+              'lake',
+              'lagoon'
+            ) OR
+            landuse IN (
+              'reservoir',
+              'basin'
+            )
           ) AND
           name IS NOT NULL AND
           way_area >= 2e6
