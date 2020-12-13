@@ -46,7 +46,7 @@ The [Map bounds tool](https://hiddewieringa.nl/map-bounds) can be used to choose
 
 [![](assets/bounds.png)](https://hiddewieringa.nl/map-bounds)
 
-In addition to the visual tool, the following script container can be used. This commandline tool contains the same logic in the visual tool and as in the map generation script. The output will contain the bounding boxes for each page that will be generated. These values can be used for other commands. 
+In addition to the visual tool, the script container [`hiddewie/map-it-bounds`](https://hub.docker.com/r/hiddewie/map-it-bounds) can be used. This commandline tool contains the same logic in the visual tool and as in the map generation script. The output will contain the bounding boxes for each page that will be generated. These values can be used for other commands. 
 ```bash
 docker run \ 
   -ti \
@@ -65,7 +65,7 @@ docker run \
 
 Make sure you have created an account [U.S. Geological Survey](https://www.usgs.gov/). The USGS service is used to download terrain height information in high resolution.
 
-Then, download and import the data of the map using the docker image `hiddewie/map-it-import` [![](https://images.microbadger.com/badges/image/hiddewie/map-it-import.svg)](https://hub.docker.com/r/hiddewie/map-it-import). Map the data directory of this project to the container. Some files are downloaded there that are used for shading the map. Run it using
+Then, download and import the data of the map using the docker image [`hiddewie/map-it-import`](https://hub.docker.com/r/hiddewie/map-it-import). Map the data directory of this project to the container. Some files are downloaded there that are used for shading the map. Run it using
 ```bash
 docker run \
   -ti \
@@ -98,7 +98,7 @@ Used technology:
 
 #### Map 
 
-Let's generate a map. Use the image `hiddewie/map-it` [![](https://images.microbadger.com/badges/image/hiddewie/map-it.svg)](https://hub.docker.com/r/hiddewie/map-it) and run it using 
+Let's generate a map. Use the image [`hiddewie/map-it`](https://hub.docker.com/r/hiddewie/map-it) and run it using 
 ```bash
 docker run \
   -ti \
