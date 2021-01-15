@@ -25,7 +25,7 @@ RUN mkdir /script
 
 WORKDIR /data
 
-COPY map-it.style /script/map-it.style
+COPY style/map-it.style /script/map-it.style
 COPY scripts/download.sh /script/download.sh
 COPY style/shade /style/shade
 RUN chmod +x /script/download.sh
