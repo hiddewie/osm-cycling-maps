@@ -17,7 +17,7 @@ services:
     build:
       cache_from:
         - hiddewie/hiddewie/map-it-import:master
-    image: $DOCKERHUB_USERNAME/hiddewie/map-it-import:$SEMAPHORE_GIT_BRANCH
+    image: $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH
 
   # Dependencies
   postgres-osm:
