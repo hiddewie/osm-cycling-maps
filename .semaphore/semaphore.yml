@@ -31,6 +31,18 @@ blocks:
             - echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
             - cache restore data-`date +%Y-%m`
 
+            # Set environment variables
+            - echo "BBOX=43.3146:41.49:43.8202:41.8238" >> .env
+            - echo "PAPER_SIZE=A2" >> .env
+            - echo "PAGE_OVERLAP=5%" >> .env
+            - echo "PAPER_ORIENTATION=landscape" >> .env
+            - echo "SCALE=1:150000" >> .env
+            - echo "FEATURE_COUNTRIES=europe/georgia" >> .env
+            - echo "MAP_NAME=map" >> .env
+            - echo "MIN_ZOOM=12" >> .env
+            - echo "MAX_ZOOM=12" >> .env
+            - echo "NUM_THREADS=1" >> .env
+
             # Build everything
             - |
               docker-compose \
@@ -55,18 +67,6 @@ blocks:
                 echo "Sleeping 1 second"
                 sleep 1
               done
-
-            # Set environment variables
-            - echo "BBOX=43.3146:41.49:43.8202:41.8238" >> .env
-            - echo "PAPER_SIZE=A2" >> .env
-            - echo "PAGE_OVERLAP=5%" >> .env
-            - echo "PAPER_ORIENTATION=landscape" >> .env
-            - echo "SCALE=1:150000" >> .env
-            - echo "FEATURE_COUNTRIES=europe/georgia" >> .env
-            - echo "MAP_NAME=map" >> .env
-            - echo "MIN_ZOOM=12" >> .env
-            - echo "MAX_ZOOM=12" >> .env
-            - echo "NUM_THREADS=1" >> .env
 
             # Run import for small area
             - BBOX=$(docker-compose run map-it-bounds)
