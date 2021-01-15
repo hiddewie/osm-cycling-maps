@@ -22,16 +22,18 @@ There are three scripts in this repository:
 - [`scripts/bounds.py`](scripts/bounds.py)
 
   A Python script which will output a list of bounding boxes that will fit the configured page size and bounding box perfectly.
-  
+
 See the environment variables which can be configured for the scripts below.
+
+Copy the distributed environment file [`.env.dist`](.env.dist) to `.env`. You can modify the `.env` file to suit your needs.
+
+The scripts are packaged as Docker images, and configured in the file [`docker-compose.yml`](./docker-compose.yml).
 
 #### Database
 
 Start a database with GIS extensions enabled using the image [`openfirmware/postgres-osm`](https://hub.docker.com/r/openfirmware/postgres-osm/):
 ```bash
-docker run -d \
-  --name postgres-osm \
-  openfirmware/postgres-osm
+docker-compose -d up postgres-osm
 ```
 
 Used technology:
@@ -48,18 +50,10 @@ The [Map bounds tool](https://hiddewieringa.nl/map-bounds) can be used to choose
 
 In addition to the visual tool, the script container [`hiddewie/map-it-bounds`](https://hub.docker.com/r/hiddewie/map-it-bounds) can be used. This commandline tool contains the same logic in the visual tool and as in the map generation script. The output will contain the bounding boxes for each page that will be generated. These values can be used for other commands. 
 ```bash
-docker run \ 
-  -ti \
-  --rm \
-  -e BBOX="6.2476:52.2157:6.9457:52.4531" \
-  -e PAPER_SIZE="A2" \
-  -e PAGE_OVERLAP="5%" \
-  -e PAPER_ORIENTATION="landscape" \
-  -e SCALE="1:150000" \
-  hiddewie/map-it-bounds
+docker-compose run map-it-bounds
 ```
 
-(You can also build it yourself using `docker build -t map-it-bounds -f bounds.Dockerfile .`)
+(You can also build it yourself using `docker-compose build map-it-bounds`)
 
 #### Data download & import
 
@@ -67,25 +61,11 @@ Make sure you have created an account [U.S. Geological Survey](https://www.usgs.
 
 Then, download and import the data of the map using the docker image [`hiddewie/map-it-import`](https://hub.docker.com/r/hiddewie/map-it-import). Map the data directory of this project to the container. Some files are downloaded there that are used for shading the map. Run it using
 ```bash
-docker run \
-  -ti \
-  --rm \
-  -v $PROJECT_DIR/data:/data \
-  --link postgres-osm:postgres-osm \
-  -e PG_HOST=postgres-osm \
-  -e PG_PORT=5432 \
-  -e PG_USER="osm" \
-  -e PG_PASSWORD="" \
-  -e PG_DATABASE="gis" \
-  -e USGS_USERNAME="$USGS_USERNAME" \
-  -e USGS_PASSWORD="$USGS_PASSWORD" \
-  -e FEATURE_COUNTRIES="europe/netherlands/overijssel" \
-  -e BBOX="6.2476:52.2157:6.9457:52.4531" \
-  hiddewie/map-it-import
+docker-compose run map-it-import
 ```
-where `$PROJECT_DIR` is the project directory and `$USGS_USERNAME` and `$USGS_PASSWORD` are credentials for the [U.S. Geological Survey](https://www.usgs.gov/).
+where `$USGS_USERNAME` and `$USGS_PASSWORD` are credentials for the [U.S. Geological Survey](https://www.usgs.gov/).
 
-(You can also build it yourself using `docker build -t map-it-import -f import.Dockerfile .`)
+(You can also build it yourself using `docker-compose build map-it-import`)
 
 Used technology:
 - [Phyghtmap](http://katze.tfiu.de/projects/phyghtmap/phyghtmap.1.html)
@@ -100,31 +80,14 @@ Used technology:
 
 Let's generate a map. Use the image [`hiddewie/map-it`](https://hub.docker.com/r/hiddewie/map-it) and run it using 
 ```bash
-docker run \
-  -ti \
-  --rm \
-  -v $PROJECT_DIR/data:/map-it/data \
-  -v $PROJECT_DIR/output:/map-it/output \
-  --link postgres-osm:postgres-osm \
-  -e PG_HOST=postgres-osm \
-  -e PG_PORT=5432 \
-  -e PG_USER="osm" \
-  -e PG_PASSWORD="" \
-  -e PG_DATABASE="gis" \
-  -e MAP_NAME="map" \
-  -e BBOX="6.2476:52.2157:6.9457:52.4531" \
-  -e SCALE="1:150000" \
-  -e PAPER_SIZE="A2" \
-  -e PAPER_ORIENTATION="landscape" \
-  -e PAGE_OVERLAP="5%" \
-  hiddewie/map-it
+docker-compose run map-it
 ```
 
 The map will be written to the mapped volume in the `/output` directory. The mapnik XML config will also be written there.
 
 The bounding box does not need to fit perfectly on one page. If it does not, padding will be added or multiple pages will be generated.
 
-(You can also build it yourself using `docker build -t map-it .`)
+(You can also build it yourself using `docker-compose build map-it`)
 
 Used technology:
 - [CartoCSS](https://github.com/mapbox/carto)
@@ -137,23 +100,10 @@ The same Docker image can also generate tiles in the output folder. Instead of g
 for a sliding online map.
 
 ```bash
-docker run \
-  -ti \
-  --rm \
-  -v $PROJECT_DIR/data:/map-it/data \
-  -v $PROJECT_DIR/output:/map-it/output \
-  --link postgres-osm:postgres-osm \
-  -e PG_HOST=postgres-osm \
-  -e PG_PORT=5432 \
-  -e PG_USER="osm" \
-  -e PG_PASSWORD="" \
-  -e PG_DATABASE="gis" \
-  -e BBOX="5.7352:52.0218:7.2960:52.6958"
-  hiddewie/map-it \
-  /usr/bin/python3 tiles.py
+docker-compose run map-it /usr/bin/python3 tiles.py
 ```
 
-The tiles will be generated in the `$PROJECT_DIR/output/tiles` directory.
+The tiles will be generated in the `output/tiles` directory.
 
 Used technology:
 - [CartoCSS](https://github.com/mapbox/carto)

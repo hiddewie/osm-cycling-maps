@@ -5,6 +5,18 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 
+global_job_config:
+  prologue:
+    commands:
+      - checkout
+  env_vars:
+    - name: DOCKER_BUILDKIT
+      value: '1'
+    - name: COMPOSE_DOCKER_CLI_BUILD
+      value: '1'
+    - name: BUILDKIT_PROGRESS
+      value: plain
+
 auto_cancel:
   running:
     when: "branch != 'master'"
@@ -18,121 +30,63 @@ blocks:
       jobs:
         - name: Build and run Docker images
           commands:
-            - checkout
             - echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
-            - export PROJECT_DIR=`pwd`
             - cache restore data-`date +%Y-%m`
 
-            # Import image
-            - docker pull $DOCKERHUB_USERNAME/map-it-import:master || true
-            - docker pull $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH || true
-            - |
-              docker build \
-              -t map-it-import \
-              -f import.Dockerfile \
-              --cache-from $DOCKERHUB_USERNAME/map-it-import:master \
-              --cache-from $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH \
-              .
-            - docker tag map-it-import $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH
-            - docker push $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH
+            # Set environment variables
+            - echo "PG_HOST=postgres-osm" >> .env
+            - echo "PG_PORT=5432" >> .env
+            - echo "PG_USER=osm" >> .env
+            - echo "PG_PASSWORD=" >> .env
+            - echo "PG_DATABASE=gis" >> .env
+            - echo "BBOX=43.3146:41.49:43.8202:41.8238" >> .env
+            - echo "PAPER_SIZE=A2" >> .env
+            - echo "PAGE_OVERLAP=5%" >> .env
+            - echo "PAPER_ORIENTATION=landscape" >> .env
+            - echo "SCALE=1:150000" >> .env
+            - echo "FEATURE_COUNTRIES=europe/georgia" >> .env
+            - echo "MAP_NAME=map" >> .env
+            - echo "MIN_ZOOM=12" >> .env
+            - echo "MAX_ZOOM=12" >> .env
+            - echo "NUM_THREADS=1" >> .env
 
-            # Bounds image
-            - docker pull $DOCKERHUB_USERNAME/map-it-bounds:master || true
-            - docker pull $DOCKERHUB_USERNAME/map-it-bounds:$SEMAPHORE_GIT_BRANCH || true
-            - |
-              docker build \
-              -t map-it-bounds \
-              -f bounds.Dockerfile \
-              --cache-from $DOCKERHUB_USERNAME/map-it-bounds:master \
-              --cache-from $DOCKERHUB_USERNAME/map-it-bounds:$SEMAPHORE_GIT_BRANCH \
-              .
-            - docker tag map-it-bounds $DOCKERHUB_USERNAME/map-it-bounds:$SEMAPHORE_GIT_BRANCH
-            - docker push $DOCKERHUB_USERNAME/map-it-bounds:$SEMAPHORE_GIT_BRANCH
+            - export DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.ci.yml"
 
-            # Map image
-            - docker pull $DOCKERHUB_USERNAME/map-it:master || true
-            - docker pull $DOCKERHUB_USERNAME/map-it:$SEMAPHORE_GIT_BRANCH || true
+            # Build everything
             - |
-              docker build \
-              -t map-it \
-              -f Dockerfile \
-              --cache-from $DOCKERHUB_USERNAME/map-it:master \
-              --cache-from $DOCKERHUB_USERNAME/map-it:$SEMAPHORE_GIT_BRANCH \
-              .
-            - docker tag map-it $DOCKERHUB_USERNAME/map-it:$SEMAPHORE_GIT_BRANCH
-            - docker push $DOCKERHUB_USERNAME/map-it:$SEMAPHORE_GIT_BRANCH
+              $DOCKER_COMPOSE \
+                build \
+                --build-arg BUILDKIT_INLINE_CACHE=1 \
+                map-it map-it-bounds map-it-import
 
             # Run database
-            - docker run -d --name postgres-osm openfirmware/postgres-osm
             - |
-              while ! nc -z 172.17.0.2 5432; do
+              $DOCKER_COMPOSE \
+                up \
+                -d \
+                postgres-osm
+            - |
+              until $DOCKER_COMPOSE exec postgres-osm pg_isready; do
                 echo "Sleeping 1 second"
                 sleep 1
               done
 
             # Run import for small area
-            - |
-              BBOX=$(docker run -ti \
-                --rm \
-                -e BBOX="43.3146:41.49:43.8202:41.8238" \
-                -e PAPER_SIZE="A2" \
-                -e PAGE_OVERLAP="5%" \
-                -e PAPER_ORIENTATION="landscape" \
-                -e SCALE="1:150000" \
-                map-it-bounds)
+            - BBOX=$($DOCKER_COMPOSE run map-it-bounds)
+            - sed -i "s/BBOX=.*/BBOX=$BBOX/" .env
             - 'echo "Bounding box: $BBOX"'
-            - |
-              docker run \
-                -ti \
-                --rm \
-                -v $PROJECT_DIR/data:/data \
-                --link postgres-osm:postgres-osm \
-                -e PG_HOST=postgres-osm \
-                -e PG_PORT=5432 \
-                -e PG_USER="osm" \
-                -e PG_PASSWORD="" \
-                -e PG_DATABASE="gis" \
-                -e USGS_USERNAME="$USGS_USERNAME" \
-                -e USGS_PASSWORD="$USGS_PASSWORD" \
-                -e FEATURE_COUNTRIES="europe/georgia" \
-                -e BBOX="${BBOX%%[[:space:]]}" \
-                map-it-import
-            - |
-                docker run -ti \
-                --rm \
-                -v $PROJECT_DIR/data:/map-it/data \
-                -v $PROJECT_DIR/output:/map-it/output \
-                --link postgres-osm:postgres-osm \
-                -e PG_HOST=postgres-osm \
-                -e PG_PORT=5432 \
-                -e PG_USER="osm" \
-                -e PG_PASSWORD="" \
-                -e PG_DATABASE="gis" \
-                -e MAP_NAME="map" \
-                -e BBOX="${BBOX%%[[:space:]]}" \
-                -e PAPER_SIZE="A2" \
-                -e PAGE_OVERLAP="5%" \
-                -e PAPER_ORIENTATION="landscape" \
-                -e SCALE="1:150000" \
-                map-it
+            - $DOCKER_COMPOSE run map-it-import
+            - $DOCKER_COMPOSE run map-it
             - artifact push workflow --expire-in 2w output/map.pdf
-            - export TILE_BBOX="43.4715:41.3965:43.5077:41.4180"
-            - |
-              docker run -ti \
-                --rm \
-                -v $PROJECT_DIR/data:/map-it/data \
-                -v $PROJECT_DIR/output:/map-it/output \
-                --link postgres-osm:postgres-osm \
-                -e PG_HOST=postgres-osm \
-                -e PG_PORT=5432 \
-                -e PG_USER="osm" \
-                -e PG_PASSWORD="" \
-                -e PG_DATABASE="gis" \
-                -e BBOX="$TILE_BBOX" \
-                -e MIN_ZOOM="12" \
-                -e MAX_ZOOM="12" \
-                -e NUM_THREADS="1" \
-                map-it \
-                /usr/bin/python3 tiles.py
+
+            - sed -i "s/BBOX=.*/BBOX=43.4715:41.3965:43.5077:41.4180/" .env
+            - $DOCKER_COMPOSE run map-it /usr/bin/python3 tiles.py
             - artifact push workflow --expire-in 2w output/tiles/12/2543/1529.png
+
             - cache store data-`date +%Y-%m` data
+
+            # Publish images
+            - |
+              $DOCKER_COMPOSE \
+                push \
+                map-it map-it-bounds map-it-import
