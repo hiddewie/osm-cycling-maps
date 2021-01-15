@@ -4,3 +4,4 @@ output
 assets
 .idea
 production
+.env

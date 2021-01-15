@@ -1,0 +1,44 @@
+version: "3.3"
+services:
+
+  map-it:
+    depends_on:
+      - postgres-osm
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: hiddewie/map-it
+    env_file:
+      - .env
+    volumes:
+      - ./data:/map-it/data
+      - ./output:/map-it/output
+
+  map-it-bounds:
+    depends_on:
+      - postgres-osm
+    build:
+      context: .
+      dockerfile: bounds.Dockerfile
+    image: hiddewie/map-it-bounds
+    env_file:
+      - .env
+
+  map-it-import:
+    depends_on:
+      - postgres-osm
+    build:
+      context: .
+      dockerfile: import.Dockerfile
+    image: hiddewie/map-it-import
+    env_file:
+      - .env
+    environment:
+      - USGS_USERNAME
+      - USGS_PASSWORD
+    volumes:
+      - ./data:/data
+
+  # Dependencies
+  postgres-osm:
+    image: openfirmware/postgres-osm
