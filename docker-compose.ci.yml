@@ -16,7 +16,7 @@ services:
   map-it-import:
     build:
       cache_from:
-        - hiddewie/hiddewie/map-it-import:master
+        - hiddewie/map-it-import:master
     image: hiddewie/map-it-import:$SEMAPHORE_GIT_BRANCH
 
   # Dependencies
