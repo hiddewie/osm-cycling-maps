@@ -43,25 +43,27 @@ blocks:
             - echo "MAX_ZOOM=12" >> .env
             - echo "NUM_THREADS=1" >> .env
 
+            - export DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.ci.yml"
+
             # Build everything
             - |
-              docker-compose \
-                -f docker-compose.yml \
-                -f docker-compose.ci.yml \
+              $DOCKER_COMPOSE \
                 build \
                 --build-arg BUILDKIT_INLINE_CACHE=1 \
                 map-it map-it-bounds map-it-import
 
             # Publish images
             - |
-              docker-compose \
-                -f docker-compose.yml \
-                -f docker-compose.ci.yml \
+              $DOCKER_COMPOSE \
                 push \
                 map-it map-it-bounds map-it-import
 
             # Run database
-            - docker up -d postgres-osm
+            - |
+              $DOCKER_COMPOSE \
+                up \
+                -d \
+                postgres-osm
             - |
               while ! nc -z 172.17.0.2 5432; do
                 echo "Sleeping 1 second"
@@ -69,15 +71,15 @@ blocks:
               done
 
             # Run import for small area
-            - BBOX=$(docker-compose run map-it-bounds)
+            - BBOX=$($DOCKER_COMPOSE run map-it-bounds)
             - sed -i "s/BBOX=.*/BBOX=$BBOX/" .env
             - 'echo "Bounding box: $BBOX"'
-            - docker-compose run map-it-import
-            - docker-compose run map-it
+            - $DOCKER_COMPOSE run map-it-import
+            - $DOCKER_COMPOSE run map-it
             - artifact push workflow --expire-in 2w output/map.pdf
 
             - sed -i "s/BBOX=.*/BBOX=43.4715:41.3965:43.5077:41.4180/" .env
-            - docker-compose run map-it /usr/bin/python3 tiles.py
+            - $DOCKER_COMPOSE run map-it /usr/bin/python3 tiles.py
             - artifact push workflow --expire-in 2w output/tiles/12/2543/1529.png
 
             - cache store data-`date +%Y-%m` data
