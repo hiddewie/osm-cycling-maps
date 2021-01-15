@@ -5,7 +5,7 @@ services:
     build:
       cache_from:
         - hiddewie/map-it:master
-    image: hiddewie/map-it-import:$SEMAPHORE_GIT_BRANCH
+    image: hiddewie/map-it:$SEMAPHORE_GIT_BRANCH
 
   map-it-bounds:
     build:

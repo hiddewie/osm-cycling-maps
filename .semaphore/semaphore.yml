@@ -54,12 +54,6 @@ blocks:
                 --build-arg BUILDKIT_INLINE_CACHE=1 \
                 map-it map-it-bounds map-it-import
 
-            # Publish images
-            - |
-              $DOCKER_COMPOSE \
-                push \
-                map-it map-it-bounds map-it-import
-
             # Run database
             - |
               $DOCKER_COMPOSE \
@@ -85,3 +79,9 @@ blocks:
             - artifact push workflow --expire-in 2w output/tiles/12/2543/1529.png
 
             - cache store data-`date +%Y-%m` data
+
+            # Publish images
+            - |
+              $DOCKER_COMPOSE \
+                push \
+                map-it map-it-bounds map-it-import
