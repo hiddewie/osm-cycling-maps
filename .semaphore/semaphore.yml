@@ -65,7 +65,7 @@ blocks:
                 -d \
                 postgres-osm
             - |
-              while ! nc -z 172.17.0.2 5432; do
+              until $DOCKER_COMPOSE exec postgres-osm pg_isready; do
                 echo "Sleeping 1 second"
                 sleep 1
               done
