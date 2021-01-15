@@ -5,19 +5,19 @@ services:
     build:
       cache_from:
         - hiddewie/map-it:master
-    image: $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH
+    image: hiddewie/map-it-import:$SEMAPHORE_GIT_BRANCH
 
   map-it-bounds:
     build:
       cache_from:
         - hiddewie/map-it-bounds:master
-    image: $DOCKERHUB_USERNAME/map-it-bounds:$SEMAPHORE_GIT_BRANCH
+    image: hiddewie/map-it-bounds:$SEMAPHORE_GIT_BRANCH
 
   map-it-import:
     build:
       cache_from:
         - hiddewie/hiddewie/map-it-import:master
-    image: $DOCKERHUB_USERNAME/map-it-import:$SEMAPHORE_GIT_BRANCH
+    image: hiddewie/map-it-import:$SEMAPHORE_GIT_BRANCH
 
   # Dependencies
   postgres-osm:
