@@ -14,6 +14,8 @@ global_job_config:
       value: '1'
     - name: COMPOSE_DOCKER_CLI_BUILD
       value: '1'
+    - name: BUILDKIT_PROGRESS
+      value: plain
 
 auto_cancel:
   running:
