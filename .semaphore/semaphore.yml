@@ -34,7 +34,7 @@ blocks:
             - cache restore data-`date +%Y-%m`
 
             # Set environment variables
-            - echo "PG_HOST=postgres" >> .env
+            - echo "PG_HOST=postgres-osm" >> .env
             - echo "PG_PORT=5432" >> .env
             - echo "PG_USER=osm" >> .env
             - echo "PG_PASSWORD=" >> .env
