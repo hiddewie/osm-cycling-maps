@@ -202,6 +202,10 @@
 
 // Layers
 
+#map-background {
+  polygon-fill: @white;
+}
+
 #landuse-background {
   [type = 'forest'] {
     polygon-fill: @forest;

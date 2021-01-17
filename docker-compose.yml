@@ -39,6 +39,20 @@ services:
     volumes:
       - ./data:/data
 
+  map-it-kosmtik:
+    depends_on:
+      - postgres-osm
+    build:
+      context: .
+      dockerfile: kosmtik.Dockerfile
+    ports:
+      - "6789:6789"
+    volumes:
+      - ./data:/map-it/data
+    environment:
+      - PGHOST=postgres-osm
+      - PGUSER=osm
+
   # Dependencies
   postgres-osm:
     image: openfirmware/postgres-osm

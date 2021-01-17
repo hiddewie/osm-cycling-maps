@@ -225,10 +225,23 @@ Optional extra parameters for tweaking the import of downloaded OpenStreetMap da
   
   Whether tile generation should be skipped if the tile file already exists.
 
-### Examples
+## Examples
 
 [Example PDF Output](https://github.com/hiddewie/map-it/releases/download/v1.0.0/output.pdf)
 
 ![Expected output](assets/cover.png)
 
 ![Printed map](assets/printed2.jpg)
+
+## Local development
+
+You can run and develop the map style locally by using the Kosmtik interface.
+
+Run Kosmtik with 
+```bash
+docker-compose run 
+```
+
+Go to [http://localhost:6789/map-it](http://localhost:6789/map-it).
+
+![Kosmtik](assets/kosmtik.png)
