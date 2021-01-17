@@ -18,7 +18,3 @@ services:
       cache_from:
         - hiddewie/map-it-import:master
     image: hiddewie/map-it-import:$SEMAPHORE_GIT_BRANCH
-
-  # Dependencies
-  postgres-osm:
-    image: openfirmware/postgres-osm
