@@ -648,6 +648,7 @@ Layer:
         WITH points AS (
           SELECT
             way,
+            osm_id,
             tourism,
             amenity,
             historic,
@@ -692,6 +693,7 @@ Layer:
 
           SELECT
             ST_PointOnSurface(way) AS way,
+            osm_id,
             tourism,
             amenity,
             historic,
@@ -754,9 +756,12 @@ Layer:
             END as type,
             religion,
             ele,
-            scout
+            scout,
+            peak_isolation.isolation as isolation
           FROM
             points
+          LEFT JOIN
+            peak_isolation ON points.osm_id = peak_isolation.osm_id
           WHERE
             (
               tourism IN (
@@ -830,7 +835,10 @@ Layer:
                     )
                 )
               ) OR
-              "natural" = 'peak'
+              (
+                "natural" = 'peak' AND
+                peak_isolation.isolation >= 2500
+              )
             ) AND
             (historic IS NULL OR historic != 'wayside_shrine') AND
             (location IS NULL OR location NOT IN ('roof', 'rooftop'))

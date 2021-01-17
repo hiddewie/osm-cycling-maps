@@ -173,4 +173,42 @@ fi
 
 echo "Done importing coastlines"
 
+echo "Processing peak prominence"
+
+psql $POSTGRES_ARGS -c "DROP TABLE IF EXISTS peak_isolation;"
+psql $POSTGRES_ARGS -c "$(cat <<QUERY
+CREATE TABLE peak_isolation (
+  osm_id bigint PRIMARY KEY,
+  isolation int
+);
+QUERY
+)"
+
+# See https://github.com/der-stefan/OpenTopoMap/blob/c54cd2201b06c476d23d088e105eb69e924214d7/mapnik/tools/update_isolations.sh
+QUERY=$(cat <<QUERY
+SELECT
+  osm_id,
+  ST_X(ST_AsText(ST_Transform(way, 4326))),
+  ST_Y(ST_AsText(ST_Transform(way, 4326))),
+  ele
+FROM
+  planet_osm_point
+WHERE
+  "natural" IN (
+    'peak',
+    'volcano'
+  ) AND
+  ST_Transform(way, 4326) && ST_MakeEnvelope($(echo $BBOX | cut -d : -f 1 -), $(echo $BBOX | cut -d : -f 2 -), $(echo $BBOX | cut -d : -f 3 -), $(echo $BBOX | cut -d : -f 4 -), 4326)
+;
+QUERY
+)
+
+psql -A -t -F ";" $POSTGRES_ARGS -c "$QUERY" \
+  | /script/isolation -f /data/combined.hgt \
+  | awk -F ';' '{print "INSERT INTO peak_isolation(osm_id, isolation) VALUES (" $1 ", " $4 ");"}' \
+  | psql $POSTGRES_ARGS \
+  | wc -l
+
+echo "Done processing peak prominence"
+
 echo "Done"

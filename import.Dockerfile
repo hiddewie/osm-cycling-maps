@@ -1,3 +1,18 @@
+FROM debian:buster-slim as compilation
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update && apt-get install -y \
+    libgdal-dev \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /compilation
+WORKDIR /compilation
+
+COPY scripts/isolation.c .
+RUN gcc -Wall -o isolation -lgdal -lm -O2 isolation.c
+
 FROM debian:buster-slim
 
 LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
@@ -25,6 +40,7 @@ RUN mkdir /script
 
 WORKDIR /data
 
+COPY --from=compilation /compilation/isolation /script
 COPY style/map-it.style /script/map-it.style
 COPY scripts/download.sh /script/download.sh
 COPY style/shade /style/shade
