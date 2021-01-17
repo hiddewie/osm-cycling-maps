@@ -11,7 +11,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data:/map-it/data
+      - ./data/combined.tif:/map-it/data/combined.tif
       - ./output:/map-it/output
 
   map-it-bounds:
@@ -48,7 +48,7 @@ services:
     ports:
       - "6789:6789"
     volumes:
-      - ./data:/map-it/data
+      - ./data/combined.tif:/map-it/data/combined.tif
     environment:
       - PGHOST=postgres-osm
       - PGUSER=osm
