@@ -4,21 +4,18 @@ services:
   map-it:
     build:
       cache_from:
-        - hiddewie/map-it:$SEMAPHORE_GIT_BRANCH
         - hiddewie/map-it:master
     image: hiddewie/map-it:$SEMAPHORE_GIT_BRANCH
 
   map-it-bounds:
     build:
       cache_from:
-        - hiddewie/map-it-bounds:$SEMAPHORE_GIT_BRANCH
         - hiddewie/map-it-bounds:master
     image: hiddewie/map-it-bounds:$SEMAPHORE_GIT_BRANCH
 
   map-it-import:
     build:
       cache_from:
-        - hiddewie/map-it-import:$SEMAPHORE_GIT_BRANCH
         - hiddewie/map-it-import:master
     image: hiddewie/map-it-import:$SEMAPHORE_GIT_BRANCH
 
