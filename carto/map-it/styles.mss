@@ -187,7 +187,7 @@
 
 @cycling-node: @black;
 @cycling-node-label: @black;
-@cycling-node-label-halo: mix(@transparent-light-yellow, @cycling-network, 90%);
+@cycling-node-label-halo: @white;
 
 @poi: @dark-red;
 @poi-label-halo: @transparent-light-yellow;
@@ -878,7 +878,7 @@
 #cycling-nodes-labels {
   text-name: '[ref]';
   text-size: 7;
-  text-face-name: @font-italic;
+  text-face-name: @font-bold-italic;
   text-fill: @cycling-node-label;
   text-halo-radius: 1.0;
   text-halo-fill: @cycling-node-label-halo;
