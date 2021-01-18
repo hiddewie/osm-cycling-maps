@@ -117,6 +117,7 @@
 @medium-gray: rgb(105, 105, 105);
 @dark-gray: rgb(82, 82, 82);
 @white: rgb(255, 255, 255);
+@transparent-white: rgba(255, 255, 255, 0.8);
 @feint-green: rgb(222, 245, 198);
 @ocre: rgb(145, 132, 83);
 @light-ocre: lighten(@ocre, 40%);
@@ -140,7 +141,7 @@
 @aerodrome: @feint-purple;
 
 @contour: @ocre;
-@contour-label-halo: @white;
+@contour-label-halo: @transparent-white;
 
 @industrial: @feint-gray;
 @residential: @light-ocre;
@@ -149,7 +150,7 @@
 @admin-background: lighten(@purple, 10%);
 @admin-boundaries: @purple;
 @national-park: darken(@feint-green, 50%);
-@national-park-label-halo: @white;
+@national-park-label-halo: @transparent-white;
 
 @cycling-network: rgb(0, 59, 148);
 
@@ -187,18 +188,18 @@
 
 @cycling-node: @black;
 @cycling-node-label: @black;
-@cycling-node-label-halo: @white;
+@cycling-node-label-halo: @transparent-white;
 
 @poi: @dark-red;
-@poi-label-halo: @transparent-light-yellow;
+@poi-label-halo: @transparent-white;
 
 @power: @light-orange;
 
 @place: @black;
-@place-halo: @transparent-light-yellow;
+@place-halo: @transparent-white;
 
 @scale-copyright: @black;
-@scale-copyright-halo: @transparent-light-yellow;
+@scale-copyright-halo: @transparent-white;
 
 // Layers
 
