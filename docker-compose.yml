@@ -55,7 +55,7 @@ services:
 
   # Dependencies
   postgres-osm:
-    image: postgis/postgis:9.5-2.5
+    image: postgis/postgis:12-3.0-alpine
     command: postgres -c log_min_duration_statement=1000
     env_file:
       - .env
