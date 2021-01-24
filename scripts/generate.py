@@ -3,6 +3,7 @@
 
 import os
 import sys
+import time
 
 import cairo
 import mapnik
@@ -77,8 +78,9 @@ def main():
         print('Generating page %s for bounding box (%s, %s) × (%s, %s)' % (page, boundingBox.minx, boundingBox.miny, boundingBox.maxx, boundingBox.maxy))
 
         suffixedName = name if len(boundingBoxes) == 1 else ('%s_%s' % (name, page))
+        startTime = time.time()
         renderMap(m, suffixedName, tileBoundingBox)
-        print('Done rendering page %s' % (page,))
+        print('Done rendering page %s in %s sec' % (page, round(10 * (time.time() - startTime)) / 10))
 
         page += 1
 
