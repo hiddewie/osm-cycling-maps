@@ -42,6 +42,7 @@ WORKDIR /data
 
 COPY --from=compilation /compilation/isolation /script
 COPY style/map-it.style /script/map-it.style
+COPY scripts/arealabel.sql /script/arealabel.sql
 COPY scripts/download.sh /script/download.sh
 COPY style/shade /style/shade
 RUN chmod +x /script/download.sh

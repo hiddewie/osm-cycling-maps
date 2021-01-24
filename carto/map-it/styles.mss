@@ -982,6 +982,20 @@
   }
 }
 
+#natural-labels {
+  opacity: 0.8;
+  text-name: '[name]--NATURAL-PLACEMENTS--';
+  text-fill: @black;
+  text-face-name: @font-italic;
+  text-halo-fill: @national-park-label-halo;
+  text-halo-radius: 1.0;
+  text-placement: line;
+  text-placement-type: list;
+  text-size: 11;
+  text-character-spacing: 50;
+  text-label-position-tolerance: 40;
+}
+
 #scale {
   line-width: 1.0;
   line-color: @scale-copyright;

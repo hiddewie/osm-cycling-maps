@@ -22,6 +22,9 @@ WORKDIR /build
 RUN npm install -g carto
 
 COPY --from=generation /generation/placements.xml placements.xml
+# TODO to generation script
+COPY scripts/natural-placements.xml natural-placements.xml
+
 COPY carto/map-it/project.mml .
 COPY carto/map-it/styles.mss .
 
@@ -31,6 +34,7 @@ RUN carto project.mml > mapnik.xml
 # The CDATA tags are stripped of symbolizers where <Placement/> tags are inserted from placements.xml
 # Also see https://github.com/mapbox/carto/issues/238#issuecomment-19673987
 RUN sed -i -E "s@<!\[CDATA\[(.*)--PLACEMENTS--]]>@\1$(cat placements.xml)@g" mapnik.xml
+RUN sed -i -E "s@<!\[CDATA\[(.*)--NATURAL-PLACEMENTS--]]>@\1$(cat natural-placements.xml)@g" mapnik.xml
 
 FROM ubuntu:focal
 

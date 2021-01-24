@@ -986,6 +986,21 @@ Layer:
           (tunnel IS NULL OR tunnel != 'yes') AND
           name IS NOT NULL
       ) AS data
+- id: natural-labels
+  geometry: linestring
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way,
+          name
+        FROM
+          naturalarealabels
+        WHERE
+          way && !bbox!
+      ) AS data
 - id: places-non-important
   geometry: point
   <<: *extentsOSM
