@@ -56,3 +56,4 @@ services:
   # Dependencies
   postgres-osm:
     image: openfirmware/postgres-osm
+    command: postgres -c log_min_duration_statement=1000
