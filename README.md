@@ -31,7 +31,7 @@ The scripts are packaged as Docker images, and configured in the file [`docker-c
 
 #### Database
 
-Start a database with GIS extensions enabled using the image [`openfirmware/postgres-osm`](https://hub.docker.com/r/openfirmware/postgres-osm/):
+Start a database with GIS extensions enabled using the image [`postgis/postgis`](https://hub.docker.com/r/postgis/postgis):
 ```bash
 docker-compose -d up postgres-osm
 ```

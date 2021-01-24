@@ -55,5 +55,11 @@ services:
 
   # Dependencies
   postgres-osm:
-    image: openfirmware/postgres-osm
+    image: postgis/postgis:9.5-2.5
     command: postgres -c log_min_duration_statement=1000
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_DB=${PG_DATABASE}
+      - POSTGRES_HOST_AUTH_METHOD=trust
