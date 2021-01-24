@@ -43,7 +43,7 @@ Orientation:
 - power lines
 - towers (cooling, observation and communication)
 - mountain passes (only intersecting with rendered roads)
-- mountain peaks
+- mountain peaks (only visually prominent)
 - lighthouses
 - wind turbines
 - places of warship
