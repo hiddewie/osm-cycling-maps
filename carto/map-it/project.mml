@@ -762,6 +762,8 @@ Layer:
             points
           LEFT JOIN
             peak_isolation ON points.osm_id = peak_isolation.osm_id
+          LEFT JOIN
+            mountain_pass_road ON points.osm_id = mountain_pass_road.osm_id
           WHERE
             (
               tourism IN (
@@ -814,26 +816,7 @@ Layer:
               ) OR
               (
                 mountain_pass = 'yes' AND
-                EXISTS(
-                  SELECT
-                    road.way
-                  FROM
-                    planet_osm_line as road
-                  WHERE
-                    ST_DWithin(points.way, road.way, 50) AND
-                    highway IN (
-                      'motorway_link',
-                      'trunk_link',
-                      'secondary_link',
-                      'primary_link',
-                      'motorway',
-                      'trunk',
-                      'cycleway',
-                      'tertiary',
-                      'secondary',
-                      'primary'
-                    )
-                )
+                mountain_pass_road.road_osm_id IS NOT NULL
               ) OR
               (
                 "natural" = 'peak' AND

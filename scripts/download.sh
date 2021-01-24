@@ -211,4 +211,51 @@ psql -A -t -F ";" $POSTGRES_ARGS -c "$QUERY" \
 
 echo "Done processing peak prominence"
 
+echo "Processing mountain passes"
+
+psql $POSTGRES_ARGS -c "DROP TABLE IF EXISTS mountain_pass_road;"
+psql $POSTGRES_ARGS -c "$(cat <<QUERY
+CREATE TABLE mountain_pass_road (
+  osm_id bigint PRIMARY KEY,
+  road_osm_id bigint
+);
+QUERY
+)"
+
+psql $POSTGRES_ARGS -c "$(cat <<QUERY
+INSERT INTO
+  mountain_pass_road(osm_id, road_osm_id)
+SELECT
+  planet_osm_point.osm_id as osm_id,
+  (
+    SELECT
+      road.osm_id
+    FROM
+      planet_osm_line as road
+    WHERE
+      ST_DWithin(planet_osm_point.way, road.way, 50) AND
+      highway IN (
+        'motorway_link',
+        'trunk_link',
+        'secondary_link',
+        'primary_link',
+        'motorway',
+        'trunk',
+        'cycleway',
+        'tertiary',
+        'secondary',
+        'primary'
+      )
+    LIMIT 1
+  ) as road_osm_id
+FROM
+  planet_osm_point
+WHERE
+  mountain_pass = 'yes'
+;
+QUERY
+)"
+
+echo "Done processing mountain passes"
+
 echo "Done"
