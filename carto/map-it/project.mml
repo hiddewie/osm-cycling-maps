@@ -748,8 +748,8 @@ Layer:
               WHEN man_made = 'communications_tower' THEN 'tower_communication'
               WHEN man_made = 'chimney' THEN 'tower_chimney'
               WHEN power = 'generator' THEN 'wind_power'
-              WHEN man_made IN ('mast', 'tower') THEN 'tower_' || "tower:type"
               WHEN amenity = 'place_of_worship' THEN 'place_of_worship'
+              WHEN man_made IN ('mast', 'tower') THEN 'tower_' || "tower:type"
               WHEN amenity = 'ferry_terminal' THEN 'ferry_terminal'
               WHEN mountain_pass = 'yes' THEN 'mountain_pass'
               WHEN "natural" = 'peak' THEN 'peak'
