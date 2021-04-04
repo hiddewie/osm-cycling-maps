@@ -33,9 +33,6 @@ services:
     image: hiddewie/map-it-import
     env_file:
       - .env
-    environment:
-      - USGS_USERNAME
-      - USGS_PASSWORD
     volumes:
       - ./data:/data
 

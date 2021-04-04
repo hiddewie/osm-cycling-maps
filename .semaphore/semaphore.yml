@@ -49,6 +49,8 @@ blocks:
             - echo "MIN_ZOOM=12" >> .env
             - echo "MAX_ZOOM=12" >> .env
             - echo "NUM_THREADS=1" >> .env
+            - echo "USGS_USERNAME=$USGS_USERNAME" >> .env
+            - echo "USGS_PASSWORD=$USGS_PASSWORD" >> .env
 
             - export DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.ci.yml"
 
