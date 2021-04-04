@@ -139,7 +139,6 @@ osm2pgsql \
   --host $PG_HOST \
   --database $PG_DATABASE \
   --username $PG_USER \
-  --unlogged \
   --style /script/map-it.style \
   --slim \
   --drop \
