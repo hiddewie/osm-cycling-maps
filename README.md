@@ -25,7 +25,7 @@ There are three scripts in this repository:
 
 See the environment variables which can be configured for the scripts below.
 
-Copy the distributed environment file [`.env.dist`](.env.dist) to `.env`. You can modify the `.env` file to suit your needs.
+Copy the distributed environment file [`.env.dist`](.env.dist) to `.env`. Fill in the required credentials for the [U.S. Geological Survey](https://www.usgs.gov/). You can modify the `.env` file to suit your needs.
 
 The scripts are packaged as Docker images, and configured in the file [`docker-compose.yml`](./docker-compose.yml).
 
@@ -63,7 +63,6 @@ Then, download and import the data of the map using the docker image [`hiddewie/
 ```bash
 docker-compose run map-it-import
 ```
-where `$USGS_USERNAME` and `$USGS_PASSWORD` are credentials for the [U.S. Geological Survey](https://www.usgs.gov/).
 
 (You can also build it yourself using `docker-compose build map-it-import`)
 
