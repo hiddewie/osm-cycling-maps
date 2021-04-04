@@ -5,7 +5,7 @@ set -o pipefail
 DATA_DIR=/data
 STYLE_DIR=/style
 
-python -V
+python3 -V
 gdalinfo --version
 osm2pgsql --version
 psql --version | grep psql
@@ -43,12 +43,10 @@ mkdir -p $DATA_DIR/dem
 
 echo "Downloading height data for bounding box $BBOX"
 
-# Revert to
-#  --srtm=1 \
-#  --srtm-version=3.0 \
-# when downloading of SRTM 3.0 works again
-phyghtmap --download-only \
-  --source=view3 \
+phyghtmap \
+  --download-only \
+  --srtm=1 \
+  --srtm-version=3.0 \
   --earthexplorer-user=$USGS_USERNAME \
   --earthexplorer-password=$USGS_PASSWORD \
   --hgtdir=$DATA_DIR/dem \

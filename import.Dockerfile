@@ -30,10 +30,10 @@ RUN apt-get update && apt-get install -y \
     libboost-all-dev \
     libgdal-dev \
     osmium-tool && \
-    wget http://katze.tfiu.de/projects/phyghtmap/phyghtmap_2.21-1_all.deb && \
-    dpkg -i phyghtmap_2.21-1_all.deb; \
+    wget http://katze.tfiu.de/projects/phyghtmap/phyghtmap_2.23-1_all.deb && \
+    dpkg -i phyghtmap_2.23-1_all.deb; \
     apt-get -f -y install && \
-    rm phyghtmap_2.21-1_all.deb && \
+    rm phyghtmap_2.23-1_all.deb && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /data
