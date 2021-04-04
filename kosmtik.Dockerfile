@@ -1,17 +1,18 @@
-FROM ubuntu:bionic
+FROM ubuntu:21.04
+
+ENV DEBIAN_FRONTEND noninteractive
 
 # Style dependencies
-RUN apt-get update && apt-get install -y \
-    python3-mapnik \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     fonts-noto-cjk \
     fonts-noto-hinted \
     fonts-noto-unhinted \
     fonts-hanazono \
-    ttf-unifont \
+    fonts-unifont \
     python3 \
+    python3-mapnik \
     python3-lxml \
-    curl \
     nodejs \
     npm \
     && rm -rf /var/lib/apt/lists/*

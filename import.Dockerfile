@@ -2,7 +2,7 @@ FROM ubuntu:21.04 as compilation
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     libgdal-dev \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
@@ -17,9 +17,9 @@ FROM ubuntu:21.04
 
 LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     unzip \
     gdal-bin \

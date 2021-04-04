@@ -1,9 +1,11 @@
 FROM ubuntu:21.04 as generation
 
+ENV DEBIAN_FRONTEND noninteractive
+
 RUN mkdir -p /generation
 WORKDIR /generation
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     python3-lxml \
     && rm -rf /var/lib/apt/lists/*
@@ -34,16 +36,18 @@ RUN sed -i -E "s@<!\[CDATA\[(.*)--PLACEMENTS--]]>@\1$(cat placements.xml)@g" map
 
 FROM ubuntu:21.04
 
+ENV DEBIAN_FRONTEND noninteractive
+
 LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-mapnik \
     curl \
     fonts-noto-cjk \
     fonts-noto-hinted \
     fonts-noto-unhinted \
     fonts-hanazono \
-    ttf-unifont \
+    fonts-unifont \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /map-it

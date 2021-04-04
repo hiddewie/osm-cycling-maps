@@ -56,7 +56,7 @@
        "Noto Sans Telugu UI Regular",
        "Noto Sans Thaana Regular",
        "Noto Sans Thai UI Regular",
-       "Noto Sans Tibetan Regular",
+       "Noto Serif Tibetan Regular",
        "Noto Sans Tifinagh Regular",
        "Noto Sans Vai Regular",
        "Noto Sans Yi Regular",
@@ -65,8 +65,8 @@
        "DejaVu Sans Book",
        "HanaMinA Regular",
        "HanaMinB Regular",
-       "Unifont Medium",
-       "Unifont Upper Medium";
+       "Unifont Regular",
+       "Unifont Upper Regular";
 
 // A bold style is available for almost all scripts. Bold text is heavier than
 // regular text and can be used for emphasis. Fallback is a regular style.
@@ -95,7 +95,7 @@
             "Noto Sans Telugu UI Bold",
             "Noto Sans Thaana Bold",
             "Noto Sans Thai UI Bold",
-            "Noto Sans Tibetan Bold",
+            "Noto Serif Tibetan Bold",
             "Noto Sans Arabic UI Bold",
             "Noto Naskh Arabic UI Bold",
             "DejaVu Sans Bold";
