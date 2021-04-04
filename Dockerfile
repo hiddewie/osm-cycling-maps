@@ -1,4 +1,4 @@
-FROM ubuntu:focal as generation
+FROM ubuntu:21.04 as generation
 
 RUN mkdir -p /generation
 WORKDIR /generation
@@ -32,7 +32,7 @@ RUN carto project.mml > mapnik.xml
 # Also see https://github.com/mapbox/carto/issues/238#issuecomment-19673987
 RUN sed -i -E "s@<!\[CDATA\[(.*)--PLACEMENTS--]]>@\1$(cat placements.xml)@g" mapnik.xml
 
-FROM ubuntu:focal
+FROM ubuntu:21.04
 
 LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
 
