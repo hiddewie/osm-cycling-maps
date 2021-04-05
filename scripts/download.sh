@@ -45,7 +45,7 @@ echo "Downloading height data for bounding box $BBOX"
 
 phyghtmap \
   --download-only \
-  --srtm=1 \
+  --srtm=3 \
   --srtm-version=3.0 \
   --earthexplorer-user=$USGS_USERNAME \
   --earthexplorer-password=$USGS_PASSWORD \
