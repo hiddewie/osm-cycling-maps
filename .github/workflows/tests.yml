@@ -7,9 +7,7 @@ jobs:
   # Set the job key. The key is displayed as the job name
   # when a job name is not provided
   test:
-    # Name the Job
-    name: Lint code base
-    # Set the type of machine to run on
+    name: Tests
     runs-on: ubuntu-latest
 
     steps:
