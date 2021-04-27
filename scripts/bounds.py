@@ -7,10 +7,6 @@ import mapnik
 
 import environment
 
-EPSG_4326 = mapnik.Projection('+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
-EPSG_3857 = mapnik.Projection('+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over')
-latitudeLongitudeToWebMercator = mapnik.ProjTransform(EPSG_4326, EPSG_3857)
-
 ORIENTATION_LANDSCAPE = 'landscape'
 ORIENTATION_PORTRAIT = 'portrait'
 
@@ -69,12 +65,12 @@ def determineBoundingBox(bbox):
         environment.exitError("The bounding box must be of the form A:B:C:D with (A, B) the bottom left corner and (C, D) the top right corner. %s was given" % (bbox,))
         return
 
-    return latitudeLongitudeToWebMercator.forward(mapnik.Box2d(
+    return mapnik.Box2d(
         float(bboxMatch.group(1)),
         float(bboxMatch.group(2)),
         float(bboxMatch.group(3)),
         float(bboxMatch.group(4)),
-    ))
+    )
 
 
 def determinePageOverlap(overlap):
@@ -98,38 +94,68 @@ def determineScale(scale):
         return
 
 
+def haversine(p1, p2):
+    """Calculate the distance between two (degree) latitude/longitude points in meters"""
+
+    lat1, lon1 = p1
+    lat2, lon2 = p2
+
+    # Earth radius in meters
+    R = 6371e3
+
+    # φ, λ in radians
+    φ1 = lat1 * math.pi / 180
+    φ2 = lat2 * math.pi / 180
+    Δφ = (lat2 - lat1) * math.pi / 180
+    Δλ = (lon2 - lon1) * math.pi / 180
+
+    a = math.sin(Δφ / 2) * math.sin(Δφ / 2) + math.cos(φ1) * math.cos(φ2) * math.sin(Δλ / 2) * math.sin(Δλ / 2)
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+    # Distance in meters
+    return R * c
+
+
 def boundingBoxes(bbox, pageOverlap, scale, paperDimensions):
+    # The bounding box is in degrees
+    # All other distances are in meters
+
     paperWidth, paperHeight = paperDimensions
-    # A 'data' pixel is 1 meter (in UTM projection)
+
     pageWidth = paperWidth * scale
     pageHeight = paperHeight * scale
+    distanceX = haversine((bbox.minx, bbox.miny), (bbox.maxx, bbox.miny))
+    distanceY = haversine((bbox.minx, bbox.miny), (bbox.minx, bbox.maxy))
+
+    averageDegreePerMeterX = (bbox.maxx - bbox.minx) / distanceX
+    averageDegreePerMeterY = (bbox.maxy - bbox.miny) / distanceY
 
     # If the bounding box fits on one page, then do not use padding
     epsilon = 1
-    fitsOnOnePageHorizontal = (bbox.maxx - bbox.minx) <= pageWidth + epsilon
-    fitsOnOnePageVertical = (bbox.maxy - bbox.miny) <= pageHeight + epsilon
+    fitsOnOnePageHorizontal = distanceX <= pageWidth + epsilon
+    fitsOnOnePageVertical = distanceY <= pageHeight + epsilon
 
-    numPagesHorizontal = 1 if fitsOnOnePageHorizontal else 1 + int(math.ceil(((bbox.maxx - bbox.minx) - pageWidth) / ((1.0 - pageOverlap) * pageWidth)))
-    numPagesVertical = 1 if fitsOnOnePageVertical else 1 + int(math.ceil(((bbox.maxy - bbox.miny) - pageHeight) / ((1.0 - pageOverlap) * pageHeight)))
+    numPagesHorizontal = 1 if fitsOnOnePageHorizontal else 1 + int(math.ceil((distanceX - pageWidth) / ((1.0 - pageOverlap) * pageWidth)))
+    numPagesVertical = 1 if fitsOnOnePageVertical else 1 + int(math.ceil((distanceY - pageHeight) / ((1.0 - pageOverlap) * pageHeight)))
 
     # Fit the generated pages perfectly 'around' the bounding box
-    paddingX = ((numPagesHorizontal * pageWidth - (numPagesHorizontal - 1) * pageOverlap * pageWidth) - (bbox.maxx - bbox.minx)) / 2
-    paddingY = ((numPagesVertical * pageHeight - (numPagesVertical - 1) * pageOverlap * pageHeight) - (bbox.maxy - bbox.miny)) / 2
+    paddingX = ((numPagesHorizontal * pageWidth - (numPagesHorizontal - 1) * pageOverlap * pageWidth) - distanceX) / 2
+    paddingY = ((numPagesVertical * pageHeight - (numPagesVertical - 1) * pageOverlap * pageHeight) - distanceY) / 2
 
     boundingBoxes = []
     for i in range(numPagesHorizontal):
         for j in range(numPagesVertical):
-            topLeft = int(bbox.minx - paddingX + i * pageWidth - i * pageOverlap * pageWidth), \
-                      int(bbox.maxy + paddingY - j * pageHeight + j * pageOverlap * pageHeight)
-            bottomRight = int(topLeft[0] + pageWidth), \
-                          int(topLeft[1] - pageHeight)
+            topLeft = bbox.minx + averageDegreePerMeterX * (- paddingX + i * pageWidth - i * pageOverlap * pageWidth), \
+                      bbox.maxy + averageDegreePerMeterY * (+ paddingY - j * pageHeight + j * pageOverlap * pageHeight)
+            bottomRight = topLeft[0] + averageDegreePerMeterX * pageWidth, \
+                          topLeft[1] - averageDegreePerMeterY * pageHeight
 
-            tileBoundingBox = latitudeLongitudeToWebMercator.backward(mapnik.Box2d(
+            tileBoundingBox = mapnik.Box2d(
                 topLeft[0],
                 topLeft[1],
                 bottomRight[0],
                 bottomRight[1],
-            ))
+            )
             boundingBoxes.append(tileBoundingBox)
 
     return boundingBoxes
@@ -153,11 +179,12 @@ def mapDimensions(dimensions):
 if __name__ == '__main__':
     boundingBox = determineBoundingBox(environment.require('BBOX'))
     pageOverlap = determinePageOverlap(environment.env('PAGE_OVERLAP', '5%'))
-    # Default 1 cm on the map is 1.5 km in the world
+    # Default: 1 cm on the map is 1.5 km in the world
     scale = determineScale(environment.env('SCALE', '1:150000'))
-    paperWidth, paperHeight = determinePaperDimensions(environment.env('PAPER_SIZE', 'A4'))
-    orientation = determineOrientation(environment.env('PAPER_ORIENTATION', ORIENTATION_PORTRAIT))
-    printPaperWidth, printPaperHeight = rotatePaper((paperWidth, paperHeight), orientation)
+    printPaperWidth, printPaperHeight = rotatePaper(
+        determinePaperDimensions(environment.env('PAPER_SIZE', 'A4')),
+        determineOrientation(environment.env('PAPER_ORIENTATION', ORIENTATION_PORTRAIT))
+    )
 
     for bbox in boundingBoxes(boundingBox, pageOverlap, scale, (printPaperWidth, printPaperHeight)):
         print('%s:%s:%s:%s' % (bbox.minx, bbox.miny, bbox.maxx, bbox.maxy))
