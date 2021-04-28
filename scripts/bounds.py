@@ -128,8 +128,10 @@ def boundingBoxes(bbox, pageOverlap, scale, paperDimensions):
 
     pageWidth = paperWidth * scale
     pageHeight = paperHeight * scale
-    distanceX = haversine((bbox.minx, bbox.miny), (bbox.maxx, bbox.miny))
-    distanceY = haversine((bbox.minx, bbox.miny), (bbox.minx, bbox.maxy))
+
+    # TODO the distance varies between minx/maxx and miny/maxy
+    distanceX = haversine((bbox.minx, bbox.maxy), (bbox.maxx, bbox.maxy))
+    distanceY = haversine((bbox.maxx, bbox.miny), (bbox.maxx, bbox.maxy))
 
     averageDegreePerMeterX = (bbox.maxx - bbox.minx) / distanceX
     averageDegreePerMeterY = (bbox.maxy - bbox.miny) / distanceY
