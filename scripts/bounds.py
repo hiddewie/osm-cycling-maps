@@ -98,11 +98,12 @@ def determineScale(scale):
         return
 
 
+# Taken from https://www.movable-type.co.uk/scripts/latlong.html
 def haversine(p1, p2):
-    """Calculate the distance between two (degree) latitude/longitude points in meters"""
+    """Calculate the distance between two (degree) longitude/latitude points in meters"""
 
-    lat1, lon1 = p1
-    lat2, lon2 = p2
+    lon1, lat1 = p1
+    lon2, lat2 = p2
 
     # Earth radius in meters
     R = 6371e3
@@ -129,12 +130,20 @@ def boundingBoxes(bbox, pageOverlap, scale, paperDimensions):
     pageWidth = paperWidth * scale
     pageHeight = paperHeight * scale
 
-    # TODO the distance varies between minx/maxx and miny/maxy
-    distanceX = haversine((bbox.minx, bbox.maxy), (bbox.maxx, bbox.maxy))
-    distanceY = haversine((bbox.maxx, bbox.miny), (bbox.maxx, bbox.maxy))
+    mercatorBoundingBox = latitudeLongitudeToWebMercator.forward(bbox)
 
-    averageDegreePerMeterX = (bbox.maxx - bbox.minx) / distanceX
-    averageDegreePerMeterY = (bbox.maxy - bbox.miny) / distanceY
+    averageBboxX = bbox.minx + (bbox.maxx - bbox.minx) / 2
+    averageBboxY = bbox.miny + (bbox.maxy - bbox.miny) / 2
+
+    distanceX = haversine((bbox.minx, averageBboxY), (bbox.maxx, averageBboxY))
+    distanceY = haversine((averageBboxX, bbox.miny), (averageBboxX, bbox.maxy))
+
+    if distanceX < 1 or distanceY < 1:
+        environment.exitError("The horizontal and vertical distance of the bounding box is less than 1 meter. Horizontal distance: %.2f, vertical distance: %.2f." % (distanceX, distanceY))
+        return
+
+    mercatorMeterPerRealMeterX = (mercatorBoundingBox.maxx - mercatorBoundingBox.minx) / distanceX
+    mercatorMeterPerRealMeterY = (mercatorBoundingBox.maxy - mercatorBoundingBox.miny) / distanceY
 
     # If the bounding box fits on one page, then do not use padding
     epsilon = 1
@@ -151,17 +160,17 @@ def boundingBoxes(bbox, pageOverlap, scale, paperDimensions):
     boundingBoxes = []
     for i in range(numPagesHorizontal):
         for j in range(numPagesVertical):
-            topLeft = bbox.minx + averageDegreePerMeterX * (- paddingX + i * pageWidth - i * pageOverlap * pageWidth), \
-                      bbox.maxy + averageDegreePerMeterY * (+ paddingY - j * pageHeight + j * pageOverlap * pageHeight)
-            bottomRight = topLeft[0] + averageDegreePerMeterX * pageWidth, \
-                          topLeft[1] - averageDegreePerMeterY * pageHeight
+            topLeft = mercatorBoundingBox.minx + mercatorMeterPerRealMeterX * (- paddingX + i * pageWidth - i * pageOverlap * pageWidth), \
+                      mercatorBoundingBox.maxy + mercatorMeterPerRealMeterY * (+ paddingY - j * pageHeight + j * pageOverlap * pageHeight)
+            bottomRight = topLeft[0] + mercatorMeterPerRealMeterX * pageWidth, \
+                          topLeft[1] - mercatorMeterPerRealMeterY * pageHeight
 
-            tileBoundingBox = mapnik.Box2d(
+            tileBoundingBox = latitudeLongitudeToWebMercator.backward(mapnik.Box2d(
                 topLeft[0],
                 topLeft[1],
                 bottomRight[0],
                 bottomRight[1],
-            )
+            ))
             boundingBoxes.append(tileBoundingBox)
 
     return boundingBoxes
