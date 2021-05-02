@@ -97,7 +97,7 @@ do
   else
     FILE=$DATA_DIR/$COUNTRY.osm.pbf
     mkdir -p -- "${FILE%/*}"
-    wget http://download.geofabrik.de/$COUNTRY-latest.osm.pbf -O $DATA_DIR/$COUNTRY.osm.pbf || exit 1
+    wget https://download.geofabrik.de/$COUNTRY-latest.osm.pbf -O $DATA_DIR/$COUNTRY.osm.pbf || exit 1
   fi
 
   FILES="$FILES $DATA_DIR/$COUNTRY.osm.pbf"

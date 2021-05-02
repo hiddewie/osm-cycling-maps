@@ -75,7 +75,7 @@ def main():
     for boundingBox in boundingBoxes:
         tileBoundingBox = bounds.latitudeLongitudeToWebMercator.forward(boundingBox)
 
-        print('Generating page %s for bounding box (%s, %s) × (%s, %s)' % (page, boundingBox.minx, boundingBox.miny, boundingBox.maxx, boundingBox.maxy))
+        print('Generating page %s for bounding box (%.3f, %.3f) × (%.3f, %.3f)' % (page, boundingBox.minx, boundingBox.miny, boundingBox.maxx, boundingBox.maxy))
 
         suffixedName = name if len(boundingBoxes) == 1 else ('%s_%s' % (name, page))
         startTime = time.time()
