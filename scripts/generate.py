@@ -3,8 +3,10 @@
 
 import os
 import sys
+import tempfile
 import time
 
+import PyPDF2
 import cairo
 import mapnik
 
@@ -21,26 +23,20 @@ def loadMapFromFile(file, mapWidth, mapHeight):
     return m
 
 
-def renderMap(m, name, bbox):
+def renderMap(m, file, bbox):
     print('Rendering map with dimensions %s, %s' % (m.width, m.height))
     m.zoom_to_box(bbox)
-
-    if not os.path.exists(OUTPUT_PATH):
-        print('Creating output directory %s' % (OUTPUT_PATH,))
-        os.makedirs(OUTPUT_PATH)
 
     if mapnik.has_pycairo():
         print('Rendering PDF')
 
-        pdf_surface = cairo.PDFSurface(OUTPUT_PATH + name + '.pdf', m.width, m.height)
+        pdf_surface = cairo.PDFSurface(file, m.width, m.height)
         mapnik.render(m, pdf_surface, 1 / 2.0, 0, 0)
         pdf_surface.finish()
-        print('Rendered PDF to %s' % (OUTPUT_PATH + name + '.pdf',))
 
-    xmlFilename = "mapnik_" + name + ".xml"
-    print('Saving map configuration to %s' % (OUTPUT_PATH + xmlFilename,))
-    mapnik.save_map(m, OUTPUT_PATH + xmlFilename)
-    print('Done')
+        print('Rendered PDF')
+
+    print('Rendering done')
 
 
 def main():
@@ -71,18 +67,33 @@ def main():
     boundingBoxes = bounds.boundingBoxes(boundingBox, pageOverlap, scale, (printPaperWidth, printPaperHeight))
     print('Rendering %s pages' % (len(boundingBoxes),))
 
-    page = 1
-    for boundingBox in boundingBoxes:
-        tileBoundingBox = bounds.latitudeLongitudeToWebMercator.forward(boundingBox)
+    if not os.path.exists(OUTPUT_PATH):
+        print('Creating output directory %s' % (OUTPUT_PATH,))
+        os.makedirs(OUTPUT_PATH)
 
-        print('Generating page %s for bounding box (%.3f, %.3f) × (%.3f, %.3f)' % (page, boundingBox.minx, boundingBox.miny, boundingBox.maxx, boundingBox.maxy))
+    pdfWriter = PyPDF2.PdfFileWriter()
+    with open('%s/%s.pdf' % (OUTPUT_PATH, name), 'wb') as outputFile:
 
-        suffixedName = name if len(boundingBoxes) == 1 else ('%s_%s' % (name, page))
-        startTime = time.time()
-        renderMap(m, suffixedName, tileBoundingBox)
-        print('Done rendering page %s in %s sec' % (page, round(10 * (time.time() - startTime)) / 10))
+        page = 1
+        for boundingBox in boundingBoxes:
+            tileBoundingBox = bounds.latitudeLongitudeToWebMercator.forward(boundingBox)
 
-        page += 1
+            print('Generating page %s for bounding box (%.3f, %.3f) × (%.3f, %.3f)' % (
+                page, boundingBox.minx, boundingBox.miny, boundingBox.maxx, boundingBox.maxy))
+
+            with tempfile.TemporaryFile() as tempFile:
+                startTime = time.time()
+                renderMap(m, tempFile, tileBoundingBox)
+
+                print('Done rendering page %s in %.1f sec' % (page, time.time() - startTime))
+
+                pdfReader = PyPDF2.PdfFileReader(tempFile)
+                pdfWriter.addPage(pdfReader.getPage(0))
+                pdfWriter.write(outputFile)
+
+                print('Done writing PDF page %s' % (page,))
+
+            page += 1
 
     print('Done rendering pages')
 

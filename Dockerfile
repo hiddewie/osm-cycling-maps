@@ -42,6 +42,7 @@ LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-mapnik \
+    python3-pypdf2 \
     curl \
     fonts-noto-cjk \
     fonts-noto-hinted \

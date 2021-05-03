@@ -172,7 +172,7 @@ Optional extra parameters for tweaking the import of downloaded OpenStreetMap da
   <dd>The Postgres database</dd>
 
   <dt><tt>MAP_NAME</tt> (default <tt>map</tt>)</dt>
-  <dd>The name of the map. Used for generating filenames. Existing files will be overwritten. The filename will be suffixed with the index of the generated page if more than one page is generated because the bounding box area does not fit on one page.</dd>
+  <dd>The name of the map. Used for generating filenames. Existing files will be overwritten. When multiple pages are generated, they are all added to the same PDF file.</dd>
 
   <dt><tt>BBOX</tt> (required, default empty)</dt>
   <dd>Of the form <tt>A:B:C:D</tt>, for example <tt>5.3:51.1:6.8:53.0056</tt> where <tt>(A, B)</tt> is the lower left corner of the bounding box and <tt>(C, D)</tt> is the top right corner. Specify in longitude - latitude order in the <a href="https://epsg.io/4326">EPSG:4326</a> coordinate system.</dd>
