@@ -123,6 +123,7 @@
 @light-ocre: lighten(@ocre, 40%);
 @light-red: rgb(255, 51, 51);
 @dark-red: rgb(180, 30, 30);
+@gray-red: desaturate(@dark-red, 50%);
 @light-green: rgb(0, 219, 68);
 @light-yellow: rgb(232, 232, 16);
 @transparent-light-yellow: rgba(255, 255, 220, 0.8);
@@ -159,6 +160,7 @@
 @water-label-halo: @white;
 @ferry: @dark-blue;
 
+@aeroway: @gray;
 @track: @medium-gray;
 @cycle: @purple;
 @cycle-border: @white;
@@ -170,9 +172,9 @@
 @secondary-border: darken(@light-yellow, 20%);
 @primary: @orange;
 @primary-border: darken(@orange, 20%);
-@trunk: @gray;
+@trunk: @gray-red;
 @trunk-border: @white;
-@highway: @gray;
+@highway: @gray-red;
 @highway-border: @white;
 
 @road-shield-tertiary-label: darken(@tertiary, 60%);
@@ -375,7 +377,7 @@
 }
 
 #aeroway {
-  line-color: @highway;
+  line-color: @aeroway;
   line-cap: square;
   line-width: 5;
 }
