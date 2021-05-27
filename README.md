@@ -36,6 +36,8 @@ Start a database with GIS extensions enabled using the image [`postgis/postgis`]
 docker-compose -d up postgres-osm
 ```
 
+The data will be stored durably in the directory `postgres`.
+
 Used technology:
 - [PostgreSQL](https://www.postgresql.org/)
 - [PostGIS extension](https://postgis.net/install/)

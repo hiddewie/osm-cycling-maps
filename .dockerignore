@@ -5,3 +5,4 @@ assets
 .idea
 production
 .env
+postgres
