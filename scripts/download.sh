@@ -91,16 +91,18 @@ echo
 FILES=""
 for COUNTRY in $FEATURE_COUNTRIES
 do
-  echo "Downloading $COUNTRY from http://download.geofabrik.de/$COUNTRY-latest.osm.pbf"
-  if [[ -f $DATA_DIR/$COUNTRY.osm.pbf ]]; then
-    echo "The file $DATA_DIR/$COUNTRY.osm.pbf is already present and will not be downloaded."
+  DOWNLOAD_URL="https://download.geofabrik.de/$COUNTRY-latest.osm.pbf"
+  OUTPUT_FILENAME="$DATA_DIR/$COUNTRY.osm.pbf"
+
+  echo "Downloading $COUNTRY from $DOWNLOAD_URL"
+  if [[ -f $OUTPUT_FILENAME ]]; then
+    echo "The file $OUTPUT_FILENAME is already present and will not be downloaded."
   else
-    FILE=$DATA_DIR/$COUNTRY.osm.pbf
     mkdir -p -- "${FILE%/*}"
-    wget https://download.geofabrik.de/$COUNTRY-latest.osm.pbf -O $DATA_DIR/$COUNTRY.osm.pbf || exit 1
+    wget "$DOWNLOAD_URL" -O $OUTPUT_FILENAME || exit 1
   fi
 
-  FILES="$FILES $DATA_DIR/$COUNTRY.osm.pbf"
+  FILES="$FILES $OUTPUT_FILENAME"
 
   echo "Done $COUNTRY"
 done
