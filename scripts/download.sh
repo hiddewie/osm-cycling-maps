@@ -257,4 +257,29 @@ QUERY
 
 echo "Done processing mountain passes"
 
+if [ -n "${GPX_FILE}" ]; then
+
+  echo "Importing GPX file ${GPX_FILE}"
+
+  psql $POSTGRES_ARGS -c 'DROP TABLE IF EXISTS gpx_import'
+  psql $POSTGRES_ARGS -c 'CREATE TABLE gpx_import (geom geometry(Point, 4326))'
+
+  ogr2ogr \
+    -update \
+    -append \
+    -f "PostgreSQL" PG:"host=$PG_HOST user=$PG_USER dbname=$PG_DATABASE" \
+    "${GPX_FILE}" \
+    -t_srs EPSG:4326 \
+    -nln gpx_import \
+    -sql "SELECT * FROM track_points"
+
+  psql $POSTGRES_ARGS -c 'DROP TABLE IF EXISTS gpx'
+  psql $POSTGRES_ARGS -c 'CREATE TABLE gpx (way geometry(LineString, 3857));'
+  psql $POSTGRES_ARGS -c 'INSERT INTO gpx (way) VALUES ( (select ST_Transform(st_setsrid(ST_MakeLine(geom), 4326), 3857) from test) );'
+  psql $POSTGRES_ARGS -c 'DROP TABLE gpx_import'
+
+  echo "Done importing GPX file"
+
+fi
+
 echo "Done"

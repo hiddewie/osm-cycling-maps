@@ -313,7 +313,7 @@
   }
 }
 
-#cycling-network {
+#cycling-routes {
   background/line-color: white;
   background/line-width: 1.9;
 

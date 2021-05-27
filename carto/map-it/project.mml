@@ -534,7 +534,7 @@ Layer:
           way && !bbox! AND
           power = 'tower'
       ) AS data
-- id: cycling-network
+- id: cycling-routes
   geometry: linestring
   <<: *extentsOSM
   Datasource:
@@ -544,8 +544,19 @@ Layer:
         SELECT
           way
         FROM
+          gpx
+        WHERE
+          EXISTS(SELECT * FROM gpx) AND
+          way && !bbox!
+
+        UNION ALL
+
+        SELECT
+          way
+        FROM
           planet_osm_line
         WHERE
+          (NOT EXISTS(SELECT * FROM gpx)) AND
           way && !bbox! AND
           route = 'bicycle'
       ) AS data

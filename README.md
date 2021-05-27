@@ -68,6 +68,8 @@ docker-compose run map-it-import
 
 (You can also build it yourself using `docker-compose build map-it-import`)
 
+Additionally, you can import a `.gpx` file to visualize on the map using the `GPX_FILE` environment variable. Importing a `.gpx` file will replace the OpenStreetMap cycling routes on the map.  
+
 Used technology:
 - [Phyghtmap](http://katze.tfiu.de/projects/phyghtmap/phyghtmap.1.html)
 - [Osmium(-tool)](https://osmcode.org/osmium-tool/)
@@ -143,6 +145,9 @@ The lists below describe the parameters used for the scripts, including defaults
 
   <dt><tt>BBOX</tt> (required, default empty)</dt>
   <dd>Of the form <tt>A:B:C:D</tt>, for example <tt>5.3:51.1:6.8:53.0056</tt> where <tt>(A, B)</tt> is the lower left corner of the bounding box and <tt>(C, D)</tt> is the top right corner. Specify in longitude - latitude order in the <a href="https://epsg.io/4326">EPSG:4326</a> coordinate system.</dd>
+
+  <dt><tt>GPX_FILE</tt> (default empty)</dt>
+  <dd>A path to a <tt>.gpx</tt> file mounted in the Docker image. The <tt>.gpx</tt> file will be imported and shown on the map instead of OSM cycling routes.</dd>
 </dl>
 
 Optional extra parameters for tweaking the import of downloaded OpenStreetMap data into the database:
