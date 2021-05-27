@@ -631,23 +631,33 @@ Layer:
     <<: *osm2pgsql
     table: |-
       (
+        WITH nodes AS (
+          SELECT
+            way,
+            rcn_ref as ref
+          FROM
+            planet_osm_point
+          WHERE
+            rcn_ref is not null AND
+            "network:type" = 'node_network'
+        ), clustered_nodes AS (
+          SELECT
+            way,
+            ref,
+            ST_ClusterDBSCAN(way, eps:= 3000,  minpoints := 1)
+              OVER (PARTITION by ref) as cluster
+          FROM
+            nodes
+        )
+
         SELECT
-          ST_PointOnSurface(ST_Union(nodes.way)) as way,
-          nodes.ref
-        FROM (
-            SELECT
-              way,
-              rcn_ref as ref
-            FROM
-              planet_osm_point
-            WHERE
-              way && !bbox! AND
-              rcn_ref is not null AND
-              "network:type" = 'node_network'
-        ) nodes
+          ST_Centroid(ST_ConvexHull(ST_Collect(way))) as way,
+          ref
+        FROM
+          clustered_nodes
         GROUP BY
-          nodes.ref,
-          ST_SnapToGrid(ST_Transform(nodes.way, 3785), 3000)
+          ref,
+          cluster
       ) AS data
 - id: poi
   geometry: point
