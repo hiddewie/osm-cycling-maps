@@ -951,9 +951,7 @@ Layer:
             highway IN (
               'tertiary',
               'secondary',
-              'primary',
-              'trunk',
-              'motorway'
+              'primary'
             ) AND
             (access IS NULL OR access != 'private') AND
             (tunnel IS NULL OR tunnel != 'yes')
