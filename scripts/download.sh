@@ -257,25 +257,30 @@ QUERY
 
 echo "Done processing mountain passes"
 
+psql $POSTGRES_ARGS -c 'DROP TABLE IF EXISTS gpx'
+psql $POSTGRES_ARGS -c 'CREATE TABLE gpx (way geometry(LineString, 3857));'
+
 if [ -n "${GPX_FILE}" ]; then
 
   echo "Importing GPX file ${GPX_FILE}"
 
   psql $POSTGRES_ARGS -c 'DROP TABLE IF EXISTS gpx_import'
-  psql $POSTGRES_ARGS -c 'CREATE TABLE gpx_import (geom geometry(Point, 4326))'
+  psql $POSTGRES_ARGS -c 'CREATE TABLE gpx_import (
+    ogc_fid integer,
+    track_fid integer,
+    track_seg_id integer,
+    track_seg_point_id integer,
+    geom geometry(Point, 4326)
+)';
 
   ogr2ogr \
-    -update \
-    -append \
     -f "PostgreSQL" PG:"host=$PG_HOST user=$PG_USER dbname=$PG_DATABASE" \
     "${GPX_FILE}" \
     -t_srs EPSG:4326 \
     -nln gpx_import \
-    -sql "SELECT * FROM track_points"
+    -sql "SELECT track_fid, track_seg_id, track_seg_point_id FROM track_points"
 
-  psql $POSTGRES_ARGS -c 'DROP TABLE IF EXISTS gpx'
-  psql $POSTGRES_ARGS -c 'CREATE TABLE gpx (way geometry(LineString, 3857));'
-  psql $POSTGRES_ARGS -c 'INSERT INTO gpx (way) VALUES ( (select ST_Transform(st_setsrid(ST_MakeLine(geom), 4326), 3857) from test) );'
+  psql $POSTGRES_ARGS -c 'INSERT INTO gpx (way) SELECT ST_Transform(st_setsrid(ST_MakeLine(geom), 4326), 3857) from gpx_import group by track_fid, track_seg_id;'
   psql $POSTGRES_ARGS -c 'DROP TABLE gpx_import'
 
   echo "Done importing GPX file"
