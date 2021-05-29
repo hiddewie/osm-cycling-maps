@@ -63,7 +63,7 @@ def rotatePaper(bounds, orientation):
 
 
 def determineBoundingBox(bbox):
-    bboxMatch = re.match(r'^(\d+\.?\d*):(\d+\.?\d*):(\d+\.?\d*):(\d+\.?\d*)$', bbox)
+    bboxMatch = re.match(r'^(-?\d+\.?\d*):(-?\d+\.?\d*):(-?\d+\.?\d*):(-?\d+\.?\d*)$', bbox)
 
     if not bboxMatch:
         environment.exitError("The bounding box must be of the form A:B:C:D with (A, B) the bottom left corner and (C, D) the top right corner. %s was given" % (bbox,))
