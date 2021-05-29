@@ -28,7 +28,7 @@ def main():
     config['global'] = {}
 
     config['global']['types'] = ['motorway', 'trunk', 'primary', 'secondary', 'tertiary']
-    config['global']['max_width'] = 11
+    config['global']['max_width'] = 13
     config['global']['max_height'] = 4
     config['global']['output_dir'] = 'symbols/shields/' # specified relative to the script location
 
