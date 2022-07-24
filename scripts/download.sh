@@ -97,7 +97,7 @@ do
   if [[ -f $OUTPUT_FILENAME ]]; then
     echo "The file $OUTPUT_FILENAME is already present and will not be downloaded."
   else
-    mkdir -p -- "${FILE%/*}"
+    mkdir -p -- "$(dirname "$OUTPUT_FILENAME")"
     wget "$DOWNLOAD_URL" -O $OUTPUT_FILENAME || exit 1
   fi
 
