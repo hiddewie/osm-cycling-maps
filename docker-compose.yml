@@ -35,7 +35,6 @@ services:
       - .env
     volumes:
       - ./data:/data
-      - ./eurovelo-7-sun-route-part-germany.gpx:/import.gpx
 
   map-it-kosmtik:
     depends_on:
