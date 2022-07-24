@@ -54,6 +54,8 @@ services:
   postgres-osm:
     image: postgis/postgis:12-3.0-alpine
     command: postgres -c log_min_duration_statement=1000
+    ports:
+      - '5432:5432'
     volumes:
       - ./postgres:/var/lib/postgresql/data
     env_file:
