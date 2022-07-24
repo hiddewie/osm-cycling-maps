@@ -120,9 +120,9 @@ echo "Importing combined OSM data"
 
 # The following values can be tweaked
 # See https://github.com/gravitystorm/openstreetmap-carto/blob/master/scripts/docker-startup.sh
-OSM2PGSQL_CACHE=${OSM2PGSQL_CACHE:-1024}
-OSM2PGSQL_NUMPROC=${OSM2PGSQL_NUMPROC:-4}
-PGPASS=$PG_PASSWORD
+OSM2PGSQL_CACHE="${OSM2PGSQL_CACHE:-1024}"
+OSM2PGSQL_NUMPROC="${OSM2PGSQL_NUMPROC:-4}"
+PGPASS="$PG_PASSWORD"
 
 echo "Using OSM2PGSQL_CACHE = $OSM2PGSQL_CACHE"
 echo "Using $OSM2PGSQL_NUMPROC processes"
@@ -135,9 +135,9 @@ osm2pgsql \
   --cache $OSM2PGSQL_CACHE \
   --number-processes $OSM2PGSQL_NUMPROC \
   --multi-geometry \
-  --host $PG_HOST \
-  --database $PG_DATABASE \
-  --username $PG_USER \
+  --host "$PG_HOST" \
+  --database "$PG_DATABASE" \
+  --username "$PG_USER" \
   --style /script/map-it.style \
   --slim \
   --drop \
