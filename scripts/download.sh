@@ -134,7 +134,6 @@ echo "Starting import from $DATA_DIR/combined.osm.pbf"
 osm2pgsql \
   --cache $OSM2PGSQL_CACHE \
   --number-processes $OSM2PGSQL_NUMPROC \
-  --multi-geometry \
   --host "$PG_HOST" \
   --database "$PG_DATABASE" \
   --username "$PG_USER" \
