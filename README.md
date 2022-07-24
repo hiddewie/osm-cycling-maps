@@ -33,7 +33,7 @@ The scripts are packaged as Docker images, and configured in the file [`docker-c
 
 Start a database with GIS extensions enabled using the image [`postgis/postgis`](https://hub.docker.com/r/postgis/postgis):
 ```bash
-docker-compose -d up postgres-osm
+docker compose -d up postgres-osm
 ```
 
 The data will be stored durably in the directory `postgres`.
@@ -52,10 +52,10 @@ The [Map bounds tool](https://hiddewieringa.nl/map-bounds) can be used to choose
 
 In addition to the visual tool, the script container [`hiddewie/map-it-bounds`](https://hub.docker.com/r/hiddewie/map-it-bounds) can be used. This commandline tool contains the same logic in the visual tool and as in the map generation script. The output will contain the bounding boxes for each page that will be generated. These values can be used for other commands.
 ```bash
-docker-compose run map-it-bounds
+docker compose run map-it-bounds
 ```
 
-(You can also build it yourself using `docker-compose build map-it-bounds`)
+(You can also build it yourself using `docker compose build map-it-bounds`)
 
 #### Data download & import
 
@@ -63,10 +63,10 @@ Make sure you have created an account [U.S. Geological Survey](https://www.usgs.
 
 Then, download and import the data of the map using the docker image [`hiddewie/map-it-import`](https://hub.docker.com/r/hiddewie/map-it-import). Map the data directory of this project to the container. Some files are downloaded there that are used for shading the map. Run it using
 ```bash
-docker-compose run map-it-import
+docker compose run map-it-import
 ```
 
-(You can also build it yourself using `docker-compose build map-it-import`)
+(You can also build it yourself using `docker compose build map-it-import`)
 
 Additionally, you can import a `.gpx` file to visualize on the map using the `GPX_FILE` environment variable. Importing a `.gpx` file will replace the OpenStreetMap cycling routes on the map.  
 
@@ -83,14 +83,14 @@ Used technology:
 
 Let's generate a map. Use the image [`hiddewie/map-it`](https://hub.docker.com/r/hiddewie/map-it) and run it using
 ```bash
-docker-compose run map-it
+docker compose run map-it
 ```
 
 The map will be written to the mapped volume in the `/output` directory. The mapnik XML config will also be written there.
 
 The bounding box does not need to fit perfectly on one page. If it does not, padding will be added or multiple pages will be generated.
 
-(You can also build it yourself using `docker-compose build map-it`)
+(You can also build it yourself using `docker compose build map-it`)
 
 Used technology:
 - [CartoCSS](https://github.com/mapbox/carto)
@@ -103,7 +103,7 @@ The same Docker image can also generate tiles in the output folder. Instead of g
 for a sliding online map.
 
 ```bash
-docker-compose run map-it /usr/bin/python3 tiles.py
+docker compose run map-it /usr/bin/python3 tiles.py
 ```
 
 The tiles will be generated in the `output/tiles` directory.
@@ -245,7 +245,7 @@ You can run and develop the map style locally by using the Kosmtik interface.
 
 Run Kosmtik with
 ```bash
-docker-compose run
+docker compose run kosmtik
 ```
 
 Go to [http://localhost:6789/map-it](http://localhost:6789/map-it).
