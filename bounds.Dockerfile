@@ -1,4 +1,4 @@
-FROM ubuntu:21.04
+FROM debian:11-slim
 
 LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
 

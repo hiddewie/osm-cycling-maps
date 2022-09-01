@@ -1,4 +1,4 @@
-FROM ubuntu:21.04 as generation
+FROM debian:11-slim as generation
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -34,7 +34,7 @@ RUN carto project.mml > mapnik.xml
 # Also see https://github.com/mapbox/carto/issues/238#issuecomment-19673987
 RUN sed -i -E "s@<!\[CDATA\[(.*)--PLACEMENTS--]]>@\1$(cat placements.xml)@g" mapnik.xml
 
-FROM ubuntu:21.04
+FROM debian:11-slim
 
 ENV DEBIAN_FRONTEND noninteractive
 

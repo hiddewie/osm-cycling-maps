@@ -1,4 +1,4 @@
-FROM ubuntu:21.04 as compilation
+FROM debian:11-slim as compilation
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -13,7 +13,7 @@ WORKDIR /compilation
 COPY scripts/isolation.c .
 RUN gcc isolation.c -Wall -o isolation -lgdal -lm -O2
 
-FROM ubuntu:21.04
+FROM debian:11-slim
 
 LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
 
