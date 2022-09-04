@@ -37,7 +37,7 @@ blocks:
             - echo "PG_HOST=postgres-osm" >> .env
             - echo "PG_PORT=5432" >> .env
             - echo "PG_USER=osm" >> .env
-            - echo "PG_PASSWORD=" >> .env
+            - echo "PG_PASSWORD=5298c75c-aa5e-44f5-92d7-c6efa5bcb315" >> .env
             - echo "PG_DATABASE=gis" >> .env
             - echo "BBOX=43.3146:41.49:43.8202:41.8238" >> .env
             - echo "PAPER_SIZE=A2" >> .env
