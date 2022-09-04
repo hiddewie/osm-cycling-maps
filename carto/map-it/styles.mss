@@ -653,13 +653,29 @@
     background/marker-width: 5;
     background/marker-file: 'style/icons/maki/square-11.svg';
     background/marker-transform: 'rotate(45)';
-    background/marker-fill: @black;
+    background/marker-ignore-placement: true;
     background/marker-line-width: 4.0;
     marker-width: 5;
     marker-file: 'style/icons/maki/square-11.svg';
     marker-transform: 'rotate(45)';
     marker-fill: @black;
+    marker-ignore-placement: true;
   }
+
+  [type = 'ferry_terminal'] {
+    background/marker-width: 4;
+    background/marker-file: 'style/icons/maki/square-11.svg';
+    background/marker-transform: 'rotate(45)';
+    background/marker-ignore-placement: true;
+    background/marker-line-width: 4.0;
+    background/marker-fill: @waterway;
+    marker-width: 4;
+    marker-file: 'style/icons/maki/square-11.svg';
+    marker-transform: 'rotate(45)';
+    marker-fill: @waterway;
+    marker-ignore-placement: true;
+  }
+
   [type = 'aerodrome'] {
     background/marker-file: 'style/icons/maki/airport-11.svg';
     marker-file: 'style/icons/maki/airport-11.svg';
@@ -699,10 +715,6 @@
 
   [type = 'mountain_pass'] {
     background/marker-line-width: 0.5;
-  }
-
-  [type = 'ferry_terminal'] {
-    background/marker-line-width: 4.0;
   }
 
   marker-width: 10;
@@ -754,16 +766,6 @@
     background/marker-file: 'style/icons/openstreetmap/mountain_pass.svg';
     marker-width: 8;
     marker-file: 'style/icons/openstreetmap/mountain_pass.svg';
-  }
-  [type = 'ferry_terminal'] {
-    background/marker-width: 4;
-    background/marker-file: 'style/icons/maki/square-11.svg';
-    background/marker-transform: 'rotate(45)';
-    background/marker-fill: @waterway;
-    marker-width: 4;
-    marker-file: 'style/icons/maki/square-11.svg';
-    marker-transform: 'rotate(45)';
-    marker-fill: @waterway;
   }
   [type = 'peak'] {
     background/marker-width: 5;
