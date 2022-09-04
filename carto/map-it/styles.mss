@@ -720,6 +720,13 @@
     }
   }
 
+  [type = 'hostel'] {
+    background/marker-width: 6;
+    background/marker-file: 'style/icons/maki/home-2-11.svg';
+    marker-width: 6;
+    marker-file: 'style/icons/maki/home-2-11.svg';
+  }
+
   [type = 'caravan_site'] {
     background/marker-file: 'style/icons/svg/caravan_site.svg';
     marker-file: 'style/icons/svg/caravan_site.svg';

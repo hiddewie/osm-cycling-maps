@@ -758,6 +758,7 @@ Layer:
             way,
             CASE
               WHEN tourism = 'camp_site' THEN 'camp_site'
+              WHEN tourism = 'hostel' THEN 'hostel'
               WHEN tourism = 'caravan_site' AND tents = 'yes' THEN 'camp_site'
               WHEN tourism = 'caravan_site' THEN 'caravan_site'
               WHEN shop = 'supermarket' THEN 'supermarket'
@@ -788,7 +789,8 @@ Layer:
           WHERE
             (
               tourism IN (
-                'camp_site'
+                'camp_site',
+                'hostel'
               ) OR
               (
                 tourism = 'caravan_site' AND
@@ -855,19 +857,20 @@ Layer:
             WHEN type = 'bicycle_shop' THEN 4
             WHEN type = 'mountain_pass' THEN 5
             WHEN type = 'ferry_terminal' THEN 6
-            WHEN type = 'castle' THEN 7
-            WHEN type = 'fort' THEN 8
-            WHEN type = 'ruins' THEN 9
-            WHEN type = 'lighthouse' THEN 10
-            WHEN type = 'tower_communication' THEN 11
-            WHEN type = 'wind_power' THEN 12
-            WHEN type = 'tower_cooling' THEN 13
-            WHEN type = 'tower_observation' THEN 14
-            WHEN type = 'tower_chimney' THEN 15
-            WHEN type = 'place_of_worship' AND religion = 'christian' THEN 16
-            WHEN type = 'place_of_worship' AND religion = 'muslim' THEN 17
-            WHEN type = 'place_of_worship' THEN 18
-            WHEN type = 'peak' THEN 19
+            WHEN type = 'ferry_terminal' THEN 7
+            WHEN type = 'castle' THEN 8
+            WHEN type = 'fort' THEN 9
+            WHEN type = 'ruins' THEN 10
+            WHEN type = 'lighthouse' THEN 11
+            WHEN type = 'tower_communication' THEN 12
+            WHEN type = 'wind_power' THEN 13
+            WHEN type = 'tower_cooling' THEN 14
+            WHEN type = 'tower_observation' THEN 15
+            WHEN type = 'tower_chimney' THEN 16
+            WHEN type = 'place_of_worship' AND religion = 'christian' THEN 17
+            WHEN type = 'place_of_worship' AND religion = 'muslim' THEN 18
+            WHEN type = 'place_of_worship' THEN 19
+            WHEN type = 'peak' THEN 20
             ELSE 100
           END ASC
       ) AS data
