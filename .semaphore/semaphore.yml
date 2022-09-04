@@ -48,7 +48,7 @@ blocks:
             - echo "MAP_NAME=map" >> .env
             - echo "MIN_ZOOM=12" >> .env
             - echo "MAX_ZOOM=12" >> .env
-            - echo "NUM_THREADS=1" >> .env
+            - echo "NUM_THREADS=4" >> .env
             - echo "USGS_USERNAME=$USGS_USERNAME" >> .env
             - echo "USGS_PASSWORD=$USGS_PASSWORD" >> .env
 
