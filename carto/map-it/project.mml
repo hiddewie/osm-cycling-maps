@@ -762,6 +762,7 @@ Layer:
               WHEN tourism = 'caravan_site' AND tents = 'yes' THEN 'camp_site'
               WHEN tourism = 'caravan_site' THEN 'caravan_site'
               WHEN shop = 'supermarket' THEN 'supermarket'
+              WHEN shop = 'convenience' THEN 'convenience_store'
               WHEN shop = 'bicycle_shop' THEN 'bicycle_shop'
               WHEN historic = 'castle' THEN 'castle'
               WHEN historic = 'fort' THEN 'fort'
@@ -805,6 +806,7 @@ Layer:
               ) OR
               shop IN (
                 'supermarket',
+                'convenience',
                 'bicycle_shop'
               ) OR
               amenity IN (
@@ -854,23 +856,24 @@ Layer:
             WHEN type = 'camp_site' THEN 1
             WHEN type = 'caravan_site' THEN 2
             WHEN type = 'supermarket' THEN 3
-            WHEN type = 'bicycle_shop' THEN 4
-            WHEN type = 'mountain_pass' THEN 5
-            WHEN type = 'ferry_terminal' THEN 6
+            WHEN type = 'convenience_store' THEN 4
+            WHEN type = 'bicycle_shop' THEN 5
+            WHEN type = 'mountain_pass' THEN 6
             WHEN type = 'ferry_terminal' THEN 7
-            WHEN type = 'castle' THEN 8
-            WHEN type = 'fort' THEN 9
-            WHEN type = 'ruins' THEN 10
-            WHEN type = 'lighthouse' THEN 11
-            WHEN type = 'tower_communication' THEN 12
-            WHEN type = 'wind_power' THEN 13
-            WHEN type = 'tower_cooling' THEN 14
-            WHEN type = 'tower_observation' THEN 15
-            WHEN type = 'tower_chimney' THEN 16
-            WHEN type = 'place_of_worship' AND religion = 'christian' THEN 17
-            WHEN type = 'place_of_worship' AND religion = 'muslim' THEN 18
-            WHEN type = 'place_of_worship' THEN 19
-            WHEN type = 'peak' THEN 20
+            WHEN type = 'ferry_terminal' THEN 8
+            WHEN type = 'castle' THEN 9
+            WHEN type = 'fort' THEN 10
+            WHEN type = 'ruins' THEN 11
+            WHEN type = 'lighthouse' THEN 12
+            WHEN type = 'tower_communication' THEN 13
+            WHEN type = 'wind_power' THEN 14
+            WHEN type = 'tower_cooling' THEN 15
+            WHEN type = 'tower_observation' THEN 16
+            WHEN type = 'tower_chimney' THEN 17
+            WHEN type = 'place_of_worship' AND religion = 'christian' THEN 18
+            WHEN type = 'place_of_worship' AND religion = 'muslim' THEN 19
+            WHEN type = 'place_of_worship' THEN 20
+            WHEN type = 'peak' THEN 21
             ELSE 100
           END ASC
       ) AS data

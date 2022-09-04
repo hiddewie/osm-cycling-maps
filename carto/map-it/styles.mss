@@ -737,6 +737,12 @@
     marker-width: 7;
     marker-file: 'style/icons/openstreetmap/shop2.svg';
   }
+  [type = 'convenience_store'] {
+    background/marker-width: 7;
+    background/marker-file: 'style/icons/maki/convenience-11.svg';
+    marker-width: 7;
+    marker-file: 'style/icons/maki/convenience-11.svg';
+  }
   [type = 'bicycle_shop'] {
     background/marker-width: 9;
     background/marker-file: 'style/icons/maki/bicycle-11.svg';

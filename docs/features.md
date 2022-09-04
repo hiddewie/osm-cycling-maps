@@ -49,8 +49,8 @@ Orientation:
 - places of warship
 
 Amenities:
-- camp sites and caravan sites
-- supermarkets
+- camp sites, caravan sites and youth hostels
+- supermarkets and convenience stores
 - bicycle shops
 - castles, forts and ruins
 
