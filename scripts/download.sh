@@ -30,7 +30,7 @@ echo "Using feature countries '$FEATURE_COUNTRIES'"
 echo "Using bounding box '$BBOX'"
 echo
 
-PGPASSWORD="$PG_PASSWORD"
+export PGPASSWORD="$PG_PASSWORD"
 POSTGRES_ARGS="-h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE""
 
 mkdir -p $DATA_DIR
@@ -59,14 +59,14 @@ echo "Done downloading height data"
 echo "Found downloaded files: $FILES"
 
 echo "Merge height data for combination into one height file"
-rm -f combined.hgt || exit 1
+rm -rf combined.hgt || exit 1
 gdal_merge.py -o $DATA_DIR/combined.hgt -n -32767 -a_nodata -32767 -of GTiff $FILES || exit 1
 echo "Done merging height data"
 
 gdalinfo $DATA_DIR/combined.hgt
 
 echo "Contours"
-rm -f $DATA_DIR/combined.shp || exit 1
+rm -rf $DATA_DIR/combined.shp || exit 1
 gdal_contour -i 25 -snodata -32767 -a height $DATA_DIR/combined.hgt $DATA_DIR/combined.shp || exit 1
 
 ARGS="-I -d"
@@ -74,10 +74,10 @@ echo "Import contours"
 shp2pgsql $ARGS -g way -s 4326 $DATA_DIR/combined.shp contours | psql $POSTGRES_ARGS | grep -v 'INSERT' || exit 1
 
 echo "Shade"
-rm -f $DATA_DIR/combined.tif || exit 1
+rm -rf $DATA_DIR/combined.tif || exit 1
 gdaldem hillshade -s 111120 -compute_edges $DATA_DIR/combined.hgt $DATA_DIR/combined.raw.tif || exit 1
 gdaldem color-relief combined.raw.tif -alpha $STYLE_DIR/shade/shade.ramp $DATA_DIR/combined.tif || exit 1
-rm -f $DATA_DIR/combined.{dbf,hgt.aux.xml,prj,shp,shx,raw.tif,tfw} || exit 1
+rm -rf $DATA_DIR/combined.{dbf,hgt.aux.xml,prj,shp,shx,raw.tif,tfw} || exit 1
 
 echo "Done"
 
