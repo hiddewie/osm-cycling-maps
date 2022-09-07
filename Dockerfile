@@ -62,7 +62,8 @@ COPY --from=build /build/mapnik.xml mapnik.xml
 COPY scripts/environment.py .
 COPY scripts/bounds.py .
 COPY scripts/generate.py .
+COPY scripts/generate.sh .
 COPY scripts/tiles.py .
 COPY style style
 
-CMD /usr/bin/python3 generate.py
+CMD ["bash", "generate.sh"]
