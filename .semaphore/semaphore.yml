@@ -36,6 +36,7 @@ blocks:
             # Set environment variables
             - cp .env.dist .env
             - sed -i "s/BBOX=.*/BBOX=43.3146:41.49:43.8202:41.8238/" .env
+            - sed -i "s|FEATURE_COUNTRIES=.*|FEATURE_COUNTRIES=europe/georgia|" .env
             - sed -i "s/USGS_USERNAME=.*/USGS_USERNAME=$USGS_USERNAME/" .env
             - sed -i "s/USGS_PASSWORD=.*/USGS_PASSWORD=$USGS_PASSWORD/" .env
 
