@@ -69,7 +69,7 @@ blocks:
             - artifact push workflow output/map.pdf
 
             - sed -i "s/BBOX=.*/BBOX=43.4715:41.3965:43.5077:41.4180/" .env
-            - $DOCKER_COMPOSE run map-it bash with_mapnik_environment.sh python3 generate.py
+            - $DOCKER_COMPOSE run map-it bash with_mapnik_environment.sh python3 tiles.py
             - artifact push workflow output/tiles/12/2543/1529.png
 
             - cache store data-`date +%Y-%m` data
