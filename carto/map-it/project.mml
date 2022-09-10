@@ -771,6 +771,48 @@ Layer:
           *
         FROM (
           SELECT
+            ST_PointOnSurface(ST_Collect(way)) as way,
+            CASE
+              WHEN bool_or(tourism = 'camp_site' OR (tourism = 'caravan_site' AND tents = 'yes')) THEN 'camp_site'
+              ELSE 'caravan_site'
+            END as type,
+            NULL as religion,
+            NULL as ele,
+            NULL as scout,
+            NULL as isolation,
+            'yes' as many
+          FROM (
+            SELECT
+              way,
+              tourism,
+              tents,
+              ST_ClusterDBSCAN(way, eps := 300.0 / cosd(ST_Y(ST_Transform(way, 4326))), minpoints := 2) over () AS cid
+            FROM
+              points
+            WHERE
+              (
+                tourism = 'camp_site' 
+              ) OR
+              (
+                tourism = 'caravan_site' AND
+                (tents IS NULL OR tents != 'no') AND
+                (amenity IS NULL OR amenity != 'parking') AND
+                (surface IS NULL OR (
+                  surface NOT IN ('asphalt', 'paved', 'sett') AND
+                  surface !~ 'stone' AND
+                  surface !~ 'concrete' AND
+                  surface !~ 'cobblestone'
+                ))
+              )
+          ) ungrouped_campings
+          WHERE
+            cid IS NOT NULL
+          GROUP BY 
+            cid
+          
+          UNION ALL
+      
+          SELECT
             way,
             CASE
               WHEN tourism = 'camp_site' THEN 'camp_site'
@@ -795,7 +837,8 @@ Layer:
             religion,
             ele,
             scout,
-            peak_isolation.isolation as isolation
+            peak_isolation.isolation as isolation,
+            'no' as many
           FROM
             points
           LEFT JOIN
@@ -867,25 +910,26 @@ Layer:
         ) as poi
         ORDER BY
           CASE
-            WHEN type = 'camp_site' THEN 1
-            WHEN type = 'caravan_site' THEN 2
-            WHEN type = 'supermarket' THEN 3
-            WHEN type = 'convenience_store' THEN 4
-            WHEN type = 'bicycle_shop' THEN 5
-            WHEN type = 'mountain_pass' THEN 6
-            WHEN type = 'castle' THEN 7
-            WHEN type = 'fort' THEN 8
-            WHEN type = 'ruins' THEN 9
-            WHEN type = 'lighthouse' THEN 10
-            WHEN type = 'tower_communication' THEN 11
-            WHEN type = 'wind_power' THEN 12
-            WHEN type = 'tower_cooling' THEN 13
-            WHEN type = 'tower_observation' THEN 14
-            WHEN type = 'tower_chimney' THEN 15
-            WHEN type = 'place_of_worship' AND religion = 'christian' THEN 16
-            WHEN type = 'place_of_worship' AND religion = 'muslim' THEN 17
-            WHEN type = 'place_of_worship' THEN 18
-            WHEN type = 'peak' THEN 19
+            WHEN type = 'camp_site' and many = 'yes' THEN 1
+            WHEN type = 'camp_site' THEN 2
+            WHEN type = 'caravan_site' THEN 3
+            WHEN type = 'supermarket' THEN 4
+            WHEN type = 'convenience_store' THEN 5
+            WHEN type = 'bicycle_shop' THEN 6
+            WHEN type = 'mountain_pass' THEN 7
+            WHEN type = 'castle' THEN 8
+            WHEN type = 'fort' THEN 9
+            WHEN type = 'ruins' THEN 10
+            WHEN type = 'lighthouse' THEN 11
+            WHEN type = 'tower_communication' THEN 12
+            WHEN type = 'wind_power' THEN 13
+            WHEN type = 'tower_cooling' THEN 14
+            WHEN type = 'tower_observation' THEN 15
+            WHEN type = 'tower_chimney' THEN 16
+            WHEN type = 'place_of_worship' AND religion = 'christian' THEN 17
+            WHEN type = 'place_of_worship' AND religion = 'muslim' THEN 18
+            WHEN type = 'place_of_worship' THEN 19
+            WHEN type = 'peak' THEN 20
             ELSE 100
           END ASC
       ) AS data

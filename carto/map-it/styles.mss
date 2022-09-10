@@ -730,6 +730,11 @@
       background/marker-file: 'style/icons/svg/scout.svg';
       marker-file: 'style/icons/svg/scout.svg';
     }
+
+    [many = 'yes'] {
+      background/marker-file: 'style/icons/svg/camp_site_many.svg';
+      marker-file: 'style/icons/svg/camp_site_many.svg';
+    }
   }
 
   [type = 'hostel'] {
