@@ -358,7 +358,6 @@ Layer:
               service IS NULL OR
               service NOT IN (
                 'crossover',
-                'siding',
                 'spur',
                 'yard'
               )
@@ -461,7 +460,6 @@ Layer:
               service IS NULL OR
               service NOT IN (
                 'crossover',
-                'siding',
                 'spur',
                 'yard'
               )
