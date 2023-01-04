@@ -1028,14 +1028,3 @@
     text-allow-overlap: true;
   }
 }
-
-#copyright {
-  text-name: '[label]';
-  text-fill: @scale-copyright;
-  text-face-name: @font;
-  text-size: 8;
-  text-halo-fill: @scale-copyright-halo;
-  text-halo-radius: 1.0;
-  text-allow-overlap: true;
-  text-horizontal-alignment: right;
-}
