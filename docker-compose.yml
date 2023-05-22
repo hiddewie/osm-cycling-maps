@@ -1,8 +1,5 @@
 version: "3.3"
 
-volumes:
-  postgres: ~
-
 services:
 
   map-it:
@@ -61,7 +58,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - ./data/postgres-data:/var/lib/postgresql/data
     env_file:
       - .env
     environment:
