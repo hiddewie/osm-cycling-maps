@@ -31,7 +31,7 @@ def renderMap(m, file, bbox):
         print('Rendering PDF')
 
         pdf_surface = cairo.PDFSurface(file, m.width, m.height)
-        mapnik.render(m, pdf_surface, 1 / 2.0, 0, 0)
+        mapnik.render(m, pdf_surface, 0.7, 0, 0)
         pdf_surface.finish()
 
         print('Rendered PDF')
