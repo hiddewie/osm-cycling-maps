@@ -161,7 +161,7 @@
 @ferry: @dark-blue;
 
 @aeroway: @gray;
-@track: @medium-gray;
+@track: lighten(@medium-gray, 10%);
 @cycle: @purple;
 @cycle-border: @white;
 @unclassified: @white;
