@@ -106,7 +106,7 @@ Layer:
     table: |-
       (
         SELECT
-          way,
+          ST_Intersection(way, !bbox!) as way,
           CASE
             WHEN (MOD(height::int, 100) = 0) THEN 'yes'
             ELSE 'no'
@@ -654,6 +654,7 @@ Layer:
           FROM
             planet_osm_point
           WHERE
+            way && !bbox! AND
             rcn_ref is not null AND
             "network:type" = 'node_network'
         ), clustered_nodes AS (
@@ -791,7 +792,7 @@ Layer:
               points
             WHERE
               (
-                tourism = 'camp_site' 
+                tourism = 'camp_site'
               ) OR
               (
                 tourism = 'caravan_site' AND
@@ -807,11 +808,11 @@ Layer:
           ) ungrouped_campings
           WHERE
             cid IS NOT NULL
-          GROUP BY 
+          GROUP BY
             cid
-          
+
           UNION ALL
-      
+
           SELECT
             way,
             CASE
