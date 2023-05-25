@@ -60,14 +60,15 @@ echo "Found downloaded files: $FILES"
 
 echo "Merge height data for combination into one height file"
 rm -rf combined.hgt || exit 1
-gdal_merge.py -o $DATA_DIR/combined.hgt -n -32767 -a_nodata -32767 -of GTiff $FILES || exit 1
+gdal_merge.py -o $DATA_DIR/combined.hgt -n -32768 -a_nodata -32768 -of GTiff $FILES || exit 1
 echo "Done merging height data"
 
 gdalinfo $DATA_DIR/combined.hgt
 
 echo "Contours"
-rm -rf $DATA_DIR/combined.shp || exit 1
-gdal_contour -i 25 -snodata -32767 -a height $DATA_DIR/combined.hgt $DATA_DIR/combined.shp || exit 1
+rm -rf $DATA_DIR/combined.shp $DATA_DIR/combined_filled.hgt || exit 1
+gdal_fillnodata.py $DATA_DIR/combined.hgt $DATA_DIR/combined_filled.hgt || exit 1
+gdal_contour -i 25 -a height $DATA_DIR/combined_filled.hgt $DATA_DIR/combined.shp || exit 1
 
 ARGS="-I -d"
 echo "Import contours"
