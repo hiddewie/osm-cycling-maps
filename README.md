@@ -182,7 +182,7 @@ Optional extra parameters for tweaking the import of downloaded OpenStreetMap da
   <dd>The name of the map. Used for generating filenames. Existing files will be overwritten. When multiple pages are generated, they are all added to the same PDF file.</dd>
 
   <dt><tt>BBOX</tt> (required, default empty)</dt>
-  <dd>Of the form <tt>A:B:C:D</tt>, for example <tt>5.3:51.1:6.8:53.0056</tt> where <tt>(A, B)</tt> is the lower left corner of the bounding box and <tt>(C, D)</tt> is the top right corner. Specify in longitude - latitude order in the <a href="https://epsg.io/4326">EPSG:4326</a> coordinate system.</dd>
+  <dd>Of the form <tt>A:B:C:D</tt>, for example <tt>5.3:51.1:6.8:53.0056</tt> where <tt>(A, B)</tt> is the lower left corner of the bounding box and <tt>(C, D)</tt> is the top right corner. Specify in longitude - latitude order in the <a href="https://epsg.io/4326">EPSG:4326</a> coordinate system. Multiple bounding boxes maybe concatenated with <tt>,</tt>.</dd>
 
   <dt><tt>SCALE</tt> (default <tt>1:150000</tt>)</dt>
   <dd>The scale of the map, when printed on the indicated paper size. The value is of the form <tt>1:N</tt> with <tt>N</tt> a number.</dd>
@@ -216,7 +216,7 @@ Optional extra parameters for tweaking the import of downloaded OpenStreetMap da
   <dd>The Postgres database</dd>
 
   <dt><tt>BBOX</tt> (required, default empty)</dt>
-  <dd>Of the form <tt>A:B:C:D</tt>, for example <tt>5.3:51.1:6.8:53.0056</tt> where <tt>(A, B)</tt> is the lower left corner of the bounding box and <tt>(C, D)</tt> is the top right corner. Specify in longitude - latitude order in the <a href="https://epsg.io/4326">EPSG:4326</a> coordinate system.</dd>
+  <dd>Of the form <tt>A:B:C:D</tt>, for example <tt>5.3:51.1:6.8:53.0056</tt> where <tt>(A, B)</tt> is the lower left corner of the bounding box and <tt>(C, D)</tt> is the top right corner. Specify in longitude - latitude order in the <a href="https://epsg.io/4326">EPSG:4326</a> coordinate system. Multiple bounding boxes maybe concatenated with <tt>,</tt>.</dd>
 
   <dt><tt>NUM_THREADS</tt> (required, default <tt>6</tt>)</dt>
   <dd>The number of threads that will be used to concurrently render tiles.</dd>
