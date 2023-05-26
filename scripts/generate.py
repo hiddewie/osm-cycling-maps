@@ -78,18 +78,19 @@ def main():
     for boundingBox in boundingBoxes:
         tileBoundingBox = bounds.latitudeLongitudeToWebMercator.forward(boundingBox)
 
-        print('Generating page %s for bounding box (%.3f, %.3f) × (%.3f, %.3f)' %
-              (page, boundingBox.minx, boundingBox.miny, boundingBox.maxx, boundingBox.maxy))
+        print('Generating page %d of %d for bounding box (%.3f, %.3f) × (%.3f, %.3f)' %
+              (page, len(boundingBoxes), boundingBox.minx, boundingBox.miny, boundingBox.maxx, boundingBox.maxy))
 
         with tempfile.NamedTemporaryFile() as tempFile:
             startTime = time.time()
             renderMap(m, tempFile, tileBoundingBox)
 
             stats = os.stat(tempFile.name)
-            print('Done rendering page %s in %.1f sec with generated page size %.1f MB' % (page, time.time() - startTime, stats.st_size / (1024 * 1024)))
+            print('Done rendering page %d of %d in %.1f sec with generated page size %.1f MB' %
+                  (page, len(boundingBoxes), time.time() - startTime, stats.st_size / (1024 * 1024)))
             pdfWriter.append(PyPDF2.PdfFileReader(tempFile))
 
-            print('Done writing PDF page %s' % (page,))
+            print('Done writing PDF page %s of %d' % (page, len(boundingBoxes)))
 
         page += 1
     print('Done rendering pages')
