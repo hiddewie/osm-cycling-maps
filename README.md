@@ -97,6 +97,21 @@ Used technology:
 - [Mapnik](https://mapnik.org/)
 - Icons from [OpenStreetMap Carto style](https://github.com/gravitystorm/openstreetmap-carto)
 
+##### Legend
+
+The same Docker image can also generate a legend in the output folder.
+
+```bash
+docker compose run map-it /usr/bin/python3 legend.py
+```
+
+The legend will be generated in the `output/legend.pdf` file.
+
+Used technology:
+- [CartoCSS](https://github.com/mapbox/carto)
+- [Mapnik](https://mapnik.org/)
+- Icons from [OpenStreetMap Carto style](https://github.com/gravitystorm/openstreetmap-carto)
+
 ##### Tiles
 
 The same Docker image can also generate tiles in the output folder. Instead of generating a PDF map, these tiles can be used
