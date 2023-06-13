@@ -73,6 +73,9 @@ blocks:
             - $DOCKER_COMPOSE run map-it bash with_mapnik_environment.sh python3 tiles.py
             - artifact push workflow output/tiles/12/2543/1529.png
 
+            - $DOCKER_COMPOSE run map-it bash with_mapnik_environment.sh python3 legend.py
+            - artifact push workflow output/legend.pdf
+
             - cache store data-`date +%Y-%m` data
 
             # Publish images

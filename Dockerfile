@@ -62,6 +62,7 @@ COPY --from=build /build/mapnik.xml mapnik.xml
 COPY scripts/environment.py .
 COPY scripts/bounds.py .
 COPY scripts/generate.py .
+COPY scripts/legend.py .
 COPY scripts/with_mapnik_environment.sh .
 COPY scripts/tiles.py .
 COPY style style
