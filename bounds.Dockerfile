@@ -14,4 +14,4 @@ COPY scripts/bounds.py .
 
 RUN chmod +x bounds.py
 
-CMD ["./bounds.py"]
+CMD ["bounds.py"]

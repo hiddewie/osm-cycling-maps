@@ -42,7 +42,7 @@ COPY style style
 
 COPY scripts/generate/shields.py .
 RUN chmod +x shields.py
-RUN ./shields.py
+RUN shields.py
 RUN mv symbols style/symbols
 
 COPY carto/map-it/project.mml .
