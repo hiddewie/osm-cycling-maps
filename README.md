@@ -118,7 +118,7 @@ The same Docker image can also generate tiles in the output folder. Instead of g
 for a sliding online map.
 
 ```bash
-docker compose run map-it tiles.py
+docker compose run map-it tiles.sh
 ```
 
 The tiles will be generated in the `output/tiles` directory.

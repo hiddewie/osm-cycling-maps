@@ -70,6 +70,7 @@ COPY scripts/generate.py .
 COPY scripts/legend.sh .
 COPY scripts/with_mapnik_environment.sh .
 COPY scripts/tiles.py .
+COPY scripts/tiles.sh .
 COPY style style
 
 RUN chmod +x \
@@ -77,6 +78,7 @@ RUN chmod +x \
     bounds.py \
     generate.py \
     legend.sh \
-    tiles.py
+    tiles.py \
+    tiles.sh
 
 CMD ["with_mapnik_environment.sh", "generate.py"]

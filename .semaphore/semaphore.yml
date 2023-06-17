@@ -70,7 +70,7 @@ blocks:
             - artifact push workflow output/map.pdf
 
             - sed -i "s/BBOX=.*/BBOX=43.4715:41.3965:43.5077:41.4180/" .env
-            - $DOCKER_COMPOSE run map-it with_mapnik_environment.sh tiles.py
+            - $DOCKER_COMPOSE run map-it tiles.sh
             - artifact push workflow output/tiles/12/2543/1529.png
 
             - $DOCKER_COMPOSE run map-it legend.py
