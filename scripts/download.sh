@@ -271,7 +271,7 @@ if [ -n "${GPX_FILE}" ]; then
     track_seg_id integer,
     track_seg_point_id integer,
     geom geometry(Point, 4326)
-)';
+  )';
 
   ogr2ogr \
     -f "PostgreSQL" PG:"host=$PG_HOST user=$PG_USER dbname=$PG_DATABASE" \
