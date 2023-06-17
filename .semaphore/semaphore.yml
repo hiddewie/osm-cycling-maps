@@ -73,7 +73,7 @@ blocks:
             - $DOCKER_COMPOSE run map-it tiles.sh
             - artifact push workflow output/tiles/12/2543/1529.png
 
-            - $DOCKER_COMPOSE run map-it legend.py
+            - $DOCKER_COMPOSE run map-it legend.sh
             - artifact push workflow output/legend.pdf
 
             - cache store data-`date +%Y-%m` data

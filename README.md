@@ -102,7 +102,7 @@ Used technology:
 The same Docker image can also generate a legend in the output folder.
 
 ```bash
-docker compose run map-it legend.py
+docker compose run map-it legend.sh
 ```
 
 The legend will be generated in the `output/legend.pdf` file.
