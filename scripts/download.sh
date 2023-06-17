@@ -357,7 +357,7 @@ QUERY
 psql $POSTGRES_LEGEND_ARGS -c "$(cat <<QUERY
 truncate peak_isolation;
 insert into peak_isolation(osm_id, isolation)
-select osm_id, 2500 as isolation from planet_osm_point where natural = 'peak'
+select osm_id, 2500 as isolation from planet_osm_point where "natural" = 'peak'
 QUERY
 )"
 
