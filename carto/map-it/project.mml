@@ -1117,6 +1117,8 @@ Layer:
             ST_XMax(!bbox!)::NUMERIC AS xmax,
             ST_YMin(!bbox!)::NUMERIC AS ymin,
             ST_YMax(!bbox!)::NUMERIC AS ymax
+          FROM
+            scale_data
         ), scale AS (
           SELECT
             bounds.xmin + ((bounds.xmax - bounds.xmin) * 0.02) AS xbegin,
@@ -1181,6 +1183,8 @@ Layer:
             ST_XMax(!bbox!)::NUMERIC AS xmax,
             ST_YMin(!bbox!)::NUMERIC AS ymin,
             ST_YMax(!bbox!)::NUMERIC AS ymax
+          FROM
+            copyright
         )
         SELECT
           ST_MakePoint(

@@ -287,6 +287,22 @@ if [ -n "${GPX_FILE}" ]; then
 
 fi
 
+psql $POSTGRES_ARGS -c "$(cat <<QUERY
+CREATE TABLE IF NOT EXISTS scale_data (
+  id integer
+);
+QUERY
+)"
+psql $POSTGRES_ARGS -c 'INSERT into scale_data VALUES (1)'
+
+psql $POSTGRES_ARGS -c "$(cat <<QUERY
+CREATE TABLE IF NOT EXISTS copyright (
+  id integer
+);
+QUERY
+)"
+psql $POSTGRES_ARGS -c 'INSERT into copyright VALUES (1)'
+
 echo "Done"
 
 echo
@@ -370,5 +386,19 @@ QUERY
 
 psql $POSTGRES_LEGEND_ARGS -c "update planet_osm_roads set osm_id = -abs(osm_id) where boundary = 'administrative'"
 psql $POSTGRES_LEGEND_ARGS -c "update planet_osm_polygon set way_area = 2e6 where boundary = 'national_park'"
+
+psql $POSTGRES_LEGEND_ARGS -c "$(cat <<QUERY
+CREATE TABLE IF NOT EXISTS scale_data (
+  id integer
+);
+QUERY
+)"
+
+psql $POSTGRES_LEGEND_ARGS -c "$(cat <<QUERY
+CREATE TABLE IF NOT EXISTS copyright (
+  id integer
+);
+QUERY
+)"
 
 echo "Done"
