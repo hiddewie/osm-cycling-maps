@@ -282,7 +282,7 @@ Layer:
               *
             FROM
               national_parks
-          ) AS bondaries
+          ) AS boundaries
         ORDER BY
           CASE
             WHEN boundary = 'administrative' then 1
