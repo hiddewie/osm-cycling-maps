@@ -41,7 +41,8 @@ ENV KOSMTIK_CONFIGPATH ".kosmtik-config.yml"
 COPY style style
 
 COPY scripts/generate/shields.py .
-RUN /usr/bin/python3 shields.py
+RUN chmod +x shields.py
+RUN ./shields.py
 RUN mv symbols style/symbols
 
 COPY carto/map-it/project.mml .
@@ -49,4 +50,4 @@ COPY carto/map-it/styles.mss .
 # Remove fancy placements because kosmtik does not support replacing contents of generated XML
 RUN sed -i "s/--PLACEMENTS--//" styles.mss
 
-CMD kosmtik serve project.mml --host 0.0.0.0
+CMD ["kosmtik", "serve", "project.mml", "--host", "0.0.0.0"]

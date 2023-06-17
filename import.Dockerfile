@@ -37,9 +37,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm phyghtmap_2.23-1_all.deb && \
     rm -rf /var/lib/apt/lists/*
 
-RUN mkdir /data
-RUN mkdir /style
-RUN mkdir /script
+RUN mkdir -p /data
+RUN mkdir -p /style
+RUN mkdir -p /script
+ENV PATH $PATH:/script
 
 WORKDIR /data
 
@@ -47,6 +48,7 @@ COPY --from=compilation /compilation/isolation /script
 COPY style/map-it.style /script/map-it.style
 COPY scripts/download.sh /script/download.sh
 COPY style/shade /style/shade
+COPY legend/legend.osm /legend/legend.osm
 RUN chmod +x /script/download.sh
 
-CMD /script/download.sh
+CMD ["download.sh"]

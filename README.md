@@ -102,7 +102,7 @@ Used technology:
 The same Docker image can also generate a legend in the output folder.
 
 ```bash
-docker compose run map-it /usr/bin/python3 legend.py
+docker compose run map-it legend.py
 ```
 
 The legend will be generated in the `output/legend.pdf` file.
@@ -118,7 +118,7 @@ The same Docker image can also generate tiles in the output folder. Instead of g
 for a sliding online map.
 
 ```bash
-docker compose run map-it /usr/bin/python3 tiles.py
+docker compose run map-it tiles.py
 ```
 
 The tiles will be generated in the `output/tiles` directory.
