@@ -887,7 +887,7 @@ Layer:
               (
                 man_made IN ('tower', 'mast') AND
                 "tower:type" IN (
-                  'communication'
+                  'communication',
                   'observation',
                   'cooling'
                 ) AND
