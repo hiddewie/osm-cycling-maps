@@ -202,6 +202,9 @@ Optional extra parameters for tweaking the import of downloaded OpenStreetMap da
   <dt><tt>PG_DATABASE</tt> (default <tt>gis</tt>)</dt>
   <dd>The Postgres database</dd>
 
+  <dt><tt>PG_LEGEND_DATABASE</tt> (default <tt>legend</tt>)</dt>
+  <dd>The Postgres database where the legend will be stored</dd>
+
   <dt><tt>MAP_NAME</tt> (default <tt>map</tt>)</dt>
   <dd>The name of the map. Used for generating filenames. Existing files will be overwritten. When multiple pages are generated, they are all added to the same PDF file.</dd>
 
