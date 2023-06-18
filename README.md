@@ -107,6 +107,8 @@ docker compose run map-it legend.sh
 
 The legend will be generated in the `output/legend.pdf` file.
 
+![legend](https://github.com/hiddewie/map-it/assets/1073881/2725241c-391d-4ead-b0ea-c7c063cba9ae)
+
 Used technology:
 - [CartoCSS](https://github.com/mapbox/carto)
 - [Mapnik](https://mapnik.org/)
