@@ -125,6 +125,10 @@ docker compose run map-it tiles.sh
 
 The tiles will be generated in the `output/tiles` directory.
 
+<p align="center">
+   <img src="https://github.com/hiddewie/map-it/assets/1073881/ff3380a4-62b0-4d29-abab-8298d34ba45e" alt="tile" />
+</p>
+
 Used technology:
 - [CartoCSS](https://github.com/mapbox/carto)
 - [Mapnik](https://mapnik.org/)
