@@ -3,10 +3,10 @@
 export PG_DATABASE=$PG_LEGEND_DATABASE
 echo "Set legend database $PG_DATABASE"
 
-export BBOX=0.0:0.0:0.3:0.2
+export BBOX=0.0:0.0:0.15:0.1
 echo "Set bounding box to $BBOX"
 
-export PAPER_SIZE=A4
+export PAPER_SIZE=A5
 export PAPER_ORIENTATION=landscape
 export SCALE=1:125000
 echo "Set paper settings to $PAPER_SIZE $PAPER_ORIENTATION with scale $SCALE"

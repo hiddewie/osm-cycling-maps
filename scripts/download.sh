@@ -312,8 +312,8 @@ echo
 POSTGRES_LEGEND_ARGS="-h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_LEGEND_DATABASE""
 
 cat $LEGEND_DIR/legend.osm \
-  | sed -e "s/id='-/id='/" \
-  | sed -e "s/ref='-/ref='/" \
+  | sed -e 's/id="-/id="/' \
+  | sed -e 's/ref="-/ref="/' \
   > /tmp/legend_cleaned.osm
 
 echo "Creating legend database"
