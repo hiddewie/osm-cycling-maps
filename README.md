@@ -157,6 +157,9 @@ The lists below describe the parameters used for the scripts, including defaults
   <dt><tt>PG_DATABASE</tt> (default <tt>gis</tt>)</dt>
   <dd>The Postgres database</dd>
 
+  <dt><tt>PG_LEGEND_DATABASE</tt> (default <tt>legend</tt>)</dt>
+  <dd>The Postgres database where the legend will be stored</dd>
+
   <dt><tt>FEATURE_COUNTRIES</tt> (required, default empty)</dt>
   <dd>Countries that will be downloaded from <a href="http://download.geofabrik.de">GeoFabrik</a>. Separated by whitespace. For example <tt>europe/netherlands/overijssel europe/slovakia europe/poland/slaskie europe/poland/malopolskie</tt>.</dd>
 
