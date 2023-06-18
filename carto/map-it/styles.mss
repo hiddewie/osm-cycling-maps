@@ -858,7 +858,9 @@
       marker-transform: 'translate(0, -2)';
     }
     [religion='buddhist'] {
+      background/marker-width: 8;
       background/marker-file: 'style/icons/maki/religious-buddhist-11.svg';
+      marker-width: 8;
       marker-file: 'style/icons/maki/religious-buddhist-11.svg';
     }
   }

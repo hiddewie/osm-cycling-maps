@@ -1,0 +1,255 @@
+columns:
+  - rows:
+      - description: national border, regional border
+        sections:
+          - way:
+              tags:
+                admin_level: '3'
+                boundary: administrative
+          - way:
+              tags:
+                admin_level: '6'
+                area: 'no'
+                boundary: administrative
+      - description: residential
+        sections:
+          - area:
+              tags:
+                landuse: residential
+      - description: forest
+        sections:
+          - area:
+              tags:
+                landuse: forest
+      - description: water with river, ferry with terminal, dam
+        sections:
+          - area:
+              tags:
+                natural: water
+              way:
+                tags:
+                  name: IJssel
+                  waterway: river
+          - area:
+              tags:
+                natural: water
+              way:
+                tags:
+                  route: ferry
+                end:
+                  tags:
+                    amenity: ferry_terminal
+          - area:
+              tags:
+                natural: water
+              way:
+                tags:
+                  waterway: dam
+      - description: military area
+        sections:
+          - area:
+              tags:
+                landuse: military
+      - description: airport with runway
+        sections:
+          - area:
+              tags:
+                aeroway: aerodrome
+              way:
+                tags:
+                  aeroway: runway
+      - description: industrial with power line
+        sections:
+          - area:
+              tags:
+                landuse: industrial
+              way:
+                tags:
+                  power: line
+                start:
+                  tags:
+                    power: pole
+                end:
+                  tags:
+                    power: pole
+      - description: national park
+        sections:
+          - multipolygon:
+              tags:
+                boundary: national_park
+                name: Veluwe
+              outer:
+                tags:
+                  name: Veluwe
+      - description: 'road: residential, unclassified'
+        sections:
+          - way:
+              tags:
+                highway: residential
+          - way:
+              tags:
+                highway: unclassified
+      - description: 'road: tertiary, secondary, primary'
+        sections:
+          - way:
+              tags:
+                highway: tertiary
+                ref: D1
+          - way:
+              tags:
+                highway: secondary
+                ref: S2
+          - way:
+              tags:
+                highway: primary
+                ref: P1
+      - description: 'trunk road, motorway'
+        sections:
+          - way:
+              tags:
+                highway: trunk
+      - description: railway with station, preserved railway
+        sections:
+          - way:
+              tags:
+                railway: rail
+              middle:
+                tags:
+                  railway: station
+          - way:
+              tags:
+                railway: preserved
+      - description: cycleway, cycling route with cycling network node
+        sections:
+          - way:
+              tags:
+                highway: cycleway
+          - way:
+              tags:
+                route: bicycle
+              middle:
+                tags:
+                  "network:type": node_network
+                  rcn_ref: '47'
+      - description: unpaved road, path
+        sections:
+          - way:
+              tags:
+                highway: track
+                tracktype: grade2
+          - way:
+              tags:
+                highway: track
+                tracktype: grade5
+  - rows:
+      - description: camping, multiple campings, caravan site, scouting area
+        sections:
+          - node:
+              tags:
+                tourism: camp_site
+          - node:
+              duplicate: 3
+              tags:
+                tourism: camp_site
+          - node:
+              tags:
+                tourism: caravan_site
+          - node:
+              tags:
+                tourism: camp_site
+                scout: 'yes'
+      - description: hostel
+        sections:
+          - node:
+              tags:
+                tourism: hostel
+      - description: castle, ruins
+        sections:
+          - node:
+              tags:
+                historic: castle
+          - node:
+              tags:
+                historic: ruins
+      - description: chimney, communications tower, observation tower, cooling tower
+        sections:
+          - node:
+              tags:
+                height: '100'
+                man_made: chimney
+          - node:
+              tags:
+                man_made: communications_tower
+          - node:
+              tags:
+                man_made: tower
+                'tower:type': observation
+          - node:
+              tags:
+                man_made: tower
+                'tower:type': cooling
+      - description: lighthouse, wind turbine
+        sections:
+          - node:
+              tags:
+                man_made: lighthouse
+          - node:
+              tags:
+                'generator:source': wind
+                power: generator
+      - description: mountain peak, mountain pass
+        sections:
+          - node:
+              tags:
+                ele: '476'
+                natural: peak
+          - node:
+              tags:
+                ele: '647'
+                mountain_pass: 'yes'
+      - description: supermarket, convenience store, bicycle shop
+        sections:
+          - node:
+              tags:
+                shop: supermarket
+          - node:
+              tags:
+                shop: convenience
+          - node:
+              tags:
+                shop: bicycle_shop
+      - description: church, synagogue, mosque, buddhist temple
+        sections:
+          - node:
+              tags:
+                amenity: place_of_worship
+                religion: christian
+          - node:
+              tags:
+                amenity: place_of_worship
+                religion: jewish
+          - node:
+              tags:
+                amenity: place_of_worship
+                religion: muslim
+          - node:
+              tags:
+                amenity: place_of_worship
+                religion: buddhist
+      - sections:
+          - node:
+              tags:
+                name: city
+                place: city
+          - node:
+              tags:
+                name: town
+                place: town
+          - node:
+              tags:
+                name: village
+                place: village
+          - node:
+              tags:
+                name: hamlet
+                place: hamlet

@@ -4,6 +4,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN mkdir -p /generation
 WORKDIR /generation
+ENV PATH $PATH:/generation
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
@@ -11,15 +12,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 COPY scripts/placements.py .
-RUN /usr/bin/python3 placements.py > placements.xml
+RUN chmod +x placements.py
+RUN placements.py > placements.xml
 
 COPY scripts/generate/shields.py .
-RUN /usr/bin/python3 shields.py
+RUN chmod +x shields.py
+RUN shields.py
 
 FROM node:14-buster-slim as build
 
 RUN mkdir -p /build
 WORKDIR /build
+ENV PATH $PATH:/build
 
 RUN npm install -g carto
 
@@ -53,17 +57,28 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN mkdir /map-it
 WORKDIR /map-it
+ENV PATH $PATH:/map-it
 
 ENV MAPNIK_CONFIGURATION mapnik.xml
 
-RUN mkdir style
+RUN mkdir -p style
 COPY --from=generation /generation/symbols/shields style/symbols/shields
 COPY --from=build /build/mapnik.xml mapnik.xml
 COPY scripts/environment.py .
 COPY scripts/bounds.py .
 COPY scripts/generate.py .
+COPY scripts/legend.sh .
 COPY scripts/with_mapnik_environment.sh .
 COPY scripts/tiles.py .
+COPY scripts/tiles.sh .
 COPY style style
 
-CMD ["bash", "with_mapnik_environment.sh", "/usr/bin/python3", "generate.py"]
+RUN chmod +x \
+    with_mapnik_environment.sh \
+    bounds.py \
+    generate.py \
+    legend.sh \
+    tiles.py \
+    tiles.sh
+
+CMD ["with_mapnik_environment.sh", "generate.py"]

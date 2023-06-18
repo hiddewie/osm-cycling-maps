@@ -4,6 +4,7 @@ set -o pipefail
 
 DATA_DIR=/data
 STYLE_DIR=/style
+LEGEND_DIR=/legend
 
 python3 -V
 gdalinfo --version
@@ -270,7 +271,7 @@ if [ -n "${GPX_FILE}" ]; then
     track_seg_id integer,
     track_seg_point_id integer,
     geom geometry(Point, 4326)
-)';
+  )';
 
   ogr2ogr \
     -f "PostgreSQL" PG:"host=$PG_HOST user=$PG_USER dbname=$PG_DATABASE" \
@@ -285,5 +286,119 @@ if [ -n "${GPX_FILE}" ]; then
   echo "Done importing GPX file"
 
 fi
+
+psql $POSTGRES_ARGS -c "$(cat <<QUERY
+CREATE TABLE IF NOT EXISTS scale_data (
+  id integer
+);
+QUERY
+)"
+psql $POSTGRES_ARGS -c 'INSERT into scale_data VALUES (1)'
+
+psql $POSTGRES_ARGS -c "$(cat <<QUERY
+CREATE TABLE IF NOT EXISTS copyright (
+  id integer
+);
+QUERY
+)"
+psql $POSTGRES_ARGS -c 'INSERT into copyright VALUES (1)'
+
+echo "Done"
+
+echo
+echo " -- Legend -- "
+echo
+
+POSTGRES_LEGEND_ARGS="-h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_LEGEND_DATABASE""
+
+cat $LEGEND_DIR/legend.osm \
+  | sed -e 's/id="-/id="/' \
+  | sed -e 's/ref="-/ref="/' \
+  > /tmp/legend_cleaned.osm
+
+echo "Creating legend database"
+
+dropdb -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" "$PG_LEGEND_DATABASE"
+createdb -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" "$PG_LEGEND_DATABASE"
+psql $POSTGRES_LEGEND_ARGS -c "CREATE EXTENSION postgis"
+
+echo "Importing legend data"
+osm2pgsql \
+  --host "$PG_HOST" \
+  --database "$PG_LEGEND_DATABASE" \
+  --username "$PG_USER" \
+  --style /script/map-it.style \
+  --slim \
+  --drop \
+  /tmp/legend_cleaned.osm
+
+psql $POSTGRES_LEGEND_ARGS -c "$(cat <<QUERY
+CREATE TABLE IF NOT EXISTS contours (
+  way geometry(MultiLineString, 4326),
+  height numeric
+);
+QUERY
+)"
+
+psql $POSTGRES_LEGEND_ARGS -c "$(cat <<QUERY
+CREATE TABLE IF NOT EXISTS coastlines (
+  way geometry(MultiPolygon, 3857)
+);
+QUERY
+)"
+
+psql $POSTGRES_LEGEND_ARGS -c "$(cat <<QUERY
+CREATE TABLE IF NOT EXISTS gpx (
+  way geometry(LineString, 3857)
+);
+QUERY
+)"
+
+psql $POSTGRES_LEGEND_ARGS -c "$(cat <<QUERY
+CREATE TABLE IF NOT EXISTS peak_isolation (
+  osm_id bigint PRIMARY KEY,
+  isolation int
+);
+QUERY
+)"
+
+psql $POSTGRES_LEGEND_ARGS -c "$(cat <<QUERY
+CREATE TABLE IF NOT EXISTS mountain_pass_road (
+  osm_id bigint PRIMARY KEY,
+  road_osm_id bigint
+);
+QUERY
+)"
+
+psql $POSTGRES_LEGEND_ARGS -c "$(cat <<QUERY
+truncate peak_isolation;
+insert into peak_isolation(osm_id, isolation)
+select osm_id, 2500 as isolation from planet_osm_point where "natural" = 'peak'
+QUERY
+)"
+
+psql $POSTGRES_LEGEND_ARGS -c "$(cat <<QUERY
+truncate mountain_pass_road;
+insert into mountain_pass_road(osm_id, road_osm_id)
+select osm_id, 1 as road_osm_id from planet_osm_point where mountain_pass = 'yes'
+QUERY
+)"
+
+psql $POSTGRES_LEGEND_ARGS -c "update planet_osm_roads set osm_id = -abs(osm_id) where boundary = 'administrative'"
+psql $POSTGRES_LEGEND_ARGS -c "update planet_osm_polygon set way_area = 2e6 where boundary = 'national_park'"
+
+psql $POSTGRES_LEGEND_ARGS -c "$(cat <<QUERY
+CREATE TABLE IF NOT EXISTS scale_data (
+  id integer
+);
+QUERY
+)"
+
+psql $POSTGRES_LEGEND_ARGS -c "$(cat <<QUERY
+CREATE TABLE IF NOT EXISTS copyright (
+  id integer
+);
+QUERY
+)"
 
 echo "Done"
