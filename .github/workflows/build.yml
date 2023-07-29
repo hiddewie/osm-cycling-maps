@@ -1,0 +1,97 @@
+name: Build and Test
+
+on:
+  push: {}
+
+jobs:
+#  Build:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v2
+#
+#      - name: Log in to the Container registry
+#        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+#        with:
+#          registry: ghcr.io
+#          username: ${{ github.actor }}
+#          password: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Docker meta
+#        id: meta
+#        uses: docker/metadata-action@v4
+#        with:
+#          images: ghcr.io/hiddewie/map-it-bounds
+#
+#      - name: Build and push
+#        uses: docker/build-push-action@v3
+#        with:
+#          context: .
+#          push: true
+#          tags: ${{ steps.meta.outputs.tags }}
+#          labels: ${{ steps.meta.outputs.labels }}
+#          cache-from: |
+#            type=registry,ref=ghcr.io/hiddewie/map-it-bounds:master
+#            type=registry,ref=ghcr.io/hiddewie/map-it-bounds:${{ github.ref }}
+#            type=registry,ref=ghcr.io/hiddewie/map-it-bounds:${{ github.sha }}
+#          cache-to: type=registry,ref=ghcr.io/hiddewie/map-it-bounds:${{ github.sha }},mode=max
+
+  Test:
+    runs-on: ubuntu-latest
+#    needs:
+#      - Build
+    steps:
+      - run: |
+          echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+          cache restore data-`date +%Y-%m`
+  
+          # Set environment variables
+          cp .env.dist .env
+          sed -i "s/BBOX=.*/BBOX=43.3146:41.49:43.8202:41.8238/" .env
+          sed -i "s|FEATURE_COUNTRIES=.*|FEATURE_COUNTRIES=europe/georgia|" .env
+          sed -i "s/USGS_USERNAME=.*/USGS_USERNAME=$USGS_USERNAME/" .env
+          sed -i "s/USGS_PASSWORD=.*/USGS_PASSWORD=$USGS_PASSWORD/" .env
+  
+          export DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.ci.yml"
+  
+          # Build everything
+          $DOCKER_COMPOSE \
+            build \
+            --build-arg BUILDKIT_INLINE_CACHE=1 \
+            map-it map-it-bounds map-it-import
+  
+          # Run database
+          $DOCKER_COMPOSE \
+            up \
+            -d \
+            postgres-osm
+          until $DOCKER_COMPOSE exec postgres-osm pg_isready; do
+            echo "Sleeping 1 second"
+            sleep 1
+          done
+  
+          # Run import for small area
+          BBOX=$($DOCKER_COMPOSE run map-it-bounds)
+          sed -i "s/BBOX=.*/BBOX=$BBOX/" .env
+          'echo "Bounding box: $BBOX"'
+          $DOCKER_COMPOSE run map-it-import
+          $DOCKER_COMPOSE run map-it
+          artifact push workflow output/map.pdf
+  
+          sed -i "s/BBOX=.*/BBOX=43.4715:41.3965:43.5077:41.4180/" .env
+          $DOCKER_COMPOSE run map-it tiles.sh
+          artifact push workflow output/tiles/12/2543/1529.png
+  
+          $DOCKER_COMPOSE run map-it legend.sh
+          artifact push workflow output/legend.pdf
+  
+          cache store data-`date +%Y-%m` data
+  
+          # Publish images
+          $DOCKER_COMPOSE \
+            push \
+            map-it map-it-bounds map-it-import
+
