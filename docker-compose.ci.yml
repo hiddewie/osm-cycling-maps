@@ -5,16 +5,16 @@ services:
     build:
       cache_from:
         - hiddewie/map-it:master
-    image: hiddewie/map-it:$SEMAPHORE_GIT_BRANCH
+    image: hiddewie/map-it:$GITHUB_REF_NAME
 
   map-it-bounds:
     build:
       cache_from:
         - hiddewie/map-it-bounds:master
-    image: hiddewie/map-it-bounds:$SEMAPHORE_GIT_BRANCH
+    image: hiddewie/map-it-bounds:$GITHUB_REF_NAME
 
   map-it-import:
     build:
       cache_from:
         - hiddewie/map-it-import:master
-    image: hiddewie/map-it-import:$SEMAPHORE_GIT_BRANCH
+    image: hiddewie/map-it-import:$GITHUB_REF_NAME
