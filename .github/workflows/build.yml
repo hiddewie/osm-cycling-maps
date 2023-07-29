@@ -108,7 +108,7 @@ jobs:
           # Run import for small area
           BBOX=$($DOCKER_COMPOSE run map-it-bounds)
           sed -i "s/BBOX=.*/BBOX=$BBOX/" .env
-          'echo "Bounding box: $BBOX"'
+          echo "Bounding box: $BBOX"
 
           # Run import
           $DOCKER_COMPOSE run map-it-import
