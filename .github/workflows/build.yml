@@ -100,7 +100,7 @@ jobs:
             up \
             -d \
             postgres-osm
-          until $DOCKER_COMPOSE exec postgres-osm pg_isready; do
+          until $DOCKER_COMPOSE exec -T postgres-osm pg_isready; do
             echo "Sleeping 1 second"
             sleep 1
           done
