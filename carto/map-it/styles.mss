@@ -161,7 +161,7 @@
 @ferry: @dark-blue;
 
 @aeroway: @gray;
-@track: @medium-gray;
+@track: lighten(@medium-gray, 10%);
 @cycle: @purple;
 @cycle-border: @white;
 @unclassified: @white;
@@ -730,6 +730,11 @@
       background/marker-file: 'style/icons/svg/scout.svg';
       marker-file: 'style/icons/svg/scout.svg';
     }
+
+    [many = 'yes'] {
+      background/marker-file: 'style/icons/svg/camp_site_many.svg';
+      marker-file: 'style/icons/svg/camp_site_many.svg';
+    }
   }
 
   [type = 'hostel'] {
@@ -853,7 +858,9 @@
       marker-transform: 'translate(0, -2)';
     }
     [religion='buddhist'] {
+      background/marker-width: 8;
       background/marker-file: 'style/icons/maki/religious-buddhist-11.svg';
+      marker-width: 8;
       marker-file: 'style/icons/maki/religious-buddhist-11.svg';
     }
   }

@@ -1,4 +1,4 @@
-FROM debian:11-slim
+FROM debian:12-slim
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-lxml \
     nodejs \
     npm \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* && apt-get clean
 
 # Kosmtik with plugins, forcing prefix to /usr because bionic sets
 # npm prefix to /usr/local, which breaks the install
@@ -41,12 +41,13 @@ ENV KOSMTIK_CONFIGPATH ".kosmtik-config.yml"
 COPY style style
 
 COPY scripts/generate/shields.py .
-RUN /usr/bin/python3 shields.py
+RUN chmod +x shields.py
+RUN shields.py
 RUN mv symbols style/symbols
 
 COPY carto/map-it/project.mml .
 COPY carto/map-it/styles.mss .
-# Remove fancy placements because carto does not replacing contents of generated XML
+# Remove fancy placements because kosmtik does not support replacing contents of generated XML
 RUN sed -i "s/--PLACEMENTS--//" styles.mss
 
-CMD kosmtik serve project.mml --host 0.0.0.0
+CMD ["kosmtik", "serve", "project.mml", "--host", "0.0.0.0"]

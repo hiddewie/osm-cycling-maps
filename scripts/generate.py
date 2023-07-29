@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -31,7 +30,7 @@ def renderMap(m, file, bbox):
         print('Rendering PDF')
 
         pdf_surface = cairo.PDFSurface(file, m.width, m.height)
-        mapnik.render(m, pdf_surface, 1 / 2.0, 0, 0)
+        mapnik.render(m, pdf_surface, 0.7, 0, 0)
         pdf_surface.finish()
 
         print('Rendered PDF')
@@ -48,7 +47,6 @@ def main():
 
     size = environment.env('PAPER_SIZE', 'A4')
     orientation = environment.env('PAPER_ORIENTATION', bounds.ORIENTATION_PORTRAIT)
-    boundingBox = bounds.determineBoundingBox(environment.require('BBOX'))
     pageOverlap = bounds.determinePageOverlap(environment.env('PAGE_OVERLAP', '5%'))
     # Default 1 cm on the map is 1.5 km in the world
     scale = bounds.determineScale(environment.env('SCALE', '1:150000'))
@@ -64,38 +62,46 @@ def main():
     m = loadMapFromFile(mapnikConfiguration, mapWidth, mapHeight)
     print('Loaded Mapnik configuration')
 
-    boundingBoxes = bounds.boundingBoxes(boundingBox, pageOverlap, scale, (printPaperWidth, printPaperHeight))
+    boundingBoxes = []
+    for boundingBox in environment.require('BBOX').split(','):
+        boundingBoxes += bounds.boundingBoxes(
+            bounds.determineBoundingBox(boundingBox.strip()),
+            pageOverlap,
+            scale,
+            (printPaperWidth, printPaperHeight)
+        )
     print('Rendering %s pages' % (len(boundingBoxes),))
+
+    pdfWriter = PyPDF2.PdfFileMerger()
+    page = 1
+    for boundingBox in boundingBoxes:
+        tileBoundingBox = bounds.latitudeLongitudeToWebMercator.forward(boundingBox)
+
+        print('Generating page %d of %d for bounding box (%.3f, %.3f) × (%.3f, %.3f)' %
+              (page, len(boundingBoxes), boundingBox.minx, boundingBox.miny, boundingBox.maxx, boundingBox.maxy))
+
+        with tempfile.NamedTemporaryFile() as tempFile:
+            startTime = time.time()
+            renderMap(m, tempFile, tileBoundingBox)
+
+            stats = os.stat(tempFile.name)
+            print('Done rendering page %d of %d in %.1f sec with generated page size %.1f MB' %
+                  (page, len(boundingBoxes), time.time() - startTime, stats.st_size / (1024 * 1024)))
+            pdfWriter.append(PyPDF2.PdfFileReader(tempFile))
+
+            print('Done writing PDF page %s of %d' % (page, len(boundingBoxes)))
+
+        page += 1
+    print('Done rendering pages')
 
     if not os.path.exists(OUTPUT_PATH):
         print('Creating output directory %s' % (OUTPUT_PATH,))
         os.makedirs(OUTPUT_PATH)
 
-    pdfWriter = PyPDF2.PdfFileWriter()
+    print('Writing output file')
     with open('%s/%s.pdf' % (OUTPUT_PATH, name), 'wb') as outputFile:
-
-        page = 1
-        for boundingBox in boundingBoxes:
-            tileBoundingBox = bounds.latitudeLongitudeToWebMercator.forward(boundingBox)
-
-            print('Generating page %s for bounding box (%.3f, %.3f) × (%.3f, %.3f)' % (
-                page, boundingBox.minx, boundingBox.miny, boundingBox.maxx, boundingBox.maxy))
-
-            with tempfile.TemporaryFile() as tempFile:
-                startTime = time.time()
-                renderMap(m, tempFile, tileBoundingBox)
-
-                print('Done rendering page %s in %.1f sec' % (page, time.time() - startTime))
-
-                pdfReader = PyPDF2.PdfFileReader(tempFile)
-                pdfWriter.addPage(pdfReader.getPage(0))
-                pdfWriter.write(outputFile)
-
-                print('Done writing PDF page %s' % (page,))
-
-            page += 1
-
-    print('Done rendering pages')
+        pdfWriter.write(outputFile)
+    print('Done writing output file')
 
 
 if __name__ == '__main__':

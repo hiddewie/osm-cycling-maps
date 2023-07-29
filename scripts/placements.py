@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Usage: python3 placements.py
 # Output: a list of placements for places, in a grid determined by the parameters.
 #

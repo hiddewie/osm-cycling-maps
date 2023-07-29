@@ -97,16 +97,37 @@ Used technology:
 - [Mapnik](https://mapnik.org/)
 - Icons from [OpenStreetMap Carto style](https://github.com/gravitystorm/openstreetmap-carto)
 
+##### Legend
+
+The same Docker image can also generate a legend in the output folder.
+
+```bash
+docker compose run map-it legend.sh
+```
+
+The legend will be generated in the `output/legend.pdf` file.
+
+![legend](https://github.com/hiddewie/map-it/assets/1073881/2725241c-391d-4ead-b0ea-c7c063cba9ae)
+
+Used technology:
+- [CartoCSS](https://github.com/mapbox/carto)
+- [Mapnik](https://mapnik.org/)
+- Icons from [OpenStreetMap Carto style](https://github.com/gravitystorm/openstreetmap-carto)
+
 ##### Tiles
 
 The same Docker image can also generate tiles in the output folder. Instead of generating a PDF map, these tiles can be used
 for a sliding online map.
 
 ```bash
-docker compose run map-it /usr/bin/python3 tiles.py
+docker compose run map-it tiles.sh
 ```
 
 The tiles will be generated in the `output/tiles` directory.
+
+<p align="center">
+   <img src="https://github.com/hiddewie/map-it/assets/1073881/ff3380a4-62b0-4d29-abab-8298d34ba45e" alt="tile" />
+</p>
 
 Used technology:
 - [CartoCSS](https://github.com/mapbox/carto)
@@ -135,6 +156,9 @@ The lists below describe the parameters used for the scripts, including defaults
 
   <dt><tt>PG_DATABASE</tt> (default <tt>gis</tt>)</dt>
   <dd>The Postgres database</dd>
+
+  <dt><tt>PG_LEGEND_DATABASE</tt> (default <tt>legend</tt>)</dt>
+  <dd>The Postgres database where the legend will be stored</dd>
 
   <dt><tt>FEATURE_COUNTRIES</tt> (required, default empty)</dt>
   <dd>Countries that will be downloaded from <a href="http://download.geofabrik.de">GeoFabrik</a>. Separated by whitespace. For example <tt>europe/netherlands/overijssel europe/slovakia europe/poland/slaskie europe/poland/malopolskie</tt>.</dd>
@@ -178,11 +202,14 @@ Optional extra parameters for tweaking the import of downloaded OpenStreetMap da
   <dt><tt>PG_DATABASE</tt> (default <tt>gis</tt>)</dt>
   <dd>The Postgres database</dd>
 
+  <dt><tt>PG_LEGEND_DATABASE</tt> (default <tt>legend</tt>)</dt>
+  <dd>The Postgres database where the legend will be stored</dd>
+
   <dt><tt>MAP_NAME</tt> (default <tt>map</tt>)</dt>
   <dd>The name of the map. Used for generating filenames. Existing files will be overwritten. When multiple pages are generated, they are all added to the same PDF file.</dd>
 
   <dt><tt>BBOX</tt> (required, default empty)</dt>
-  <dd>Of the form <tt>A:B:C:D</tt>, for example <tt>5.3:51.1:6.8:53.0056</tt> where <tt>(A, B)</tt> is the lower left corner of the bounding box and <tt>(C, D)</tt> is the top right corner. Specify in longitude - latitude order in the <a href="https://epsg.io/4326">EPSG:4326</a> coordinate system.</dd>
+  <dd>Of the form <tt>A:B:C:D</tt>, for example <tt>5.3:51.1:6.8:53.0056</tt> where <tt>(A, B)</tt> is the lower left corner of the bounding box and <tt>(C, D)</tt> is the top right corner. Specify in longitude - latitude order in the <a href="https://epsg.io/4326">EPSG:4326</a> coordinate system. Multiple bounding boxes maybe concatenated with <tt>,</tt>.</dd>
 
   <dt><tt>SCALE</tt> (default <tt>1:150000</tt>)</dt>
   <dd>The scale of the map, when printed on the indicated paper size. The value is of the form <tt>1:N</tt> with <tt>N</tt> a number.</dd>
@@ -216,7 +243,7 @@ Optional extra parameters for tweaking the import of downloaded OpenStreetMap da
   <dd>The Postgres database</dd>
 
   <dt><tt>BBOX</tt> (required, default empty)</dt>
-  <dd>Of the form <tt>A:B:C:D</tt>, for example <tt>5.3:51.1:6.8:53.0056</tt> where <tt>(A, B)</tt> is the lower left corner of the bounding box and <tt>(C, D)</tt> is the top right corner. Specify in longitude - latitude order in the <a href="https://epsg.io/4326">EPSG:4326</a> coordinate system.</dd>
+  <dd>Of the form <tt>A:B:C:D</tt>, for example <tt>5.3:51.1:6.8:53.0056</tt> where <tt>(A, B)</tt> is the lower left corner of the bounding box and <tt>(C, D)</tt> is the top right corner. Specify in longitude - latitude order in the <a href="https://epsg.io/4326">EPSG:4326</a> coordinate system. Multiple bounding boxes maybe concatenated with <tt>,</tt>.</dd>
 
   <dt><tt>NUM_THREADS</tt> (required, default <tt>6</tt>)</dt>
   <dd>The number of threads that will be used to concurrently render tiles.</dd>

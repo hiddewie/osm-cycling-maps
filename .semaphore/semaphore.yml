@@ -36,6 +36,7 @@ blocks:
             # Set environment variables
             - cp .env.dist .env
             - sed -i "s/BBOX=.*/BBOX=43.3146:41.49:43.8202:41.8238/" .env
+            - sed -i "s|FEATURE_COUNTRIES=.*|FEATURE_COUNTRIES=europe/georgia|" .env
             - sed -i "s/USGS_USERNAME=.*/USGS_USERNAME=$USGS_USERNAME/" .env
             - sed -i "s/USGS_PASSWORD=.*/USGS_PASSWORD=$USGS_PASSWORD/" .env
 
@@ -66,11 +67,14 @@ blocks:
             - 'echo "Bounding box: $BBOX"'
             - $DOCKER_COMPOSE run map-it-import
             - $DOCKER_COMPOSE run map-it
-            - artifact push workflow --expire-in 2w output/map.pdf
+            - artifact push workflow output/map.pdf
 
             - sed -i "s/BBOX=.*/BBOX=43.4715:41.3965:43.5077:41.4180/" .env
-            - $DOCKER_COMPOSE run map-it /usr/bin/python3 tiles.py
-            - artifact push workflow --expire-in 2w output/tiles/12/2543/1529.png
+            - $DOCKER_COMPOSE run map-it tiles.sh
+            - artifact push workflow output/tiles/12/2543/1529.png
+
+            - $DOCKER_COMPOSE run map-it legend.sh
+            - artifact push workflow output/legend.pdf
 
             - cache store data-`date +%Y-%m` data
 
