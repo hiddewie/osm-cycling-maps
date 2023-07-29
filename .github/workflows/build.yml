@@ -3,6 +3,10 @@ name: Build and Test
 on:
   push: {}
 
+concurrency:
+  group: ${{ github.ref_name }}
+  cancel-in-progress: ${{ github.ref_name != 'master' }}
+
 jobs:
 #  Build:
 #    runs-on: ubuntu-latest
