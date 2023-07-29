@@ -67,12 +67,19 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-#          echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
-#          cache restore data-`date +%Y-%m`
+      - name: Get Date
+        shell: bash
+        id: get-date
+        run: |
+          echo "date=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
 
-      # TODO caching /data
+      - name: Cache Primes
+        uses: actions/cache@v3
+        with:
+          path: data
+          key: data-${{ steps.get-date.outputs.date }}
+
       - run: |
-  
           # Set environment variables
           cp .env.dist .env
           sed -i "s/BBOX=.*/BBOX=43.3146:41.49:43.8202:41.8238/" .env
@@ -102,21 +109,31 @@ jobs:
           BBOX=$($DOCKER_COMPOSE run map-it-bounds)
           sed -i "s/BBOX=.*/BBOX=$BBOX/" .env
           'echo "Bounding box: $BBOX"'
+
+          # Run import
           $DOCKER_COMPOSE run map-it-import
+
+          # Generate map
           $DOCKER_COMPOSE run map-it
-          artifact push workflow output/map.pdf
   
+          # Generate tiles
           sed -i "s/BBOX=.*/BBOX=43.4715:41.3965:43.5077:41.4180/" .env
           $DOCKER_COMPOSE run map-it tiles.sh
-          artifact push workflow output/tiles/12/2543/1529.png
-  
+          
+          # Generate legend
           $DOCKER_COMPOSE run map-it legend.sh
-          artifact push workflow output/legend.pdf
     
           # Publish images
           $DOCKER_COMPOSE \
             push \
             map-it map-it-bounds map-it-import
 
-#          cache store data-`date +%Y-%m` data
-
+      - name: Archive test artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: map
+          if-no-files-found: error
+          path: |
+            output/map.pdf
+            output/tiles/12/2543/1529.png
+            output/legend.pdf
