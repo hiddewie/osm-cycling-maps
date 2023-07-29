@@ -68,10 +68,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      # TODO caching /data
-      - run: |
 #          echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
 #          cache restore data-`date +%Y-%m`
+
+      # TODO caching /data
+      - run: |
   
           # Set environment variables
           cp .env.dist .env
@@ -112,11 +113,11 @@ jobs:
   
           $DOCKER_COMPOSE run map-it legend.sh
           artifact push workflow output/legend.pdf
-  
-#          cache store data-`date +%Y-%m` data
-  
+    
           # Publish images
           $DOCKER_COMPOSE \
             push \
             map-it map-it-bounds map-it-import
+
+#          cache store data-`date +%Y-%m` data
 
