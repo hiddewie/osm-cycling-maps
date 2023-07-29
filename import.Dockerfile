@@ -1,11 +1,11 @@
-FROM debian:11-slim as compilation
+FROM debian:12-slim as compilation
 
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgdal-dev \
     build-essential \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* && apt-get clean
 
 RUN mkdir -p /compilation
 WORKDIR /compilation
@@ -13,7 +13,7 @@ WORKDIR /compilation
 COPY scripts/isolation.c .
 RUN gcc isolation.c -Wall -o isolation -lgdal -lm -O2
 
-FROM debian:11-slim as generation
+FROM debian:12-slim as generation
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -27,18 +27,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     python3-distutils \
     python3-lxml \
-    && rm -rf /var/lib/apt/lists/* \
-    && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
-    && python3 get-pip.py \
-    && pip3 install pyyaml \
-    && rm -f get-pip.py
+    python3-pip \
+    && pip3 install --no-cache-dir --break-system-packages pyyaml \
+    && rm -rf /var/lib/apt/lists/* && apt-get clean
 
 COPY legend/legend.yaml .
 COPY scripts/generate/legend.py .
 RUN chmod +x legend.py
 RUN legend.py legend.yaml > legend.osm
 
-FROM debian:11-slim
+FROM debian:12-slim
 
 LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
 
@@ -53,14 +51,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client \
     postgis \
     python3-gdal \
+    python3-bs4 \
+    python3-matplotlib \
     libboost-all-dev \
     libgdal-dev \
-    osmium-tool && \
-    wget http://katze.tfiu.de/projects/phyghtmap/phyghtmap_2.23-1_all.deb && \
-    dpkg -i phyghtmap_2.23-1_all.deb; \
-    apt-get -f -y install && \
-    rm phyghtmap_2.23-1_all.deb && \
-    rm -rf /var/lib/apt/lists/*
+    osmium-tool \
+    && rm -rf /var/lib/apt/lists/* && apt-get clean
+
+# Install phyghtmap
+COPY scripts/phyghtmap /usr/lib/phyghtmap
+RUN ln -s /usr/lib/phyghtmap/main.py /usr/bin/phyghtmap
+RUN chmod +x /usr/lib/phyghtmap/main.py
 
 RUN mkdir -p /data
 RUN mkdir -p /style

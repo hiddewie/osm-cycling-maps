@@ -8,6 +8,7 @@ LEGEND_DIR=/legend
 
 python3 -V
 gdalinfo --version
+phyghtmap --version
 osm2pgsql --version
 psql --version | grep psql
 osmium --version | grep version

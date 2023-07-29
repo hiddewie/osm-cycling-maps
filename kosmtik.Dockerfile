@@ -1,4 +1,4 @@
-FROM debian:11-slim
+FROM debian:12-slim
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-lxml \
     nodejs \
     npm \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* && apt-get clean
 
 # Kosmtik with plugins, forcing prefix to /usr because bionic sets
 # npm prefix to /usr/local, which breaks the install

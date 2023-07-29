@@ -1,4 +1,4 @@
-FROM debian:11-slim as generation
+FROM debian:12-slim as generation
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -9,7 +9,7 @@ ENV PATH $PATH:/generation
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     python3-lxml \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* && apt-get clean
 
 COPY scripts/placements.py .
 RUN chmod +x placements.py
@@ -38,7 +38,7 @@ RUN carto project.mml > mapnik.xml
 # Also see https://github.com/mapbox/carto/issues/238#issuecomment-19673987
 RUN sed -i -E "s@<!\[CDATA\[(.*)--PLACEMENTS--]]>@\1$(cat placements.xml)@g" mapnik.xml
 
-FROM debian:11-slim
+FROM debian:12-slim
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -53,7 +53,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fonts-noto-unhinted \
     fonts-hanazono \
     fonts-unifont \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* && apt-get clean
 
 RUN mkdir /map-it
 WORKDIR /map-it

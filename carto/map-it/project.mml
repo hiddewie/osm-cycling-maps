@@ -14,14 +14,14 @@ format: pdf
 interactivity: false
 minzoom: 12
 maxzoom: 12
-srs: "+init=epsg:3857"
+srs: "EPSG:3857"
 
 # Various parts to be included later on
 _parts:
   extents: &extents
     extent: *world
     srs-name: "WGS84"
-    srs: "+init=epsg:4326"
+    srs: "EPSG:4326"
     srid: 4326
   extentsOSM: &extentsOSM
     extent: *world
