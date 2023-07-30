@@ -73,7 +73,7 @@ jobs:
         run: |
           echo "date=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
 
-      - name: Cache Primes
+      - name: Cache data
         uses: actions/cache@v3
         with:
           path: data
