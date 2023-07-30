@@ -87,7 +87,7 @@ jobs:
       - name: Build map-it-import
         uses: docker/build-push-action@v4
         with:
-          file: Dockerfile
+          file: import.Dockerfile
           push: false
           tags: hiddewie/map-it-import:${{ github.ref_name }}
           cache-from: |
@@ -98,7 +98,7 @@ jobs:
       - name: Build map-it-bounds
         uses: docker/build-push-action@v4
         with:
-          file: Dockerfile
+          file: bounds.Dockerfile
           push: false
           tags: hiddewie/map-it-bounds:${{ github.ref_name }}
           cache-from: |
