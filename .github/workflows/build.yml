@@ -1,0 +1,141 @@
+name: Build and Test
+
+on:
+  push: {}
+
+concurrency:
+  group: ${{ github.ref_name }}
+  cancel-in-progress: ${{ github.ref_name != 'master' }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Date cache key
+        id: get-date
+        run: |
+          echo "date=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
+
+      - name: Cache data
+        uses: actions/cache@v3
+        with:
+          path: data
+          key: data-${{ steps.get-date.outputs.date }}
+
+      - name: Set up environment variables
+        run: |
+          cp .env.dist .env
+          sed -i "s/BBOX=.*/BBOX=43.3146:41.49:43.8202:41.8238/" .env
+          sed -i "s|FEATURE_COUNTRIES=.*|FEATURE_COUNTRIES=europe/georgia|" .env
+          sed -i "s/USGS_USERNAME=.*/USGS_USERNAME={{ secrets.USGS_USERNAME }}/" .env
+          sed -i "s/USGS_PASSWORD=.*/USGS_PASSWORD={{ secrets.USGS_PASSWORD }}/" .env
+
+      - name: Build map-it
+        uses: docker/build-push-action@v4
+        with:
+          file: Dockerfile
+          push: false
+          load: true
+          tags: hiddewie/map-it
+          cache-from: |
+            type=gha,scope=${{ github.ref_name }}-map-it
+            type=gha,scope=master-map-it
+          cache-to: type=gha,mode=max,scope=${{ github.ref_name }}-map-it
+
+      - name: Build map-it-import
+        uses: docker/build-push-action@v4
+        with:
+          file: import.Dockerfile
+          push: false
+          load: true
+          tags: hiddewie/map-it-import
+          cache-from: |
+            type=gha,scope=${{ github.ref_name }}-map-it-import
+            type=gha,scope=master-map-it-import
+          cache-to: type=gha,mode=max,scope=${{ github.ref_name }}-map-it-import
+
+      - name: Build map-it-bounds
+        uses: docker/build-push-action@v4
+        with:
+          file: bounds.Dockerfile
+          push: false
+          load: true
+          tags: hiddewie/map-it-bounds
+          cache-from: |
+            type=gha,scope=${{ github.ref_name }}-map-it-bounds
+            type=gha,scope=master-map-it-bounds
+          cache-to: type=gha,mode=max,scope=${{ github.ref_name }}-map-it-bounds
+
+      - name: Run database
+        timeout-minutes: 1
+        run: |
+          docker compose up -d postgres-osm
+          
+          until docker compose exec -T postgres-osm pg_isready; do
+            echo "Sleeping 1 second"
+            sleep 1
+          done
+
+      - name: Postgres logs
+        if: always()
+        run: |
+          docker compose logs postgres-osm
+
+      - name: Run import
+        run: |
+          BBOX=$(docker compose run map-it-bounds)
+          echo "Bounding box: $BBOX"
+
+          docker compose run -e BBOX=$BBOX map-it-import
+
+      - name: Generate map
+        run: |
+          docker compose run map-it
+
+      - name: Generate tiles
+        run: |
+          docker compose run -e BBOX=43.4715:41.3965:43.5077:41.4180 map-it tiles.sh
+
+      - name: Generate legend
+        run: |
+          docker compose run map-it legend.sh
+
+      - name: Publish images
+        if: ${{ github.ref_name == 'master' }}
+        run: |
+          docker compose \
+            push \
+            map-it map-it-bounds map-it-import
+
+      - name: Archive test artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: map
+          if-no-files-found: error
+          path: |
+            output/map.pdf
+            output/tiles/12/2543/1529.png
+            output/legend.pdf

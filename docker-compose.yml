@@ -12,12 +12,10 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data/combined.tif:/map-it/data/combined.tif
-      - ./output:/map-it/output
+      - './data/combined.tif:/map-it/data/combined.tif'
+      - './output:/map-it/output'
 
   map-it-bounds:
-    depends_on:
-      - postgres-osm
     build:
       context: .
       dockerfile: bounds.Dockerfile
@@ -35,7 +33,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data:/data
+      - './data:/data'
 
   map-it-kosmtik:
     depends_on:
@@ -46,7 +44,7 @@ services:
     ports:
       - "6789:6789"
     volumes:
-      - ./data/combined.tif:/map-it/data/combined.tif
+      - './data/combined.tif:/map-it/data/combined.tif'
     environment:
       - PGHOST=postgres-osm
       - PGUSER=osm
@@ -58,7 +56,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - ./data/postgres-data:/var/lib/postgresql/data
+      - './postgres-data:/var/lib/postgresql'
     env_file:
       - .env
     environment:
