@@ -43,19 +43,18 @@ LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates \
-    wget \
-    unzip \
-    gdal-bin \
-    osm2pgsql \
-    postgresql-client \
-    postgis \
-    python3-gdal \
-    python3-bs4 \
-    python3-matplotlib \
-    libboost-all-dev \
-    libgdal-dev \
-    osmium-tool \
+        ca-certificates \
+        wget \
+        unzip \
+        gdal-bin \
+        osm2pgsql \
+        postgresql-client \
+        postgis \
+        python3-gdal \
+        python3-bs4 \
+        libboost-dev \
+        libgdal-dev \
+        osmium-tool \
     && rm -rf /var/lib/apt/lists/* && apt-get clean
 
 # Install phyghtmap

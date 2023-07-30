@@ -12,11 +12,11 @@ import base64
 import os
 from bs4 import BeautifulSoup
 import zipfile
-from matplotlib import __version__ as mplversion
-if mplversion < "1.3.0":
-	from matplotlib.nxutils import points_inside_poly
-else:
-	from matplotlib.path import Path as PolygonPath
+# from matplotlib import __version__ as mplversion
+# if mplversion < "1.3.0":
+# 	from matplotlib.nxutils import points_inside_poly
+# else:
+# 	from matplotlib.path import Path as PolygonPath
 import numpy
 
 
