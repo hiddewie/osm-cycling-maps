@@ -75,3 +75,5 @@ services:
       - POSTGRES_USER=${PG_USER}
       - POSTGRES_PASSWORD=${PG_PASSWORD}
       - POSTGRES_DB=${PG_DATABASE}
+      # Store data in sub directory of data mount
+      - PGDATA=/var/lib/postgresql/data/sub
