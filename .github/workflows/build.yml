@@ -78,6 +78,7 @@ jobs:
         with:
           file: Dockerfile
           push: false
+          load: true
           tags: hiddewie/map-it:${{ github.ref_name }}
           cache-from: |
             type=gha,scope=$GITHUB_REF_NAME-map-it
@@ -89,6 +90,7 @@ jobs:
         with:
           file: import.Dockerfile
           push: false
+          load: true
           tags: hiddewie/map-it-import:${{ github.ref_name }}
           cache-from: |
             type=gha,scope=$GITHUB_REF_NAME-map-it-import
@@ -100,6 +102,7 @@ jobs:
         with:
           file: bounds.Dockerfile
           push: false
+          load: true
           tags: hiddewie/map-it-bounds:${{ github.ref_name }}
           cache-from: |
             type=gha,scope=$GITHUB_REF_NAME-map-it-bounds
