@@ -81,9 +81,9 @@ jobs:
           load: true
           tags: hiddewie/map-it:${{ github.ref_name }}
           cache-from: |
-            type=gha,scope=$GITHUB_REF_NAME-map-it
+            type=gha,scope=${{ github.ref_name }}-map-it
             type=gha,scope=master-map-it
-          cache-to: type=gha,mode=max,scope=$GITHUB_REF_NAME-map-it
+          cache-to: type=gha,mode=max,scope=${{ github.ref_name }}-map-it
 
       - name: Build map-it-import
         uses: docker/build-push-action@v4
@@ -93,9 +93,9 @@ jobs:
           load: true
           tags: hiddewie/map-it-import:${{ github.ref_name }}
           cache-from: |
-            type=gha,scope=$GITHUB_REF_NAME-map-it-import
+            type=gha,scope=${{ github.ref_name }}-map-it-import
             type=gha,scope=master-map-it-import
-          cache-to: type=gha,mode=max,scope=$GITHUB_REF_NAME-map-it-import
+          cache-to: type=gha,mode=max,scope=${{ github.ref_name }}-map-it-import
 
       - name: Build map-it-bounds
         uses: docker/build-push-action@v4
@@ -105,9 +105,9 @@ jobs:
           load: true
           tags: hiddewie/map-it-bounds:${{ github.ref_name }}
           cache-from: |
-            type=gha,scope=$GITHUB_REF_NAME-map-it-bounds
+            type=gha,scope=${{ github.ref_name }}-map-it-bounds
             type=gha,scope=master-map-it-bounds
-          cache-to: type=gha,mode=max,scope=$GITHUB_REF_NAME-map-it-bounds
+          cache-to: type=gha,mode=max,scope=${{ github.ref_name }}-map-it-bounds
 
       - name: Build
         run: |
