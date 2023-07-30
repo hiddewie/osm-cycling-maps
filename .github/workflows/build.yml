@@ -95,8 +95,6 @@ jobs:
 
       - name: Build
         run: |
-          mkdir -p data/postgres-data
-          
           $DOCKER_COMPOSE \
             build \
             --build-arg BUILDKIT_INLINE_CACHE=1 \
