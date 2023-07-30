@@ -7,6 +7,10 @@ concurrency:
   group: ${{ github.ref_name }}
   cancel-in-progress: ${{ github.ref_name != 'master' }}
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
 #  Build:
 #    runs-on: ubuntu-latest
@@ -67,8 +71,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Get Date
-        shell: bash
+      - name: Date cache key
         id: get-date
         run: |
           echo "date=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
@@ -79,8 +82,8 @@ jobs:
           path: data
           key: data-${{ steps.get-date.outputs.date }}
 
-      - run: |
-          # Set environment variables
+      - name: Set up environment variables
+        run: |
           cp .env.dist .env
           sed -i "s/BBOX=.*/BBOX=43.3146:41.49:43.8202:41.8238/" .env
           sed -i "s|FEATURE_COUNTRIES=.*|FEATURE_COUNTRIES=europe/georgia|" .env
@@ -88,14 +91,16 @@ jobs:
           sed -i "s/USGS_PASSWORD=.*/USGS_PASSWORD={{ secrets.USGS_PASSWORD }}/" .env
   
           export DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.ci.yml"
-  
-          # Build everything
+
+      - name: Build
+        run: |
           $DOCKER_COMPOSE \
             build \
             --build-arg BUILDKIT_INLINE_CACHE=1 \
             map-it map-it-bounds map-it-import
-  
-          # Run database
+
+      - name: Run database
+        run: |
           $DOCKER_COMPOSE \
             up \
             -d \
@@ -104,26 +109,30 @@ jobs:
             echo "Sleeping 1 second"
             sleep 1
           done
-  
-          # Run import for small area
+
+      - name: Run import
+        run: |
           BBOX=$($DOCKER_COMPOSE run map-it-bounds)
           sed -i "s/BBOX=.*/BBOX=$BBOX/" .env
           echo "Bounding box: $BBOX"
 
-          # Run import
           $DOCKER_COMPOSE run map-it-import
 
-          # Generate map
+      - name: Generate map
+        run: |
           $DOCKER_COMPOSE run map-it
-  
-          # Generate tiles
+
+      - name: Generate tiles
+        run: |
           sed -i "s/BBOX=.*/BBOX=43.4715:41.3965:43.5077:41.4180/" .env
           $DOCKER_COMPOSE run map-it tiles.sh
-          
-          # Generate legend
+
+      - name: Generate legend
+        run: |
           $DOCKER_COMPOSE run map-it legend.sh
-    
-          # Publish images
+
+      - name: Publish images
+        run: |
           $DOCKER_COMPOSE \
             push \
             map-it map-it-bounds map-it-import
