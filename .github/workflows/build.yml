@@ -82,9 +82,7 @@ jobs:
       - name: Cache data
         uses: actions/cache@v3
         with:
-          path: |
-            data
-            !data/postgres-data
+          path: data
           key: data-${{ steps.get-date.outputs.date }}
 
       - name: Set up environment variables
