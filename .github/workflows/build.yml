@@ -49,6 +49,9 @@ jobs:
 
   Test:
     runs-on: ubuntu-latest
+
+    env:
+      DOCKER_COMPOSE: 'docker-compose -f docker-compose.yml -f docker-compose.ci.yml'
 #    needs:
 #      - Build
     steps:
@@ -89,8 +92,6 @@ jobs:
           sed -i "s|FEATURE_COUNTRIES=.*|FEATURE_COUNTRIES=europe/georgia|" .env
           sed -i "s/USGS_USERNAME=.*/USGS_USERNAME={{ secrets.USGS_USERNAME }}/" .env
           sed -i "s/USGS_PASSWORD=.*/USGS_PASSWORD={{ secrets.USGS_PASSWORD }}/" .env
-  
-          export DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.ci.yml"
 
       - name: Build
         run: |
