@@ -101,15 +101,19 @@ jobs:
             map-it map-it-bounds map-it-import
 
       - name: Run database
+        timeout-minutes: 1
         run: |
-          $DOCKER_COMPOSE \
-            up \
-            -d \
-            postgres-osm
+          $DOCKER_COMPOSE up -d postgres-osm
+          
           until $DOCKER_COMPOSE exec -T postgres-osm pg_isready; do
             echo "Sleeping 1 second"
             sleep 1
           done
+
+      - name: Postgres logs
+        if: always()
+        run: |
+          $DOCKER_COMPOSE logs postgres-osm
 
       - name: Run import
         run: |
