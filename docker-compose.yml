@@ -12,8 +12,12 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data/combined.tif:/map-it/data/combined.tif
-      - ./output:/map-it/output
+      - type: bind
+        source: ./data/combined.tif
+        target: /map-it/data/combined.tif
+      - type: bind
+        source: ./output
+        target: /map-it/output
 
   map-it-bounds:
     depends_on:
@@ -35,7 +39,9 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data:/data
+      - type: bind
+        source: ./data
+        target: /data
 
   map-it-kosmtik:
     depends_on:
@@ -46,7 +52,9 @@ services:
     ports:
       - "6789:6789"
     volumes:
-      - ./data/combined.tif:/map-it/data/combined.tif
+      - type: bind
+        source: ./data/combined.tif
+        target: /map-it/data/combined.tif
     environment:
       - PGHOST=postgres-osm
       - PGUSER=osm
@@ -58,7 +66,9 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - ./data/postgres-data:/var/lib/postgresql/data
+      - type: bind
+        source: ./data/postgres-data
+        target: /var/lib/postgresql/data
     env_file:
       - .env
     environment:
