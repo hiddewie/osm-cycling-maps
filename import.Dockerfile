@@ -52,6 +52,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         postgis \
         python3-gdal \
         python3-bs4 \
+        python3-lxml \
         libboost-dev \
         libgdal-dev \
         osmium-tool \
