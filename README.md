@@ -3,7 +3,15 @@
 
 View the blogpost describing this project at https://dev.to/hiddewie/creating-a-custom-cycling-map-3g2a.
 
-View the [examples](#examples) below.
+Download the [example PDF output](https://github.com/hiddewie/map-it/releases/download/v5.0.0/map.pdf).
+
+![Expected output](assets/cover.png)
+
+![Printed map](assets/printed3.jpg)
+
+![Printed map](assets/printed4.jpg)
+
+![Printed map](assets/printed5.jpg)
 
 ## Cartography and features
 
@@ -259,18 +267,6 @@ Optional extra parameters for tweaking the import of downloaded OpenStreetMap da
   <dt><tt>SKIP_IF_EXISTS</tt> (<tt>true</tt> or <tt>false</tt>, default <tt>true</tt>)</dt>
   <dd>Whether tile generation should be skipped if the tile file already exists.</dd>
 </dl>
-
-## Examples
-
-[Example PDF Output](https://github.com/hiddewie/map-it/releases/download/v5.0.0/map.pdf)
-
-![Expected output](assets/cover.png)
-
-![Printed map](assets/printed3.jpg)
-
-![Printed map](assets/printed4.jpg)
-
-![Printed map](assets/printed5.jpg)
 
 ## Local development
 
