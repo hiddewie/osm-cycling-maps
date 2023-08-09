@@ -3,6 +3,8 @@
 
 View the blogpost describing this project at https://dev.to/hiddewie/creating-a-custom-cycling-map-3g2a.
 
+View the [examples](#examples) below.
+
 ## Cartography and features
 
 [Cartography](docs/cartography.md)
@@ -264,7 +266,11 @@ Optional extra parameters for tweaking the import of downloaded OpenStreetMap da
 
 ![Expected output](assets/cover.png)
 
-![Printed map](assets/printed2.jpg)
+![Printed map](assets/printed3.jpg)
+
+![Printed map](assets/printed4.jpg)
+
+![Printed map](assets/printed5.jpg)
 
 ## Local development
 
