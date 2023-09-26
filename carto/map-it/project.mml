@@ -307,6 +307,36 @@ Layer:
           way && !bbox! AND
           route = 'ferry'
       ) AS data
+- id: power-line
+  geometry: linestring
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way
+        FROM
+          planet_osm_line
+        WHERE
+          way && !bbox! AND
+          power = 'line'
+      ) AS data
+- id: power-pole
+  geometry: point
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way
+        FROM
+          planet_osm_point
+        WHERE
+          way && !bbox! AND
+          power = 'tower'
+      ) AS data
 - id: tunnels
   geometry: linestring
   <<: *extentsOSM
@@ -488,21 +518,6 @@ Layer:
             ELSE 50
           END ASC
       ) AS data
-- id: power-line
-  geometry: linestring
-  <<: *extentsOSM
-  Datasource:
-    <<: *osm2pgsql
-    table: |-
-      (
-        SELECT
-          way
-        FROM
-          planet_osm_line
-        WHERE
-          way && !bbox! AND
-          power = 'line'
-      ) AS data
 - id: cycling-nodes
   geometry: point
   <<: *extentsOSM
@@ -518,21 +533,6 @@ Layer:
           way && !bbox! AND
           rcn_ref is not null AND
           "network:type" = 'node_network'
-      ) AS data
-- id: power-pole
-  geometry: point
-  <<: *extentsOSM
-  Datasource:
-    <<: *osm2pgsql
-    table: |-
-      (
-        SELECT
-          way
-        FROM
-          planet_osm_point
-        WHERE
-          way && !bbox! AND
-          power = 'tower'
       ) AS data
 - id: cycling-routes
   geometry: linestring
