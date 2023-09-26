@@ -141,8 +141,6 @@ osm2pgsql \
   --database "$PG_DATABASE" \
   --username "$PG_USER" \
   --style /script/map-it.style \
-  --slim \
-  --drop \
   $DATA_DIR/combined.osm.pbf \
   || exit 1
 
@@ -329,8 +327,6 @@ osm2pgsql \
   --database "$PG_LEGEND_DATABASE" \
   --username "$PG_USER" \
   --style /script/map-it.style \
-  --slim \
-  --drop \
   /tmp/legend_cleaned.osm
 
 psql $POSTGRES_LEGEND_ARGS -c "$(cat <<QUERY
