@@ -114,7 +114,8 @@ Layer:
         FROM
           contours
         WHERE
-          way && !bbox!
+          way && !bbox! AND 
+          height::int <> 0
       ) AS data
 - id: landuse-foreground
   geometry: polygon
