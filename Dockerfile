@@ -19,7 +19,7 @@ COPY scripts/generate/shields.py .
 RUN chmod +x shields.py
 RUN shields.py
 
-FROM node:14-buster-slim as build
+FROM node:20-bookworm-slim as build
 
 RUN mkdir -p /build
 WORKDIR /build
