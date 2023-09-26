@@ -72,7 +72,7 @@ WORKDIR /data
 
 COPY --from=compilation /compilation/isolation /script
 COPY --from=generation /generation/legend.osm /legend/legend.osm
-COPY style/map-it.style /script/map-it.style
+COPY scripts/map-it.lua /script/map-it.lua
 COPY scripts/download.sh /script/download.sh
 COPY style/shade /style/shade
 RUN chmod +x /script/download.sh

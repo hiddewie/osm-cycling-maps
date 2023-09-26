@@ -239,20 +239,9 @@ Layer:
             boundary,
             admin_level::int as admin_level
           FROM
-            planet_osm_roads
+            boundaries
           WHERE
-            way && !bbox! AND
-            boundary = 'administrative' AND
-            admin_level in (
-              '0',
-              '1',
-              '2',
-              '3',
-              '4',
-              '5',
-              '6'
-            ) AND
-            osm_id < 0
+            way && !bbox!
         ),
         national_parks AS (
           SELECT

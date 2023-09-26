@@ -133,14 +133,15 @@ echo "Using $OSM2PGSQL_NUMPROC processes"
 echo "Starting import from $DATA_DIR/combined.osm.pbf"
 
 # No --hstore is used, because no tag data is needed
-# Everything that is needed should be put into style/map-it.style
+# Everything that is needed should be put into scripts/map-it.lua
 osm2pgsql \
   --cache $OSM2PGSQL_CACHE \
   --number-processes $OSM2PGSQL_NUMPROC \
   --host "$PG_HOST" \
   --database "$PG_DATABASE" \
   --username "$PG_USER" \
-  --style /script/map-it.style \
+  --output flex \
+  --style /script/map-it.lua \
   $DATA_DIR/combined.osm.pbf \
   || exit 1
 
@@ -326,7 +327,8 @@ osm2pgsql \
   --host "$PG_HOST" \
   --database "$PG_LEGEND_DATABASE" \
   --username "$PG_USER" \
-  --style /script/map-it.style \
+  --output flex \
+  --style /script/map-it.lua \
   /tmp/legend_cleaned.osm
 
 psql $POSTGRES_LEGEND_ARGS -c "$(cat <<QUERY
