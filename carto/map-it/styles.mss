@@ -142,7 +142,7 @@
 @aerodrome: @feint-purple;
 
 @contour: @ocre;
-@contour-label-halo: @transparent-white;
+@contour-label-halo: @white;
 
 @industrial: @feint-gray;
 @residential: @light-ocre;
@@ -151,7 +151,7 @@
 @admin-background: lighten(@purple, 10%);
 @admin-boundaries: @purple;
 @national-park: darken(@feint-green, 50%);
-@national-park-label-halo: @transparent-white;
+@national-park-label-halo: @white;
 
 @cycling-network: rgb(0, 59, 148);
 
@@ -230,12 +230,12 @@
   comp-op: multiply;
 
   [boundary='no'] {
-    line-opacity: 0.2;
+    line-opacity: 0.4;
     line-width: 0.5;
   }
 
   [boundary='yes'] {
-    line-opacity: 0.5;
+    line-opacity: 0.75;
     line-width: 1.0;
   }
 }
