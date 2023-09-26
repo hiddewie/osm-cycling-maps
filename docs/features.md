@@ -52,7 +52,7 @@ Amenities:
 - camp sites, caravan sites and youth hostels
 - supermarkets and convenience stores
 - bicycle shops
-- castles, forts and ruins
+- castles and forts 
 
 Printing features:
 - map scale

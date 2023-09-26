@@ -708,8 +708,7 @@
   }
 
   [type = 'castle'],
-  [type = 'fort'],
-  [type = 'ruins'] {
+  [type = 'fort'] {
     background/marker-line-width: 1.5;
   }
 
@@ -786,14 +785,6 @@
     marker-width: 7;
     marker-file: 'style/icons/openstreetmap/castle.svg';
     marker-transform: 'translate(0, -2)';
-  }
-  [type = 'ruins'] {
-    background/marker-width: 8;
-    background/marker-file: 'style/icons/openstreetmap/castle.svg';
-    background/marker-transform: 'rotate(30), translate(-1, -2)';
-    marker-width: 8;
-    marker-file: 'style/icons/openstreetmap/castle.svg';
-    marker-transform: 'rotate(30), translate(-1, -2)';
   }
   [type = 'lighthouse'] {
     background/marker-file: 'style/icons/maki/lighthouse-11.svg';

@@ -163,14 +163,11 @@ columns:
           - node:
               tags:
                 tourism: hostel
-      - description: castle, ruins
+      - description: castle
         sections:
           - node:
               tags:
                 historic: castle
-          - node:
-              tags:
-                historic: ruins
       - description: chimney, communications tower, observation tower, cooling tower
         sections:
           - node:
