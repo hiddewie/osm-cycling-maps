@@ -702,7 +702,6 @@
   background/marker-line-width: 2.0;
 
   [type = 'camp_site'],
-  [type = 'caravan_site'],
   [type = 'wind_power'] {
     background/marker-line-width: 50.0;
   }
@@ -743,10 +742,6 @@
     marker-file: 'style/icons/maki/home-2-11.svg';
   }
 
-  [type = 'caravan_site'] {
-    background/marker-file: 'style/icons/svg/caravan_site.svg';
-    marker-file: 'style/icons/svg/caravan_site.svg';
-  }
   [type = 'supermarket'] {
     background/marker-width: 7;
     background/marker-file: 'style/icons/openstreetmap/shop2.svg';

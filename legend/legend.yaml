@@ -142,7 +142,7 @@ columns:
                 highway: track
                 tracktype: grade5
   - rows:
-      - description: camping, multiple campings, caravan site, scouting area
+      - description: camping, multiple campings, scouting area
         sections:
           - node:
               tags:
@@ -151,9 +151,6 @@ columns:
               duplicate: 3
               tags:
                 tourism: camp_site
-          - node:
-              tags:
-                tourism: caravan_site
           - node:
               tags:
                 tourism: camp_site
