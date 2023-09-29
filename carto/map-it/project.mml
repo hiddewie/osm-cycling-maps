@@ -224,62 +224,36 @@ Layer:
           way && !bbox! AND
           waterway = 'dam'
       ) AS data
-- id: boundaries
+- id: administrative-boundaries
   geometry: linestring
   <<: *extentsOSM
   Datasource:
     <<: *osm2pgsql
-    # Administrative boundaries: Levels 0 to 6 are included which has (super-)country
-    #   and state administrative borders
     table: |-
       (
-        WITH administrative AS (
-          SELECT
-            way,
-            boundary,
-            admin_level::int as admin_level
-          FROM
-            boundaries
-          WHERE
-            way && !bbox!
-        ),
-        national_parks AS (
-          SELECT
-            way,
-            'national_park'::text as boundary,
-            null::int as admin_level
-          FROM
-            planet_osm_polygon
-          WHERE
-            way && !bbox! AND
-            (
-              boundary = 'national_park' OR
-              (boundary = 'protected_area' AND protect_class IN ('1','1a','1b','2','3','4','5','6'))
-            ) AND
-            way_area >= 5e5
-        )
         SELECT
-          *
+          way,
+          admin_level
         FROM
-          (
-            SELECT
-              *
-            FROM
-              administrative
-            UNION ALL
-
-            SELECT
-              *
-            FROM
-              national_parks
-          ) AS boundaries
+          administrative_boundaries
+        WHERE
+          way && !bbox!
         ORDER BY
-          CASE
-            WHEN boundary = 'administrative' then 1
-            WHEN boundary = 'national_park' then 2
-            ELSE 100
-          END ASC,
-          admin_level::int DESC
+          admin_level DESC
+      ) AS data
+- id: national-parks
+  geometry: linestring
+  <<: *extentsOSM
+  Datasource:
+    <<: *osm2pgsql
+    table: |-
+      (
+        SELECT
+          way
+        FROM
+          national_parks
+        WHERE
+          way && !bbox!
       ) AS data
 - id: ferry
   geometry: linestring

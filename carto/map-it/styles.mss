@@ -258,59 +258,57 @@
   }
 }
 
-#boundaries {
-  [boundary = 'administrative'] {
-    ::firstline {
-      background/line-join: round;
-      background/line-color: white;
+#administrative-boundaries {
+  ::firstline {
+    background/line-join: round;
+    background/line-color: white;
+    background/line-width: 7;
+  }
+
+  ::wideline {
+    background/line-join: round;
+    background/line-color: white;
+    background/line-width: 4;
+
+    opacity: 0.2;
+    line-color: @admin-background;
+    line-join: bevel;
+    line-width: 4;
+
+    [admin_level < 4] {
       background/line-width: 7;
-    }
-
-    ::wideline {
-      background/line-join: round;
-      background/line-color: white;
-      background/line-width: 4;
-
-      opacity: 0.2;
-      line-color: @admin-background;
-      line-join: bevel;
-      line-width: 4;
-
-      [admin_level < 4] {
-        background/line-width: 7;
-        line-width: 7;
-      }
-    }
-
-    ::narrowline {
-      background/line-join: round;
-      background/line-color: white;
-      background/line-width: 1;
-
-      opacity: 0.6;
-      thin/line-color: @admin-boundaries;
-      thin/line-width: 1;
-      thin/line-dasharray: 12,10;
-
-      [admin_level < 4] {
-        thin/line-width: 2;
-        thin/line-dasharray: 12,3,2,3,2,3;
-      }
-    }
-
-    ::firstline,
-    ::wideline,
-    ::narrowline {
-      comp-op: darken;
+      line-width: 7;
     }
   }
 
-  [boundary = 'national_park'] {
-    opacity: 0.4;
-    line-color: @national-park;
-    line-width: 6.0;
-    line-offset: -3.0;
+  ::narrowline {
+    background/line-join: round;
+    background/line-color: white;
+    background/line-width: 1;
+
+    opacity: 0.6;
+    thin/line-color: @admin-boundaries;
+    thin/line-width: 1;
+    thin/line-dasharray: 12,10;
+
+    [admin_level < 4] {
+      thin/line-width: 2;
+      thin/line-dasharray: 12,3,2,3,2,3;
+    }
   }
+
+  ::firstline,
+  ::wideline,
+  ::narrowline {
+    comp-op: darken;
+  }
+}
+
+#national-parks {
+  opacity: 0.4;
+  line-color: @national-park;
+  line-width: 6.0;
+  line-offset: -3.0;
 }
 
 #cycling-routes {
