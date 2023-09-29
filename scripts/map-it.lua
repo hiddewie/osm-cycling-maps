@@ -6,6 +6,9 @@ landuse_foreground = osm2pgsql.define_way_table('landuse_foreground', {
     { column = 'way', type = 'multipolygon' },
     { column = 'type', type = 'text' },
 })
+waterways = osm2pgsql.define_way_table('waterways', {
+    { column = 'way', type = 'linestring' },
+})
 administrative_boundaries = osm2pgsql.define_way_table('administrative_boundaries', {
     { column = 'way', type = 'multilinestring' },
     { column = 'admin_level', type = 'integer' },
@@ -14,7 +17,7 @@ national_parks = osm2pgsql.define_way_table('national_parks', {
     { column = 'way', type = 'multipolygon' },
 })
 
-function process_forest(object)
+function process_landuse_background(object)
     local tags = object.tags
     if tags.landuse == 'forest'
         or tags.natural == 'wood'
@@ -24,10 +27,6 @@ function process_forest(object)
             type = 'forest',
         })
     end
-end
-
-function process_aerodrome(object)
-    local tags = object.tags
     if tags.aeroway == 'aerodrome' then
         landuse_background:insert({
             way = object:as_multipolygon(),
@@ -43,6 +42,18 @@ function process_landuse_foreground(object)
         landuse_foreground:insert({
             way = object:as_multipolygon(),
             type = tags.landuse,
+        })
+    end
+end
+
+function process_waterways(object)
+    local tags = object.tags
+    local waterway_values = osm2pgsql.make_check_values_func({'river', 'stream', 'canal', 'drain'})
+    if waterway_values(tags.waterway)
+        and tags.tunnel ~= 'yes'
+    then
+        waterways:insert({
+            way = object:as_linestring(),
         })
     end
 end
@@ -76,14 +87,13 @@ function process_national_park(object)
 end
 
 function osm2pgsql.process_way(object)
-    process_forest(object)
-    process_aerodrome(object)
+    process_landuse_background(object)
     process_landuse_foreground(object)
+    process_waterways(object)
 end
 
 function osm2pgsql.process_relation(object)
-    process_forest(object)
-    process_aerodrome(object)
+    process_landuse_background(object)
     process_landuse_foreground(object)
     process_administrative_boundary(object)
     process_national_park(object)

@@ -133,16 +133,9 @@ Layer:
         SELECT
           way
         FROM
-          planet_osm_line
+          waterways
         WHERE
-          way && !bbox! AND
-          waterway IN (
-            'river',
-            'stream',
-            'canal',
-            'drain'
-          ) AND
-          (tunnel IS NULL OR tunnel != 'yes')
+          way && !bbox!
       ) AS data
 - id: water
   geometry: polygon
