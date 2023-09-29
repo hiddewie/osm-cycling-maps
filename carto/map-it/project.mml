@@ -109,23 +109,18 @@ Layer:
       (
         SELECT
           ST_Union(way) as way,
-          landuse as type
+          type
         FROM
-          planet_osm_polygon
+          landuse_foreground
         WHERE
-          way && !bbox! AND
-          landuse IN (
-            'residential',
-            'industrial',
-            'military'
-          )
+          way && !bbox!
         GROUP BY
-          landuse
+          type
         ORDER BY
           CASE
-            WHEN landuse = 'industrial' THEN 1
-            WHEN landuse = 'residential' THEN 2
-            WHEN landuse = 'military' THEN 3
+            WHEN type = 'industrial' THEN 1
+            WHEN type = 'residential' THEN 2
+            WHEN type = 'military' THEN 3
           END ASC
       ) AS data
 - id: waterways

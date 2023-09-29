@@ -2,6 +2,10 @@ landuse_background = osm2pgsql.define_way_table('landuse_background', {
     { column = 'way', type = 'multipolygon' },
     { column = 'type', type = 'text' },
 })
+landuse_foreground = osm2pgsql.define_way_table('landuse_foreground', {
+    { column = 'way', type = 'multipolygon' },
+    { column = 'type', type = 'text' },
+})
 administrative_boundaries = osm2pgsql.define_way_table('administrative_boundaries', {
     { column = 'way', type = 'multilinestring' },
     { column = 'admin_level', type = 'integer' },
@@ -28,6 +32,17 @@ function process_aerodrome(object)
         landuse_background:insert({
             way = object:as_multipolygon(),
             type = 'aerodrome',
+        })
+    end
+end
+
+function process_landuse_foreground(object)
+    local tags = object.tags
+    local landuse_values = osm2pgsql.make_check_values_func({'residential', 'industrial', 'military'})
+    if landuse_values(tags.landuse) then
+        landuse_foreground:insert({
+            way = object:as_multipolygon(),
+            type = tags.landuse,
         })
     end
 end
@@ -63,11 +78,13 @@ end
 function osm2pgsql.process_way(object)
     process_forest(object)
     process_aerodrome(object)
+    process_landuse_foreground(object)
 end
 
 function osm2pgsql.process_relation(object)
     process_forest(object)
     process_aerodrome(object)
+    process_landuse_foreground(object)
     process_administrative_boundary(object)
     process_national_park(object)
 end
