@@ -1,4 +1,4 @@
-FROM debian:12-slim as compilation
+FROM debian:trixie-slim as compilation
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -13,7 +13,7 @@ WORKDIR /compilation
 COPY scripts/isolation.c .
 RUN gcc isolation.c -Wall -o isolation -lgdal -lm -O2
 
-FROM debian:12-slim as generation
+FROM debian:trixie-slim as generation
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -36,7 +36,7 @@ COPY scripts/generate/legend.py .
 RUN chmod +x legend.py
 RUN legend.py legend.yaml > legend.osm
 
-FROM debian:12-slim
+FROM debian:trixie-slim
 
 LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
 
