@@ -147,17 +147,9 @@ Layer:
         SELECT
           ST_Union(way) as way
         FROM
-          planet_osm_polygon
+          water
         WHERE
-          way && !bbox! AND
-          (
-            "natural" = 'water' OR
-            waterway = 'riverbank' OR
-            landuse IN (
-              'reservoir',
-              'basin'
-            )
-          )
+          way && !bbox!
 
         UNION ALL
 

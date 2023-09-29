@@ -9,6 +9,9 @@ landuse_foreground = osm2pgsql.define_way_table('landuse_foreground', {
 waterways = osm2pgsql.define_way_table('waterways', {
     { column = 'way', type = 'linestring' },
 })
+water = osm2pgsql.define_way_table('water', {
+    { column = 'way', type = 'multipolygon' },
+})
 administrative_boundaries = osm2pgsql.define_way_table('administrative_boundaries', {
     { column = 'way', type = 'multilinestring' },
     { column = 'admin_level', type = 'integer' },
@@ -58,6 +61,19 @@ function process_waterways(object)
     end
 end
 
+function process_water(object)
+    local tags = object.tags
+    local landuse_values = osm2pgsql.make_check_values_func({'reservoir', 'basin'})
+    if tags.natural == 'water'
+        or tags.waterway == 'riverbank'
+        or landuse_values(tags.landuse)
+    then
+        water:insert({
+            way = object:as_multipolygon(),
+        })
+    end
+end
+
 -- Administrative boundaries: Levels 0 to 6 are included which has (super-)country
 --   and state administrative borders
 function process_administrative_boundary(object)
@@ -90,11 +106,13 @@ function osm2pgsql.process_way(object)
     process_landuse_background(object)
     process_landuse_foreground(object)
     process_waterways(object)
+    process_water(object)
 end
 
 function osm2pgsql.process_relation(object)
     process_landuse_background(object)
     process_landuse_foreground(object)
+    process_water(object)
     process_administrative_boundary(object)
     process_national_park(object)
 end
