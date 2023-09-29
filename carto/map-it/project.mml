@@ -60,30 +60,13 @@ Layer:
     <<: *osm2pgsql
     table: |-
       (
-        WITH landuse AS (
-          SELECT
-            way,
-            CASE
-              WHEN landuse = 'forest' OR "natural" = 'wood' THEN 'forest'
-              WHEN aeroway IN ('aerodrome') THEN 'aerodrome'
-            END as type
-          FROM
-            planet_osm_polygon
-          WHERE
-            way && !bbox! AND
-            (
-              (
-                landuse = 'forest' OR
-                "natural" = 'wood'
-              ) OR
-              aeroway IN ('aerodrome')
-            )
-        )
         SELECT
           ST_Union(way) as way,
           type
         FROM
-          landuse
+          landuse_background
+        WHERE
+          way && !bbox!
         GROUP BY
           type
         ORDER BY

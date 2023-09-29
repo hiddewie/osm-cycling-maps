@@ -1,3 +1,7 @@
+landuse_background = osm2pgsql.define_way_table('landuse_background', {
+    { column = 'way', type = 'multipolygon' },
+    { column = 'type', type = 'text' },
+})
 administrative_boundaries = osm2pgsql.define_way_table('administrative_boundaries', {
     { column = 'way', type = 'multilinestring' },
     { column = 'admin_level', type = 'integer' },
@@ -6,11 +10,32 @@ national_parks = osm2pgsql.define_way_table('national_parks', {
     { column = 'way', type = 'multipolygon' },
 })
 
-function osm2pgsql.process_relation(object)
+function process_forest(object)
     local tags = object.tags
+    if tags.landuse == 'forest'
+        or tags.natural == 'wood'
+    then
+        landuse_background:insert({
+            way = object:as_multipolygon(),
+            type = 'forest',
+        })
+    end
+end
 
-    -- Administrative boundaries: Levels 0 to 6 are included which has (super-)country
-    --   and state administrative borders
+function process_aerodrome(object)
+    local tags = object.tags
+    if tags.aeroway == 'aerodrome' then
+        landuse_background:insert({
+            way = object:as_multipolygon(),
+            type = 'aerodrome',
+        })
+    end
+end
+
+-- Administrative boundaries: Levels 0 to 6 are included which has (super-)country
+--   and state administrative borders
+function process_administrative_boundary(object)
+    local tags = object.tags
     local administrative_admin_level_values = osm2pgsql.make_check_values_func({'0', '1', '2', '3', '4', '5', '6'})
     if tags.boundary == 'administrative'
         and administrative_admin_level_values(tags.admin_level)
@@ -20,7 +45,10 @@ function osm2pgsql.process_relation(object)
             admin_level = tags.admin_level,
         })
     end
+end
 
+function process_national_park(object)
+    local tags = object.tags
     local national_park_protect_class_values = osm2pgsql.make_check_values_func({'1', '1a', '1b', '2', '3', '4', '5', '6'})
     if (tags.boundary == 'national_park'
             or (tags.boundary == 'protected_area' and national_park_protect_class_values(tags.protect_class))
@@ -30,4 +58,16 @@ function osm2pgsql.process_relation(object)
             way = object:as_multipolygon(),
         })
     end
+end
+
+function osm2pgsql.process_way(object)
+    process_forest(object)
+    process_aerodrome(object)
+end
+
+function osm2pgsql.process_relation(object)
+    process_forest(object)
+    process_aerodrome(object)
+    process_administrative_boundary(object)
+    process_national_park(object)
 end
