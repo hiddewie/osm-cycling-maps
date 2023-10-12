@@ -37,6 +37,9 @@ tunnels = osm2pgsql.define_way_table('tunnels', {
     { column = 'layer', type = 'integer' },
     { column = 'type', type = 'text' },
 })
+aeroways = osm2pgsql.define_way_table('aeroways', {
+    { column = 'way', type = 'linestring' },
+})
 
 function process_landuse_background(object)
     local tags = object.tags
@@ -160,7 +163,6 @@ end
 
 function process_tunnel(object)
     local tags = object.tags
-
     local highway_values = osm2pgsql.make_check_values_func({ 'motorway_link', 'trunk_link', 'secondary_link', 'primary_link', 'motorway', 'trunk', 'cycleway', 'tertiary', 'secondary', 'primary' })
     if highway_values(tags.highway)
         and tags.access ~= 'private'
@@ -172,7 +174,6 @@ function process_tunnel(object)
             type = tags.highway,
         })
     end
-
     local railway_values = osm2pgsql.make_check_values_func({ 'rail', 'narrow_gauge' })
     local service_values = osm2pgsql.make_check_values_func({ 'crossover', 'spur', 'yard' })
     if railway_values(tags.railway)
@@ -183,6 +184,15 @@ function process_tunnel(object)
             way = object:as_linestring(),
             layer = tags.layer,
             type = tags.highway,
+        })
+    end
+end
+
+function process_aeroway(object)
+    local tags = object.tags
+    if tags.aeroway == 'runway' then
+        aeroways:insert({
+            way = object:as_linestring(),
         })
     end
 end
@@ -199,6 +209,7 @@ function osm2pgsql.process_way(object)
     process_dam(object)
     process_power_line(object)
     process_tunnel(object)
+    process_aeroway(object)
 end
 
 function osm2pgsql.process_relation(object)

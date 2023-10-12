@@ -290,15 +290,11 @@ Layer:
     table: |-
       (
         SELECT
-          way,
-          aeroway
+          way
         FROM
-          planet_osm_line
+          aeroways
         WHERE
-          way && !bbox! AND
-          aeroway IN (
-            'runway'
-          )
+          way && !bbox!
       ) AS data
 - id: roads
   geometry: linestring
