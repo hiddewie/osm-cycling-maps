@@ -11,49 +11,49 @@ function dump(o)
    end
 end
 
-landuse_background = osm2pgsql.define_way_table('landuse_background', {
+local landuse_background = osm2pgsql.define_way_table('landuse_background', {
     { column = 'way', type = 'multipolygon' },
     { column = 'type', type = 'text' },
 })
-landuse_foreground = osm2pgsql.define_way_table('landuse_foreground', {
+local landuse_foreground = osm2pgsql.define_way_table('landuse_foreground', {
     { column = 'way', type = 'multipolygon' },
     { column = 'type', type = 'text' },
 })
-waterways = osm2pgsql.define_way_table('waterways', {
+local waterways = osm2pgsql.define_way_table('waterways', {
     { column = 'way', type = 'linestring' },
 })
-water = osm2pgsql.define_way_table('water', {
+local water = osm2pgsql.define_way_table('water', {
     { column = 'way', type = 'multipolygon' },
 })
-dams = osm2pgsql.define_way_table('dams', {
+local dams = osm2pgsql.define_way_table('dams', {
     { column = 'way', type = 'linestring' },
     { column = 'type', type = 'text' },
 })
-administrative_boundaries = osm2pgsql.define_way_table('administrative_boundaries', {
+local administrative_boundaries = osm2pgsql.define_way_table('administrative_boundaries', {
     { column = 'way', type = 'multilinestring' },
     { column = 'admin_level', type = 'integer' },
 })
-national_parks = osm2pgsql.define_way_table('national_parks', {
+local national_parks = osm2pgsql.define_way_table('national_parks', {
     { column = 'way', type = 'multipolygon' },
 })
-ferries = osm2pgsql.define_way_table('ferries', {
+local ferries = osm2pgsql.define_way_table('ferries', {
     { column = 'way', type = 'multilinestring' },
 })
-power_lines = osm2pgsql.define_way_table('power_lines', {
+local power_lines = osm2pgsql.define_way_table('power_lines', {
     { column = 'way', type = 'multilinestring' },
 })
-power_poles = osm2pgsql.define_node_table('power_poles', {
+local power_poles = osm2pgsql.define_node_table('power_poles', {
     { column = 'way', type = 'point' },
 })
-tunnels = osm2pgsql.define_way_table('tunnels', {
+local tunnels = osm2pgsql.define_way_table('tunnels', {
     { column = 'way', type = 'linestring' },
     { column = 'layer', type = 'integer' },
     { column = 'type', type = 'text' },
 })
-aeroways = osm2pgsql.define_way_table('aeroways', {
+local aeroways = osm2pgsql.define_way_table('aeroways', {
     { column = 'way', type = 'linestring' },
 })
-roads = osm2pgsql.define_way_table('roads', {
+local roads = osm2pgsql.define_way_table('roads', {
     { column = 'way', type = 'linestring' },
     { column = 'type', type = 'text' },
     { column = 'railway', type = 'text' },
@@ -61,14 +61,14 @@ roads = osm2pgsql.define_way_table('roads', {
     { column = 'tracktype', type = 'text' },
     { column = 'layer', type = 'integer' },
 })
-cycling_nodes = osm2pgsql.define_node_table('cycling_nodes', {
+local cycling_nodes = osm2pgsql.define_node_table('cycling_nodes', {
     { column = 'way', type = 'point' },
     { column = 'ref', type = 'text' },
 })
-cycling_routes = osm2pgsql.define_way_table('cycling_routes', {
+local cycling_routes = osm2pgsql.define_way_table('cycling_routes', {
     { column = 'way', type = 'multilinestring' },
 })
-transport = osm2pgsql.define_table({
+local transport = osm2pgsql.define_table({
     name = 'transport',
     ids = { type = 'any', id_column = 'osm_id' },
     columns = {
@@ -95,10 +95,10 @@ function process_landuse_background(object)
     end
 end
 
+local landuse_foreground_values = osm2pgsql.make_check_values_func({'residential', 'industrial', 'military'})
 function process_landuse_foreground(object)
     local tags = object.tags
-    local landuse_values = osm2pgsql.make_check_values_func({'residential', 'industrial', 'military'})
-    if landuse_values(tags.landuse) then
+    if landuse_foreground_values(tags.landuse) then
         landuse_foreground:insert({
             way = object:as_multipolygon(),
             type = tags.landuse,
@@ -106,9 +106,9 @@ function process_landuse_foreground(object)
     end
 end
 
+local waterway_values = osm2pgsql.make_check_values_func({'river', 'stream', 'canal', 'drain'})
 function process_waterways(object)
     local tags = object.tags
-    local waterway_values = osm2pgsql.make_check_values_func({'river', 'stream', 'canal', 'drain'})
     if waterway_values(tags.waterway)
         and tags.tunnel ~= 'yes'
     then
@@ -118,12 +118,12 @@ function process_waterways(object)
     end
 end
 
+local water_landuse_values = osm2pgsql.make_check_values_func({'reservoir', 'basin'})
 function process_water(object)
     local tags = object.tags
-    local landuse_values = osm2pgsql.make_check_values_func({'reservoir', 'basin'})
     if tags.natural == 'water'
         or tags.waterway == 'riverbank'
-        or landuse_values(tags.landuse)
+        or water_landuse_values(tags.landuse)
     then
         water:insert({
             way = object:as_multipolygon(),
@@ -144,9 +144,9 @@ end
 
 -- Administrative boundaries: Levels 0 to 6 are included which has (super-)country
 --   and state administrative borders
+local administrative_admin_level_values = osm2pgsql.make_check_values_func({'0', '1', '2', '3', '4', '5', '6'})
 function process_administrative_boundary(object)
     local tags = object.tags
-    local administrative_admin_level_values = osm2pgsql.make_check_values_func({'0', '1', '2', '3', '4', '5', '6'})
     if tags.boundary == 'administrative'
         and administrative_admin_level_values(tags.admin_level)
     then
@@ -157,9 +157,9 @@ function process_administrative_boundary(object)
     end
 end
 
+local national_park_protect_class_values = osm2pgsql.make_check_values_func({'1', '1a', '1b', '2', '3', '4', '5', '6'})
 function process_national_park(object)
     local tags = object.tags
-    local national_park_protect_class_values = osm2pgsql.make_check_values_func({'1', '1a', '1b', '2', '3', '4', '5', '6'})
     if (tags.boundary == 'national_park'
             or (tags.boundary == 'protected_area' and national_park_protect_class_values(tags.protect_class))
         and object:as_multipolygon():spherical_area() >= 5e5)
@@ -197,10 +197,12 @@ function process_power_pole(object)
     end
 end
 
+local tunnel_highway_values = osm2pgsql.make_check_values_func({ 'motorway_link', 'trunk_link', 'secondary_link', 'primary_link', 'motorway', 'trunk', 'cycleway', 'tertiary', 'secondary', 'primary' })
+local tunnel_railway_values = osm2pgsql.make_check_values_func({ 'rail', 'narrow_gauge' })
+local service_values = osm2pgsql.make_check_values_func({ 'crossover', 'spur', 'yard' })
 function process_tunnel(object)
     local tags = object.tags
-    local highway_values = osm2pgsql.make_check_values_func({ 'motorway_link', 'trunk_link', 'secondary_link', 'primary_link', 'motorway', 'trunk', 'cycleway', 'tertiary', 'secondary', 'primary' })
-    if highway_values(tags.highway)
+    if tunnel_highway_values(tags.highway)
         and tags.access ~= 'private'
         and tags.tunnel == 'yes'
     then
@@ -210,9 +212,7 @@ function process_tunnel(object)
             type = tags.highway,
         })
     end
-    local railway_values = osm2pgsql.make_check_values_func({ 'rail', 'narrow_gauge' })
-    local service_values = osm2pgsql.make_check_values_func({ 'crossover', 'spur', 'yard' })
-    if railway_values(tags.railway)
+    if tunnel_railway_values(tags.railway)
         and tags.tunnel == 'yes'
         and not service_values(tags.service)
     then
@@ -233,12 +233,13 @@ function process_aeroway(object)
     end
 end
 
+local road_railway_values = osm2pgsql.make_check_values_func({ 'rail', 'narrow_gauge', 'preserved' })
+local road_disallowed_highway_values = osm2pgsql.make_check_values_func({ 'platform', 'construction', 'proposed', 'steps' })
+local road_bicycle_values = osm2pgsql.make_check_values_func({ 'yes', 'designated', 'permissive' })
 function process_road(object)
     local tags = object.tags
-    local disallowed_highway_values = osm2pgsql.make_check_values_func({ 'platform', 'construction', 'proposed', 'steps' })
-    local bicycle_values = osm2pgsql.make_check_values_func({ 'yes', 'designated', 'permissive' })
     if tags.highway
-        and not disallowed_highway_values(tags.highway)
+        and not road_disallowed_highway_values(tags.highway)
         and tags.access ~= 'private'
         and tags.tunnel ~= 'yes'
     then
@@ -253,14 +254,12 @@ function process_road(object)
         roads:insert({
             way = object:as_linestring(),
             type = type,
-            bicycle = bicycle_values(tags.bicycle),
+            bicycle = road_bicycle_values(tags.bicycle),
             tracktype = tags.tracktype,
             layer = tags.layer,
         })
     end
-    local railway_values = osm2pgsql.make_check_values_func({ 'rail', 'narrow_gauge', 'preserved' })
-    local service_values = osm2pgsql.make_check_values_func({ 'crossover', 'spur', 'yard' })
-    if railway_values(tags.railway)
+    if road_railway_values(tags.railway)
         and not service_values(tags.service)
         and tags.tunnel ~= 'yes'
     then
@@ -296,6 +295,8 @@ function process_cycling_route(object)
     end
 end
 
+local railway_values = osm2pgsql.make_check_values_func({'station', 'halt'})
+local disallowed_station_values = osm2pgsql.make_check_values_func({'subway', 'light_rail', 'monorail', 'funicular'})
 function process_transport(object)
     local tags = object.tags
     if tags.aeroway == 'aerodrome' then
@@ -304,8 +305,6 @@ function process_transport(object)
             type = 'aerodrome',
         })
     end
-    local railway_values = osm2pgsql.make_check_values_func({'station', 'halt'})
-    local disallowed_station_values = osm2pgsql.make_check_values_func({'subway', 'light_rail', 'monorail', 'funicular'})
     if railway_values(tags.railway)
         and (not tags.station
             or not disallowed_station_values(tags.station))
