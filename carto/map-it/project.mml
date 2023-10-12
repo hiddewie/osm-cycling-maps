@@ -216,10 +216,9 @@ Layer:
         SELECT
           way
         FROM
-          planet_osm_line
+          ferries
         WHERE
-          way && !bbox! AND
-          route = 'ferry'
+          way && !bbox!
       ) AS data
 - id: power-line
   geometry: linestring

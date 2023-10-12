@@ -23,6 +23,9 @@ administrative_boundaries = osm2pgsql.define_way_table('administrative_boundarie
 national_parks = osm2pgsql.define_way_table('national_parks', {
     { column = 'way', type = 'multipolygon' },
 })
+ferries = osm2pgsql.define_way_table('ferries', {
+    { column = 'way', type = 'multilinestring' },
+})
 
 function process_landuse_background(object)
     local tags = object.tags
@@ -113,6 +116,15 @@ function process_national_park(object)
     then
         national_parks:insert({
             way = object:as_multipolygon(),
+        })
+    end
+end
+
+function process_ferry(object)
+    local tags = object.tags
+    if tags.route == 'ferry' then
+        ferries:insert({
+            way = object:as_multilinestring(),
         })
     end
 end
