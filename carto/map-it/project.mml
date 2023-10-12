@@ -230,10 +230,9 @@ Layer:
         SELECT
           way
         FROM
-          planet_osm_line
+          power_lines
         WHERE
-          way && !bbox! AND
-          power = 'line'
+          way && !bbox!
       ) AS data
 - id: power-pole
   geometry: point
@@ -245,10 +244,9 @@ Layer:
         SELECT
           way
         FROM
-          planet_osm_point
+          power_poles
         WHERE
-          way && !bbox! AND
-          power = 'tower'
+          way && !bbox!
       ) AS data
 - id: tunnels
   geometry: linestring

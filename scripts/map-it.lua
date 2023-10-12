@@ -26,6 +26,12 @@ national_parks = osm2pgsql.define_way_table('national_parks', {
 ferries = osm2pgsql.define_way_table('ferries', {
     { column = 'way', type = 'multilinestring' },
 })
+power_lines = osm2pgsql.define_way_table('power_lines', {
+    { column = 'way', type = 'multilinestring' },
+})
+power_poles = osm2pgsql.define_node_table('power_poles', {
+    { column = 'way', type = 'point' },
+})
 
 function process_landuse_background(object)
     local tags = object.tags
@@ -129,12 +135,35 @@ function process_ferry(object)
     end
 end
 
+function process_power_line(object)
+    local tags = object.tags
+    if tags.power == 'line' then
+        power_lines:insert({
+            way = object:as_multilinestring(),
+        })
+    end
+end
+
+function process_power_pole(object)
+    local tags = object.tags
+    if tags.power == 'tower' then
+        power_poles:insert({
+            way = object:as_point(),
+        })
+    end
+end
+
+function osm2pgsql.process_node(object)
+    process_power_pole(object)
+end
+
 function osm2pgsql.process_way(object)
     process_landuse_background(object)
     process_landuse_foreground(object)
     process_waterways(object)
     process_water(object)
     process_dam(object)
+    process_power_line(object)
 end
 
 function osm2pgsql.process_relation(object)
@@ -143,4 +172,5 @@ function osm2pgsql.process_relation(object)
     process_water(object)
     process_administrative_boundary(object)
     process_national_park(object)
+    process_ferry(object)
 end
