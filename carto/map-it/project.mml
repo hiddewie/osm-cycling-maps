@@ -370,11 +370,10 @@ Layer:
         SELECT
           way
         FROM
-          planet_osm_line
+          cycling_routes
         WHERE
           (NOT EXISTS(SELECT * FROM gpx)) AND
-          way && !bbox! AND
-          route = 'bicycle'
+          way && !bbox!
       ) AS data
 - id: transport
   geometry: point

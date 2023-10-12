@@ -52,6 +52,9 @@ cycling_nodes = osm2pgsql.define_node_table('cycling_nodes', {
     { column = 'way', type = 'point' },
     { column = 'ref', type = 'text' },
 })
+cycling_routes = osm2pgsql.define_way_table('cycling_routes', {
+    { column = 'way', type = 'multilinestring' },
+})
 
 function process_landuse_background(object)
     local tags = object.tags
@@ -263,6 +266,15 @@ function process_cycling_node(object)
     end
 end
 
+function process_cycling_route(object)
+    local tags = object.tags
+    if tags.route == 'bicycle' then
+        cycling_routes:insert({
+            way = object:as_multilinestring(),
+        })
+    end
+end
+
 function osm2pgsql.process_node(object)
     process_power_pole(object)
     process_cycling_node(object)
@@ -287,4 +299,5 @@ function osm2pgsql.process_relation(object)
     process_administrative_boundary(object)
     process_national_park(object)
     process_ferry(object)
+    process_cycling_route(object)
 end
