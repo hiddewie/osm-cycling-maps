@@ -40,6 +40,14 @@ tunnels = osm2pgsql.define_way_table('tunnels', {
 aeroways = osm2pgsql.define_way_table('aeroways', {
     { column = 'way', type = 'linestring' },
 })
+roads = osm2pgsql.define_way_table('roads', {
+    { column = 'way', type = 'linestring' },
+    { column = 'type', type = 'text' },
+    { column = 'railway', type = 'text' },
+    { column = 'bicycle', type = 'boolean' },
+    { column = 'tracktype', type = 'text' },
+    { column = 'layer', type = 'integer' },
+})
 
 function process_landuse_background(object)
     local tags = object.tags
@@ -197,6 +205,48 @@ function process_aeroway(object)
     end
 end
 
+function process_road(object)
+    local tags = object.tags
+    local disallowed_highway_values = osm2pgsql.make_check_values_func({ 'platform', 'construction', 'proposed', 'steps' })
+    local bicycle_values = osm2pgsql.make_check_values_func({ 'yes', 'designated', 'permissive' })
+    if tags.highway
+        and not disallowed_highway_values(tags.highway)
+        and tags.access ~= 'private'
+        and tags.tunnel ~= 'yes'
+    then
+        local type = tags.highway
+        if tags.bicycle == 'designated' then
+            type = 'cycleway'
+        elseif tags.highway == 'road' then
+            type = 'unclassified'
+        elseif tags.highway == 'living_street' then
+            type = 'residential'
+        end
+        roads:insert({
+            way = object:as_linestring(),
+            type = type,
+            bicycle = bicycle_values(tags.bicycle),
+            tracktype = tags.tracktype,
+            layer = tags.layer,
+        })
+    end
+    local railway_values = osm2pgsql.make_check_values_func({ 'rail', 'narrow_gauge', 'preserved' })
+    local service_values = osm2pgsql.make_check_values_func({ 'crossover', 'spur', 'yard' })
+    if railway_values(tags.railway)
+        and not service_values(tags.service)
+        and tags.tunnel ~= 'yes'
+    then
+        roads:insert({
+            way = object:as_linestring(),
+            type = 'railway',
+            railway = tags.railway,
+            bicycle = 'F',
+            tracktype = tags.tracktype,
+            layer = tags.layer,
+        })
+    end
+end
+
 function osm2pgsql.process_node(object)
     process_power_pole(object)
 end
@@ -210,6 +260,7 @@ function osm2pgsql.process_way(object)
     process_power_line(object)
     process_tunnel(object)
     process_aeroway(object)
+    process_road(object)
 end
 
 function osm2pgsql.process_relation(object)

@@ -304,65 +304,21 @@ Layer:
     table: |-
       (
         SELECT
-          *
-        FROM (
-          SELECT
-            way,
-            CASE
-              WHEN bicycle = 'designated' THEN 'cycleway'
-              WHEN highway = 'road' THEN 'unclassified'
-              WHEN highway = 'living_street' THEN 'residential'
-              ELSE highway
-            END as type,
-            NULL as railway,
-            CASE
-              WHEN bicycle IN ('yes', 'designated', 'permissive') THEN 'T'
-              ELSE 'F'
-            END as bicycle,
-            tracktype,
-            layer
-          FROM
-            planet_osm_line
-          WHERE
-            way && !bbox! AND
-            highway IS NOT NULL AND
-            highway NOT IN ('platform', 'construction', 'proposed', 'steps') AND
-            (access IS NULL OR access != 'private') AND
-            (tunnel IS NULL OR tunnel != 'yes')
-
-          UNION ALL
-
-          SELECT
-            way,
-            'railway' as type,
-            railway,
-            'F' as bicycle,
-            NULL as tracktype,
-            layer
-          FROM
-            planet_osm_line
-          WHERE
-            way && !bbox! AND
-            railway IN (
-              'rail',
-              'narrow_gauge',
-              'preserved'
-            ) AND
-            (tunnel IS NULL OR tunnel != 'yes') AND
-            (
-              service IS NULL OR
-              service NOT IN (
-                'crossover',
-                'spur',
-                'yard'
-              )
-            )
-        ) AS roads
-        ORDER BY
+          way,
+          type,
+          railway,
           CASE
-            WHEN layer IS NOT NULL AND layer ~ '^-?\d+$' THEN layer::int
-            ELSE 0
-          END ASC,
+            WHEN bicycle THEN 'T'
+            ELSE 'F'
+          END as bicycle,
+          tracktype,
+          layer
+        FROM
+          roads
+        WHERE
+          way && !bbox!
+        ORDER BY
+          layer ASC NULLS FIRST,
           CASE
             WHEN type = 'railway' THEN 1
             WHEN type = 'motorway_link' THEN 10
