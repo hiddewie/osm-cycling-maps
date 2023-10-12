@@ -346,11 +346,9 @@ Layer:
         SELECT
           way
         FROM
-          planet_osm_point
+          cycling_nodes
         WHERE
-          way && !bbox! AND
-          rcn_ref is not null AND
-          "network:type" = 'node_network'
+          way && !bbox!
       ) AS data
 - id: cycling-routes
   geometry: linestring
@@ -466,24 +464,16 @@ Layer:
     <<: *osm2pgsql
     table: |-
       (
-        WITH nodes AS (
-          SELECT
-            way,
-            rcn_ref as ref
-          FROM
-            planet_osm_point
-          WHERE
-            way && !bbox! AND
-            rcn_ref is not null AND
-            "network:type" = 'node_network'
-        ), clustered_nodes AS (
+        WITH clustered_nodes AS (
           SELECT
             way,
             ref,
-            ST_ClusterDBSCAN(way, eps:= 3000,  minpoints := 1)
+            ST_ClusterDBSCAN(way, eps:= 3000, minpoints := 1)
               OVER (PARTITION by ref) as cluster
           FROM
-            nodes
+            cycling_nodes
+          WHERE
+            way && !bbox!
         )
 
         SELECT

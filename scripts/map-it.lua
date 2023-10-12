@@ -48,6 +48,10 @@ roads = osm2pgsql.define_way_table('roads', {
     { column = 'tracktype', type = 'text' },
     { column = 'layer', type = 'integer' },
 })
+cycling_nodes = osm2pgsql.define_node_table('cycling_nodes', {
+    { column = 'way', type = 'point' },
+    { column = 'ref', type = 'text' },
+})
 
 function process_landuse_background(object)
     local tags = object.tags
@@ -247,8 +251,21 @@ function process_road(object)
     end
 end
 
+function process_cycling_node(object)
+    local tags = object.tags
+    if tags.rcn_ref
+        and tags['network:type'] == 'node_network'
+    then
+        cycling_nodes:insert({
+            way = object:as_point(),
+            ref = tags.rcn_ref,
+        })
+    end
+end
+
 function osm2pgsql.process_node(object)
     process_power_pole(object)
+    process_cycling_node(object)
 end
 
 function osm2pgsql.process_way(object)
