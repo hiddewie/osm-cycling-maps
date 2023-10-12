@@ -1,3 +1,16 @@
+function dump(o)
+   if type(o) == 'table' then
+      local s = '{ '
+      for k,v in pairs(o) do
+         if type(k) ~= 'number' then k = '"'..k..'"' end
+         s = s .. '['..k..'] = ' .. dump(v) .. ','
+      end
+      return s .. '} '
+   else
+      return tostring(o)
+   end
+end
+
 landuse_background = osm2pgsql.define_way_table('landuse_background', {
     { column = 'way', type = 'multipolygon' },
     { column = 'type', type = 'text' },
@@ -54,6 +67,14 @@ cycling_nodes = osm2pgsql.define_node_table('cycling_nodes', {
 })
 cycling_routes = osm2pgsql.define_way_table('cycling_routes', {
     { column = 'way', type = 'multilinestring' },
+})
+transport = osm2pgsql.define_table({
+    name = 'transport',
+    ids = { type = 'any', id_column = 'osm_id' },
+    columns = {
+        { column = 'way', type = 'point' },
+        { column = 'type', type = 'text' },
+    },
 })
 
 function process_landuse_background(object)
@@ -275,9 +296,37 @@ function process_cycling_route(object)
     end
 end
 
+function process_transport(object)
+    local tags = object.tags
+    if tags.aeroway == 'aerodrome' then
+        transport:insert({
+            way = object.type == 'way' and object:as_linestring():centroid() or object:as_point(),
+            type = 'aerodrome',
+        })
+    end
+    local railway_values = osm2pgsql.make_check_values_func({'station', 'halt'})
+    local disallowed_station_values = osm2pgsql.make_check_values_func({'subway', 'light_rail', 'monorail', 'funicular'})
+    if railway_values(tags.railway)
+        and (not tags.station
+            or not disallowed_station_values(tags.station))
+    then
+        transport:insert({
+            way = object.type == 'way' and object:as_linestring():centroid() or object:as_point(),
+            type = 'train_station',
+        })
+    end
+    if tags.amenity == 'ferry_terminal' then
+        transport:insert({
+            way = object.type == 'way' and object:as_linestring():centroid() or object:as_point(),
+            type = 'ferry_terminal',
+        })
+    end
+end
+
 function osm2pgsql.process_node(object)
     process_power_pole(object)
     process_cycling_node(object)
+    process_transport(object)
 end
 
 function osm2pgsql.process_way(object)
@@ -290,6 +339,7 @@ function osm2pgsql.process_way(object)
     process_tunnel(object)
     process_aeroway(object)
     process_road(object)
+    process_transport(object)
 end
 
 function osm2pgsql.process_relation(object)
