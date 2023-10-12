@@ -169,23 +169,11 @@ Layer:
       (
         SELECT
           way,
-          'line' AS type
+          type
         FROM
-          planet_osm_line
+          dams
         WHERE
-          way && !bbox! AND
-          waterway = 'dam'
-
-        UNION ALL
-
-        SELECT
-          way,
-          'polygon' AS type
-        FROM
-          planet_osm_polygon
-        WHERE
-          way && !bbox! AND
-          waterway = 'dam'
+          way && !bbox!
       ) AS data
 - id: administrative-boundaries
   geometry: linestring

@@ -12,6 +12,10 @@ waterways = osm2pgsql.define_way_table('waterways', {
 water = osm2pgsql.define_way_table('water', {
     { column = 'way', type = 'multipolygon' },
 })
+dams = osm2pgsql.define_way_table('dams', {
+    { column = 'way', type = 'linestring' },
+    { column = 'type', type = 'text' },
+})
 administrative_boundaries = osm2pgsql.define_way_table('administrative_boundaries', {
     { column = 'way', type = 'multilinestring' },
     { column = 'admin_level', type = 'integer' },
@@ -74,6 +78,17 @@ function process_water(object)
     end
 end
 
+function process_dam(object)
+    local tags = object.tags
+    if tags.waterway == 'dam' then
+        local type = object.is_closed and 'polygon' or 'line'
+        dams:insert({
+            way = object:as_linestring(),
+            type = type,
+        })
+    end
+end
+
 -- Administrative boundaries: Levels 0 to 6 are included which has (super-)country
 --   and state administrative borders
 function process_administrative_boundary(object)
@@ -107,6 +122,7 @@ function osm2pgsql.process_way(object)
     process_landuse_foreground(object)
     process_waterways(object)
     process_water(object)
+    process_dam(object)
 end
 
 function osm2pgsql.process_relation(object)
