@@ -32,6 +32,11 @@ power_lines = osm2pgsql.define_way_table('power_lines', {
 power_poles = osm2pgsql.define_node_table('power_poles', {
     { column = 'way', type = 'point' },
 })
+tunnels = osm2pgsql.define_way_table('tunnels', {
+    { column = 'way', type = 'linestring' },
+    { column = 'layer', type = 'integer' },
+    { column = 'type', type = 'text' },
+})
 
 function process_landuse_background(object)
     local tags = object.tags
@@ -153,6 +158,35 @@ function process_power_pole(object)
     end
 end
 
+function process_tunnel(object)
+    local tags = object.tags
+
+    local highway_values = osm2pgsql.make_check_values_func({ 'motorway_link', 'trunk_link', 'secondary_link', 'primary_link', 'motorway', 'trunk', 'cycleway', 'tertiary', 'secondary', 'primary' })
+    if highway_values(tags.highway)
+        and tags.access ~= 'private'
+        and tags.tunnel == 'yes'
+    then
+        tunnels:insert({
+            way = object:as_linestring(),
+            layer = tags.layer,
+            type = tags.highway,
+        })
+    end
+
+    local railway_values = osm2pgsql.make_check_values_func({ 'rail', 'narrow_gauge' })
+    local service_values = osm2pgsql.make_check_values_func({ 'crossover', 'spur', 'yard' })
+    if railway_values(tags.railway)
+        and tags.tunnel == 'yes'
+        and not service_values(tags.service)
+    then
+        tunnels:insert({
+            way = object:as_linestring(),
+            layer = tags.layer,
+            type = tags.highway,
+        })
+    end
+end
+
 function osm2pgsql.process_node(object)
     process_power_pole(object)
 end
@@ -164,6 +198,7 @@ function osm2pgsql.process_way(object)
     process_water(object)
     process_dam(object)
     process_power_line(object)
+    process_tunnel(object)
 end
 
 function osm2pgsql.process_relation(object)

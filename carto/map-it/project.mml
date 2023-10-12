@@ -256,60 +256,15 @@ Layer:
     table: |-
       (
         SELECT
-          *
-        FROM (
-          SELECT
-            way,
-            layer,
-            highway as type
-          FROM
-            planet_osm_line
-          WHERE
-            way && !bbox! AND
-            highway IN (
-              'motorway_link',
-              'trunk_link',
-              'secondary_link',
-              'primary_link',
-              'motorway',
-              'trunk',
-              'cycleway',
-              'tertiary',
-              'secondary',
-              'primary'
-            ) AND
-            (access IS NULL OR access != 'private') AND
-            (tunnel = 'yes')
-
-          UNION ALL
-
-          SELECT
-            way,
-            layer,
-            'railway' as type
-          FROM
-            planet_osm_line
-          WHERE
-            way && !bbox! AND
-            railway IN (
-              'rail',
-              'narrow_gauge'
-            ) AND
-            tunnel = 'yes' AND
-            (
-              service IS NULL OR
-              service NOT IN (
-                'crossover',
-                'spur',
-                'yard'
-              )
-            )
-          ) AS tunnels
+          way,
+          layer,
+          type
+        FROM
+          tunnels
+        WHERE
+          way && !bbox!
         ORDER BY
-          CASE
-            WHEN layer IS NOT NULL AND layer ~ '^-?\d+$' THEN layer::int
-            ELSE -1
-          END ASC,
+          layer ASC,
           CASE
             WHEN type = 'railway' THEN 1
             WHEN type = 'motorway_link' THEN 10
