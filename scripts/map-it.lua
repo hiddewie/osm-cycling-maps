@@ -61,6 +61,9 @@ local roads = osm2pgsql.define_way_table('roads', {
     { column = 'bicycle', type = 'boolean' },
     { column = 'tracktype', type = 'text' },
     { column = 'layer', type = 'integer' },
+    { column = 'ref', type = 'text' },
+    { column = 'ref_width', type = 'integer' },
+    { column = 'ref_height', type = 'integer' },
 })
 local cycling_nodes = osm2pgsql.define_node_table('cycling_nodes', {
     { column = 'way', type = 'point' },
@@ -273,6 +276,7 @@ end
 local road_railway_values = osm2pgsql.make_check_values_func({ 'rail', 'narrow_gauge', 'preserved' })
 local road_disallowed_highway_values = osm2pgsql.make_check_values_func({ 'platform', 'construction', 'proposed', 'steps' })
 local road_bicycle_values = osm2pgsql.make_check_values_func({ 'yes', 'designated', 'permissive' })
+local ref_highway_values = osm2pgsql.make_check_values_func({ 'primary', 'secondary', 'tertiary' })
 function process_road(object)
     local tags = object.tags
     if tags.highway
@@ -288,12 +292,24 @@ function process_road(object)
         elseif tags.highway == 'living_street' then
             type = 'residential'
         end
+
+        local has_ref = tags.ref and ref_highway_values(tags.highway)
+        local refs = osm2pgsql.split_string(has_ref and tags.ref or nil)
+        local ref_height = 0
+        local ref_width = 0
+        for _, ref in pairs(refs) do
+            ref_height = ref_height + 1
+            ref_width = math.max(ref_width, ref:len())
+        end
         roads:insert({
             way = object:as_linestring(),
             type = type,
             bicycle = road_bicycle_values(tags.bicycle),
             tracktype = tags.tracktype,
             layer = tags.layer,
+            ref = has_ref and table.concat(refs, "\n") or nil,
+            ref_width = has_ref and ref_width or nil,
+            ref_height = has_ref and ref_height or nil,
         })
     end
     if road_railway_values(tags.railway)
