@@ -101,7 +101,7 @@ do
     echo "The file $OUTPUT_FILENAME is already present and will not be downloaded."
   else
     mkdir -p -- "$(dirname "$OUTPUT_FILENAME")"
-    wget "$DOWNLOAD_URL" -O $OUTPUT_FILENAME || exit 1
+    wget --no-verbose "$DOWNLOAD_URL" -O $OUTPUT_FILENAME || exit 1
   fi
 
   FILES="$FILES $OUTPUT_FILENAME"
@@ -153,7 +153,7 @@ mkdir -p $DATA_DIR/coastlines
 if [[ -f $DATA_DIR/coastlines/coastlines.zip ]]; then
   echo "The file $DATA_DIR/coastlines/coastlines.zip is already present and will not be downloaded."
 else
-  wget https://osmdata.openstreetmap.de/download/water-polygons-split-3857.zip -O $DATA_DIR/coastlines/coastlines.zip || exit 1
+  wget --no-verbose https://osmdata.openstreetmap.de/download/water-polygons-split-3857.zip -O $DATA_DIR/coastlines/coastlines.zip || exit 1
 fi
 
 if [[ -f $DATA_DIR/coastlines/water-polygons-split-3857/water_polygons.shp ]]; then
