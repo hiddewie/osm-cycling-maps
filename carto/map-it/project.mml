@@ -519,18 +519,13 @@ Layer:
           place,
           name
         FROM
-          planet_osm_point
+          places
         WHERE
           way && !bbox! AND
-          name IS NOT NULL AND
-          place IN (
-            'city',
-            'town',
-            'village'
-          )
+          important
         ORDER BY
           CASE
-            WHEN (population ~ '^[0-9]{1,8}$') THEN population::INTEGER
+            WHEN population IS NOT NULL THEN population
             WHEN (place = 'city') THEN 100000
             WHEN (place = 'town') THEN 1000
             ELSE 1
@@ -653,13 +648,14 @@ Layer:
           place,
           name
         FROM
-          planet_osm_point
+          places
         WHERE
           way && !bbox! AND
-          name IS NOT NULL AND
-          place IN (
-            'hamlet'
-          )
+          NOT important
+        ORDER BY
+          population DESC,
+          length(name) DESC,
+          name
       ) AS data
 - id: contour-labels
   geometry: linestring

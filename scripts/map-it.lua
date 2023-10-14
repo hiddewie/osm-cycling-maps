@@ -87,6 +87,13 @@ local pois = osm2pgsql.define_table({
         { column = 'scout', type = 'boolean' },
     },
 })
+local places = osm2pgsql.define_node_table('places', {
+    { column = 'way', type = 'point' },
+    { column = 'name', type = 'text' },
+    { column = 'place', type = 'text' },
+    { column = 'population', type = 'integer' },
+    { column = 'important', type = 'boolean' },
+})
 
 function parse_height(height)
     if height then
@@ -351,7 +358,6 @@ local historic_values = osm2pgsql.make_check_values_func({'castle', 'fort'})
 local man_made_values = osm2pgsql.make_check_values_func({'tower', 'mast'})
 local tower_type_values = osm2pgsql.make_check_values_func({'communication', 'observation', 'cooling'})
 local disallowed_tower_location_values = osm2pgsql.make_check_values_func({'roof', 'rooftop'})
-
 function process_poi(object)
     local tags = object.tags
     local height = tags.height and parse_height(tags.height) or nil
@@ -466,11 +472,30 @@ function process_poi(object)
     end
 end
 
+local important_place_values = osm2pgsql.make_check_values_func({'city', 'town', 'village'})
+local non_important_place_values = osm2pgsql.make_check_values_func({'hamlet'})
+function process_place(object)
+    local tags = object.tags
+    local important_place = important_place_values(tags.place)
+    if (important_place or non_important_place_values(tags.place))
+        and tags.name
+    then
+        places:insert({
+            way = object:as_point(),
+            place = tags.place,
+            name = tags.name,
+            population = tonumber(tags.population),
+            important = tags.place == important_place,
+        })
+    end
+end
+
 function osm2pgsql.process_node(object)
     process_power_pole(object)
     process_cycling_node(object)
     process_transport(object)
     process_poi(object)
+    process_place(object)
 end
 
 function osm2pgsql.process_way(object)
