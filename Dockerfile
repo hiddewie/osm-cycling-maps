@@ -1,4 +1,4 @@
-FROM debian:12-slim as generation
+FROM debian:trixie-slim as generation
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -38,7 +38,7 @@ RUN carto project.mml > mapnik.xml
 # Also see https://github.com/mapbox/carto/issues/238#issuecomment-19673987
 RUN sed -i -E "s@<!\[CDATA\[(.*)--PLACEMENTS--]]>@\1$(cat placements.xml)@g" mapnik.xml
 
-FROM debian:12-slim
+FROM debian:trixie-slim
 
 ENV DEBIAN_FRONTEND noninteractive
 

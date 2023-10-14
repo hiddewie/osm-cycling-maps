@@ -258,59 +258,57 @@
   }
 }
 
-#boundaries {
-  [boundary = 'administrative'] {
-    ::firstline {
-      background/line-join: round;
-      background/line-color: white;
+#administrative-boundaries {
+  ::firstline {
+    background/line-join: round;
+    background/line-color: white;
+    background/line-width: 7;
+  }
+
+  ::wideline {
+    background/line-join: round;
+    background/line-color: white;
+    background/line-width: 4;
+
+    opacity: 0.2;
+    line-color: @admin-background;
+    line-join: bevel;
+    line-width: 4;
+
+    [admin_level < 4] {
       background/line-width: 7;
-    }
-
-    ::wideline {
-      background/line-join: round;
-      background/line-color: white;
-      background/line-width: 4;
-
-      opacity: 0.2;
-      line-color: @admin-background;
-      line-join: bevel;
-      line-width: 4;
-
-      [admin_level < 4] {
-        background/line-width: 7;
-        line-width: 7;
-      }
-    }
-
-    ::narrowline {
-      background/line-join: round;
-      background/line-color: white;
-      background/line-width: 1;
-
-      opacity: 0.6;
-      thin/line-color: @admin-boundaries;
-      thin/line-width: 1;
-      thin/line-dasharray: 12,10;
-
-      [admin_level < 4] {
-        thin/line-width: 2;
-        thin/line-dasharray: 12,3,2,3,2,3;
-      }
-    }
-
-    ::firstline,
-    ::wideline,
-    ::narrowline {
-      comp-op: darken;
+      line-width: 7;
     }
   }
 
-  [boundary = 'national_park'] {
-    opacity: 0.4;
-    line-color: @national-park;
-    line-width: 6.0;
-    line-offset: -3.0;
+  ::narrowline {
+    background/line-join: round;
+    background/line-color: white;
+    background/line-width: 1;
+
+    opacity: 0.6;
+    thin/line-color: @admin-boundaries;
+    thin/line-width: 1;
+    thin/line-dasharray: 12,10;
+
+    [admin_level < 4] {
+      thin/line-width: 2;
+      thin/line-dasharray: 12,3,2,3,2,3;
+    }
   }
+
+  ::firstline,
+  ::wideline,
+  ::narrowline {
+    comp-op: darken;
+  }
+}
+
+#national-parks {
+  opacity: 0.4;
+  line-color: @national-park;
+  line-width: 6.0;
+  line-offset: -3.0;
 }
 
 #cycling-routes {
@@ -742,19 +740,19 @@
     marker-file: 'style/icons/maki/home-2-11.svg';
   }
 
-  [type = 'supermarket'] {
+  [type = 'shop_supermarket'] {
     background/marker-width: 7;
     background/marker-file: 'style/icons/openstreetmap/shop2.svg';
     marker-width: 7;
     marker-file: 'style/icons/openstreetmap/shop2.svg';
   }
-  [type = 'convenience_store'] {
+  [type = 'shop_convenience'] {
     background/marker-width: 7;
     background/marker-file: 'style/icons/maki/convenience-11.svg';
     marker-width: 7;
     marker-file: 'style/icons/maki/convenience-11.svg';
   }
-  [type = 'bicycle_shop'] {
+  [type = 'shop_bicycle'] {
     background/marker-width: 9;
     background/marker-file: 'style/icons/maki/bicycle-11.svg';
     marker-width: 9;
@@ -911,23 +909,23 @@
   shield-clip: false;
 
   // tertiary is the default
-  shield-file: url("style/symbols/shields/tertiary_[width]x[height].svg");
+  shield-file: url("style/symbols/shields/tertiary_[ref_width]x[ref_height].svg");
   shield-fill: @road-shield-tertiary-label;
 
   [type = 'secondary'] {
-    shield-file: url("style/symbols/shields/secondary_[width]x[height].svg");
+    shield-file: url("style/symbols/shields/secondary_[ref_width]x[ref_height].svg");
     shield-fill: @road-shield-secondary-label;
   }
   [type = 'primary'] {
-    shield-file: url("style/symbols/shields/primary_[width]x[height].svg");
+    shield-file: url("style/symbols/shields/primary_[ref_width]x[ref_height].svg");
     shield-fill: @road-shield-primary-label;
   }
   [type = 'trunk'] {
-    shield-file: url("style/symbols/shields/trunk_[width]x[height].svg");
+    shield-file: url("style/symbols/shields/trunk_[ref_width]x[ref_height].svg");
     shield-fill: @road-shield-trunk-label;
   }
   [type = 'motorway'] {
-    shield-file: url("style/symbols/shields/motorway_[width]x[height].svg");
+    shield-file: url("style/symbols/shields/motorway_[ref_width]x[ref_height].svg");
     shield-fill: @road-shield-motorway-label;
   }
 }
