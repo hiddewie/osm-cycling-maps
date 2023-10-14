@@ -25,6 +25,11 @@ local waterways = osm2pgsql.define_way_table('waterways', {
 local water = osm2pgsql.define_way_table('water', {
     { column = 'way', type = 'multipolygon' },
 })
+local water_labels = osm2pgsql.define_way_table('water_labels', {
+    { column = 'way', type = 'geometry' },
+    { column = 'name', type = 'text' },
+    { column = 'type', type = 'text' },
+})
 local dams = osm2pgsql.define_way_table('dams', {
     { column = 'way', type = 'linestring' },
     { column = 'type', type = 'text' },
@@ -166,6 +171,38 @@ function process_water(object)
     end
 end
 
+local label_water_values = osm2pgsql.make_check_values_func({'lake', 'lagoon'})
+local label_water_landuse_values = water_landuse_values
+function process_water_labels(object)
+    local tags = object.tags
+    if tags.natural == 'water'
+        and (label_water_values(tags.water)
+            or label_water_landuse_values(tags.landuse))
+        and tags.name
+    then
+        local way = object:as_multipolygon()
+        local area = way:spherical_area()
+        if area >= 2e6 then
+            water_labels:insert({
+                way = object:as_multipolygon(),
+                name = tags.name,
+                type = 'lake',
+            })
+        end
+    end
+
+    if tags.waterway == 'river'
+        and tags.tunnel ~= 'yes'
+        and tags.name
+    then
+        water_labels:insert({
+            way = object:as_linestring(),
+            name = tags.name,
+            type = 'river',
+        })
+    end
+end
+
 function process_dam(object)
     local tags = object.tags
     if tags.waterway == 'dam' then
@@ -196,8 +233,7 @@ local national_park_protect_class_values = osm2pgsql.make_check_values_func({'1'
 function process_national_park(object)
     local tags = object.tags
     if (tags.boundary == 'national_park'
-            or (tags.boundary == 'protected_area' and national_park_protect_class_values(tags.protect_class))
-        and object:as_multipolygon():spherical_area() >= 5e5)
+        or (tags.boundary == 'protected_area' and national_park_protect_class_values(tags.protect_class)))
     then
         local way = object:as_multipolygon()
         local area = way:spherical_area()
@@ -532,6 +568,7 @@ function osm2pgsql.process_way(object)
     process_road(object)
     process_transport(object)
     process_poi(object)
+    process_water_labels(object)
 end
 
 function osm2pgsql.process_relation(object)

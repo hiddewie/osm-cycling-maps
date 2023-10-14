@@ -578,43 +578,11 @@ Layer:
         SELECT
           way,
           name,
-          CASE
-            WHEN water IN ('lake', 'lagoon') THEN water
-            WHEN landuse IN ('reservoir', 'basin') then landuse
-          END as type
+          type
         FROM
-          planet_osm_polygon
+          water_labels
         WHERE
-          way && !bbox! AND
-          "natural" = 'water' AND
-          (
-            water IN (
-              'lake',
-              'lagoon'
-            ) OR
-            landuse IN (
-              'reservoir',
-              'basin'
-            )
-          ) AND
-          name IS NOT NULL AND
-          way_area >= 2e6
-
-        UNION ALL
-
-        SELECT
-          way,
-          name,
-          waterway as type
-        FROM
-          planet_osm_line
-        WHERE
-          way && !bbox! AND
-          waterway IN (
-            'river'
-          ) AND
-          (tunnel IS NULL OR tunnel != 'yes') AND
-          name IS NOT NULL
+          way && !bbox!
       ) AS data
 - id: places-non-important
   geometry: point
