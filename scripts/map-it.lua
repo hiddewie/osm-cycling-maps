@@ -76,6 +76,30 @@ local transport = osm2pgsql.define_table({
         { column = 'type', type = 'text' },
     },
 })
+local pois = osm2pgsql.define_table({
+    name = 'pois',
+    ids = { type = 'any', id_column = 'osm_id' },
+    columns = {
+        { column = 'way', type = 'point' },
+        { column = 'type', type = 'text' },
+        { column = 'religion', type = 'text' },
+        { column = 'ele', type = 'real' },
+        { column = 'scout', type = 'boolean' },
+    },
+})
+
+function parse_height(height)
+    if height then
+        if height:find("^%d%d?%d?$") or height:find("^%d%d?%d?%.%d+$") then
+            return tonumber(height)
+        elseif height:find("^%d%d?%d? ?m?$") or height:find("^%d%d?%d?%.%d+ ?m?$") then
+            local parsed, _ = height:gsub(" ?m?$", "")
+            return tonumber(parsed)
+        end
+    end
+
+    return nil
+end
 
 function process_landuse_background(object)
     local tags = object.tags
@@ -322,10 +346,131 @@ function process_transport(object)
     end
 end
 
+local shop_values = osm2pgsql.make_check_values_func({'supermarket', 'convenience', 'bicycle'})
+local historic_values = osm2pgsql.make_check_values_func({'castle', 'fort'})
+local man_made_values = osm2pgsql.make_check_values_func({'tower', 'mast'})
+local tower_type_values = osm2pgsql.make_check_values_func({'communication', 'observation', 'cooling'})
+local disallowed_tower_location_values = osm2pgsql.make_check_values_func({'roof', 'rooftop'})
+
+function process_poi(object)
+    local tags = object.tags
+    local height = tags.height and parse_height(tags.height) or nil
+
+    if tags.tourism == 'camp_site'
+        or (tags.tourism == 'caravan_site' and tags.tents == 'yes')
+    then
+        pois:insert({
+            way = object.type == 'way' and object:as_linestring():centroid() or object:as_point(),
+            type = 'camp_site',
+            scout = tags.scout,
+        })
+    end
+    if tags.tourism == 'hostel' then
+        pois:insert({
+            way = object.type == 'way' and object:as_linestring():centroid() or object:as_point(),
+            type = 'hostel',
+        })
+    end
+    if shop_values(tags.shop) then
+        pois:insert({
+            way = object.type == 'way' and object:as_linestring():centroid() or object:as_point(),
+            type = 'shop_' .. tags.shop,
+        })
+    end
+    if historic_values(tags.historic) then
+        -- todo combine type
+        pois:insert({
+            way = object.type == 'way' and object:as_linestring():centroid() or object:as_point(),
+            type = tags.historic,
+        })
+    end
+    if tags.man_made == 'lighthouse' then
+        pois:insert({
+            way = object.type == 'way' and object:as_linestring():centroid() or object:as_point(),
+            type = tags.man_made,
+        })
+    end
+    if tags.man_made == 'communications_tower'
+        and not disallowed_tower_location_values(tags.location)
+    then
+        pois:insert({
+            way = object.type == 'way' and object:as_linestring():centroid() or object:as_point(),
+            type = 'tower_communication',
+        })
+    end
+    if tags.man_made == 'chimney'
+        and (height and height >= 40)
+        and not disallowed_tower_location_values(tags.location)
+    then
+        pois:insert({
+            way = object.type == 'way' and object:as_linestring():centroid() or object:as_point(),
+            type = 'tower_chimney',
+        })
+    end
+    if man_made_values(tags.man_made)
+        and tower_type_values(tags["tower:type"])
+        and (tags["tower:type"] ~= 'communication' or (height and height >= 80))
+        and not disallowed_tower_location_values(tags.location)
+    then
+        pois:insert({
+            way = object.type == 'way' and object:as_linestring():centroid() or object:as_point(),
+            type = "tower_" .. tags["tower:type"],
+        })
+    end
+    if tags.power == 'generator'
+        and tags["generator:source"] == 'wind'
+    then
+        pois:insert({
+            way = object.type == 'way' and object:as_linestring():centroid() or object:as_point(),
+            type ='wind_power',
+        })
+    end
+    if tags.mountain_pass == 'yes' then
+        pois:insert({
+            way = object.type == 'way' and object:as_linestring():centroid() or object:as_point(),
+            type = 'mountain_pass',
+            ele = tags.ele and tonumber(tags.ele) or nil,
+        })
+    end
+    if tags.natural == 'peak' then
+        pois:insert({
+            way = object.type == 'way' and object:as_linestring():centroid() or object:as_point(),
+            type = 'peak',
+            ele = tags.ele and tonumber(tags.ele) or nil,
+        })
+    end
+    if tags.amenity == 'place_of_worship'
+        and tags.historic ~= 'wayside_shrine'
+    then
+        pois:insert({
+            way = object.type == 'way' and object:as_linestring():centroid() or object:as_point(),
+            type = 'place_of_worship',
+            religion = tags.religion,
+        })
+    end
+
+    if railway_values(tags.railway)
+        and (not tags.station
+            or not disallowed_station_values(tags.station))
+    then
+        transport:insert({
+            way = object.type == 'way' and object:as_linestring():centroid() or object:as_point(),
+            type = 'train_station',
+        })
+    end
+    if tags.amenity == 'ferry_terminal' then
+        transport:insert({
+            way = object.type == 'way' and object:as_linestring():centroid() or object:as_point(),
+            type = 'ferry_terminal',
+        })
+    end
+end
+
 function osm2pgsql.process_node(object)
     process_power_pole(object)
     process_cycling_node(object)
     process_transport(object)
+    process_poi(object)
 end
 
 function osm2pgsql.process_way(object)
@@ -339,6 +484,7 @@ function osm2pgsql.process_way(object)
     process_aeroway(object)
     process_road(object)
     process_transport(object)
+    process_poi(object)
 end
 
 function osm2pgsql.process_relation(object)

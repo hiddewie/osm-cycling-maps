@@ -740,19 +740,19 @@
     marker-file: 'style/icons/maki/home-2-11.svg';
   }
 
-  [type = 'supermarket'] {
+  [type = 'shop_supermarket'] {
     background/marker-width: 7;
     background/marker-file: 'style/icons/openstreetmap/shop2.svg';
     marker-width: 7;
     marker-file: 'style/icons/openstreetmap/shop2.svg';
   }
-  [type = 'convenience_store'] {
+  [type = 'shop_convenience'] {
     background/marker-width: 7;
     background/marker-file: 'style/icons/maki/convenience-11.svg';
     marker-width: 7;
     marker-file: 'style/icons/maki/convenience-11.svg';
   }
-  [type = 'bicycle_shop'] {
+  [type = 'shop_bicycle'] {
     background/marker-width: 9;
     background/marker-file: 'style/icons/maki/bicycle-11.svg';
     marker-width: 9;

@@ -432,91 +432,6 @@ Layer:
     <<: *osm2pgsql
     table: |-
       (
-        WITH points AS (
-          SELECT
-            way,
-            osm_id,
-            tourism,
-            amenity,
-            historic,
-            man_made,
-            "natural",
-            shop,
-            religion,
-            power,
-            "tower:type",
-            CASE
-              WHEN height IS NOT NULL AND height ~ '^\d{1,3}(\.\d+)?( m)?$' THEN (SUBSTRING(height, '^(\d{1,3}(\.\d+)?)( m)?$'))::NUMERIC
-            END as height,
-            CASE
-              WHEN ele ~ '^-?\d{1,4}(\.\d+)?$' THEN (ROUND(ele::NUMERIC)::TEXT) || ' m'
-            END as ele,
-            location,
-            "generator:source",
-            mountain_pass as mountain_pass,
-            tents,
-            CASE
-              WHEN scout = 'yes' THEN 'yes'
-              ELSE 'no'
-            END as scout,
-            surface
-          FROM
-            planet_osm_point
-          WHERE
-            way && !bbox! AND
-            (
-              amenity IS NOT NULL OR
-              tourism IS NOT NULL OR
-              historic IS NOT NULL OR
-              man_made IS NOT NULL OR
-              shop IS NOT NULL OR
-              power IS NOT NULL OR
-              religion IS NOT NULL OR
-              "natural" IS NOT NULL OR
-              mountain_pass IS NOT NULL
-            )
-
-          UNION ALL
-
-          SELECT
-            ST_PointOnSurface(way) AS way,
-            osm_id,
-            tourism,
-            amenity,
-            historic,
-            man_made,
-            "natural",
-            shop,
-            religion,
-            power,
-            "tower:type",
-            CASE
-              WHEN height IS NOT NULL AND height ~ '^\d{1,3}(\.\d+)?( m)?$' THEN (SUBSTRING(height, '^(\d{1,3}(\.\d+)?)( m)?$'))::NUMERIC
-            END as height,
-            NULL as ele,
-            location,
-            "generator:source",
-            NULL as mountain_pass,
-            tents,
-            CASE
-              WHEN scout = 'yes' THEN 'yes'
-              ELSE 'no'
-            END as scout,
-            surface
-          FROM
-            planet_osm_polygon
-          WHERE
-            way && !bbox! AND
-            (
-              amenity IS NOT NULL OR
-              tourism IS NOT NULL OR
-              historic IS NOT NULL OR
-              man_made IS NOT NULL OR
-              shop IS NOT NULL OR
-              power IS NOT NULL OR
-              religion IS NOT NULL
-            )
-        )
         SELECT
           *
         FROM (
@@ -531,17 +446,11 @@ Layer:
           FROM (
             SELECT
               way,
-              tourism,
-              tents,
               ST_ClusterDBSCAN(way, eps := 300.0 / cosd(ST_Y(ST_Transform(way, 4326))), minpoints := 2) over () AS cid
             FROM
-              points
+              pois
             WHERE
-              tourism = 'camp_site' OR
-              (
-                tourism = 'caravan_site' AND
-                tents = 'yes'
-              )
+              type = 'camp_site'
           ) ungrouped_campings
           WHERE
             cid IS NOT NULL
@@ -552,88 +461,29 @@ Layer:
 
           SELECT
             way,
-            CASE
-              WHEN tourism IN ('camp_site', 'caravan_site') THEN 'camp_site'
-              WHEN tourism = 'hostel' THEN 'hostel'
-              WHEN shop = 'supermarket' THEN 'supermarket'
-              WHEN shop = 'convenience' THEN 'convenience_store'
-              WHEN shop = 'bicycle_shop' THEN 'bicycle_shop'
-              WHEN historic = 'castle' THEN 'castle'
-              WHEN historic = 'fort' THEN 'fort'
-              WHEN man_made = 'lighthouse' THEN 'lighthouse'
-              WHEN man_made = 'communications_tower' THEN 'tower_communication'
-              WHEN man_made = 'chimney' THEN 'tower_chimney'
-              WHEN power = 'generator' THEN 'wind_power'
-              WHEN amenity = 'place_of_worship' THEN 'place_of_worship'
-              WHEN man_made IN ('mast', 'tower') THEN 'tower_' || "tower:type"
-              WHEN mountain_pass = 'yes' THEN 'mountain_pass'
-              WHEN "natural" = 'peak' THEN 'peak'
-            END as type,
+            type,
             religion,
-            ele,
+            CASE
+              WHEN ele IS NOT NULL THEN ROUND(ele)::TEXT || ' m'
+            END as ele,
             scout,
             peak_isolation.isolation as isolation,
             'no' as many
           FROM
-            points
+            pois
           LEFT JOIN
-            peak_isolation ON points.osm_id = peak_isolation.osm_id
+            peak_isolation ON pois.osm_id = peak_isolation.osm_id
           LEFT JOIN
-            mountain_pass_road ON points.osm_id = mountain_pass_road.osm_id
+            mountain_pass_road ON pois.osm_id = mountain_pass_road.osm_id
           WHERE
             (
-              tourism IN (
-                'camp_site',
-                'hostel'
-              ) OR
-              (
-                tourism = 'caravan_site' AND
-                tents = 'yes'
-              ) OR
-              shop IN (
-                'supermarket',
-                'convenience',
-                'bicycle_shop'
-              ) OR
-              amenity IN (
-                'place_of_worship'
-              ) OR
-              historic IN (
-                'castle',
-                'fort'
-              ) OR
-              man_made IN (
-                'lighthouse',
-                'communications_tower'
-              ) OR
-              (
-                man_made = 'chimney' AND
-                height >= 40
-              ) OR
-              (
-                man_made IN ('tower', 'mast') AND
-                "tower:type" IN (
-                  'communication',
-                  'observation',
-                  'cooling'
-                ) AND
-                ("tower:type" != 'communication' OR height >= 80)
-              ) OR
-              (
-                power = 'generator' AND
-                "generator:source" = 'wind'
-              ) OR
-              (
-                mountain_pass = 'yes' AND
-                mountain_pass_road.road_osm_id IS NOT NULL
-              ) OR
-              (
-                "natural" = 'peak' AND
-                peak_isolation.isolation >= 2500
-              )
+              type != 'mountain_pass' OR
+              mountain_pass_road.road_osm_id IS NOT NULL
             ) AND
-            (historic IS NULL OR historic != 'wayside_shrine') AND
-            (location IS NULL OR location NOT IN ('roof', 'rooftop'))
+            (
+              peak_isolation.isolation IS NULL OR 
+              peak_isolation.isolation >= 2500
+            )
         ) as poi
         ORDER BY
           CASE
@@ -651,8 +501,7 @@ Layer:
             WHEN type = 'tower_cooling' THEN 12
             WHEN type = 'tower_observation' THEN 13
             WHEN type = 'tower_chimney' THEN 14
-            WHEN type = 'place_of_worship' AND religion = 'christian' THEN 15
-            WHEN type = 'place_of_worship' AND religion = 'muslim' THEN 16
+            WHEN type = 'place_of_worship' AND religion IS NOT NULL THEN 16
             WHEN type = 'place_of_worship' THEN 17
             WHEN type = 'peak' THEN 18
             ELSE 100
