@@ -35,6 +35,7 @@ local administrative_boundaries = osm2pgsql.define_way_table('administrative_bou
 })
 local national_parks = osm2pgsql.define_way_table('national_parks', {
     { column = 'way', type = 'multipolygon' },
+    { column = 'name', type = 'text' },
 })
 local ferries = osm2pgsql.define_way_table('ferries', {
     { column = 'way', type = 'multilinestring' },
@@ -195,9 +196,14 @@ function process_national_park(object)
             or (tags.boundary == 'protected_area' and national_park_protect_class_values(tags.protect_class))
         and object:as_multipolygon():spherical_area() >= 5e5)
     then
-        national_parks:insert({
-            way = object:as_multipolygon(),
-        })
+        local way = object:as_multipolygon()
+        local area = way:spherical_area()
+        if area >= 5e5 then
+            national_parks:insert({
+                way = way,
+                name = area >= 2e6 and tags.name or nil,
+            })
+        end
     end
 end
 
