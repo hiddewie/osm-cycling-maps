@@ -958,6 +958,7 @@
   text-halo-radius: 1.0;
   text-placement: line;
   text-min-path-length: 50;
+  text-upright: left;
 }
 
 #national-park-labels {
