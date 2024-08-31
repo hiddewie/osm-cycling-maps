@@ -154,6 +154,7 @@ node,way   scout      text         linear
 node,way   tower:type   text         linear
 way        tracktype    text         linear
 node,way   tunnel       text         linear
+node,way   usage        text         linear
 node,way   water        text         polygon
 node,way   waterway     text         polygon
 # node,way   wetland      text         polygon

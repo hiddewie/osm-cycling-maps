@@ -382,7 +382,8 @@ Layer:
             way && !bbox! AND
             railway IN (
               'rail',
-              'narrow_gauge'
+              'narrow_gauge',
+              'preserved'
             ) AND
             tunnel = 'yes' AND
             (
@@ -391,6 +392,13 @@ Layer:
                 'crossover',
                 'spur',
                 'yard'
+              )
+            ) AND
+            (
+              usage IS NULL OR
+              usage NOT IN (
+                'industrial',
+                'military'
               )
             )
           ) AS tunnels
@@ -493,6 +501,13 @@ Layer:
                 'crossover',
                 'spur',
                 'yard'
+              )
+            ) AND
+            (
+              usage IS NULL OR
+              usage NOT IN (
+                'industrial',
+                'military'
               )
             )
         ) AS roads
