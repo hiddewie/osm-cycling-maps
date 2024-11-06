@@ -131,7 +131,7 @@ jobs:
             map-it map-it-bounds map-it-import
 
       - name: Archive test artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: map
           if-no-files-found: error
