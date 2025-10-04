@@ -5,7 +5,7 @@ import sys
 import tempfile
 import time
 
-import PyPDF2
+from pypdf import PdfMerger, PdfFileReader
 import cairo
 import mapnik
 
@@ -72,7 +72,7 @@ def main():
         )
     print('Rendering %s pages' % (len(boundingBoxes),))
 
-    pdfWriter = PyPDF2.PdfFileMerger()
+    pdfWriter = PdfMerger()
     page = 1
     for boundingBox in boundingBoxes:
         tileBoundingBox = bounds.latitudeLongitudeToWebMercator.forward(boundingBox)
@@ -87,7 +87,7 @@ def main():
             stats = os.stat(tempFile.name)
             print('Done rendering page %d of %d in %.1f sec with generated page size %.1f MB' %
                   (page, len(boundingBoxes), time.time() - startTime, stats.st_size / (1024 * 1024)))
-            pdfWriter.append(PyPDF2.PdfFileReader(tempFile))
+            pdfWriter.append(PdfFileReader(tempFile))
 
             print('Done writing PDF page %s of %d' % (page, len(boundingBoxes)))
 

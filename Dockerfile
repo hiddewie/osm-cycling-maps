@@ -1,4 +1,4 @@
-FROM debian:12-slim as generation
+FROM debian:13-slim as generation
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -38,7 +38,7 @@ RUN carto project.mml > mapnik.xml
 # Also see https://github.com/mapbox/carto/issues/238#issuecomment-19673987
 RUN sed -i -E "s@<!\[CDATA\[(.*)--PLACEMENTS--]]>@\1$(cat placements.xml)@g" mapnik.xml
 
-FROM debian:12-slim
+FROM debian:13-slim
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -46,7 +46,7 @@ LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-mapnik \
-    python3-pypdf2 \
+    python3-pypdf \
     curl \
     fonts-noto-cjk \
     fonts-noto-hinted \
