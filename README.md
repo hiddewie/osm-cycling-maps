@@ -187,9 +187,6 @@ The lists below describe the parameters used for the scripts, including defaults
 Optional extra parameters for tweaking the import of downloaded OpenStreetMap data into the database:
 
 <dl>
-  <dt><tt>OSM2PGSQL_CACHE</tt> (default <tt>1024</tt>)</dt>
-  <dd>The cache size in mega bytes that the import script may use.</dd>
-
   <dt><tt>OSM2PGSQL_NUMPROC</tt> (default <tt>4</tt>)</dt>
   <dd>The number of processes that import script may use.</dd>
 </dl>

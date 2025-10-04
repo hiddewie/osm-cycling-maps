@@ -1,4 +1,4 @@
-FROM debian:12-slim as compilation
+FROM debian:13-slim as compilation
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -13,7 +13,7 @@ WORKDIR /compilation
 COPY scripts/isolation.c .
 RUN gcc isolation.c -Wall -o isolation -lgdal -lm -O2
 
-FROM debian:12-slim as generation
+FROM debian:13-slim as generation
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -25,7 +25,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     ca-certificates \
     python3 \
-    python3-distutils \
     python3-lxml \
     python3-pip \
     && pip3 install --no-cache-dir --break-system-packages pyyaml \
@@ -36,7 +35,7 @@ COPY scripts/generate/legend.py .
 RUN chmod +x legend.py
 RUN legend.py legend.yaml > legend.osm
 
-FROM debian:12-slim
+FROM debian:13-slim
 
 LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
 

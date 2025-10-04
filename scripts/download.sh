@@ -123,11 +123,9 @@ echo "Importing combined OSM data"
 
 # The following values can be tweaked
 # See https://github.com/gravitystorm/openstreetmap-carto/blob/master/scripts/docker-startup.sh
-OSM2PGSQL_CACHE="${OSM2PGSQL_CACHE:-1024}"
 OSM2PGSQL_NUMPROC="${OSM2PGSQL_NUMPROC:-4}"
 PGPASS="$PG_PASSWORD"
 
-echo "Using OSM2PGSQL_CACHE = $OSM2PGSQL_CACHE"
 echo "Using $OSM2PGSQL_NUMPROC processes"
 
 echo "Starting import from $DATA_DIR/combined.osm.pbf"
@@ -135,11 +133,10 @@ echo "Starting import from $DATA_DIR/combined.osm.pbf"
 # No --hstore is used, because no tag data is needed
 # Everything that is needed should be put into style/map-it.style
 osm2pgsql \
-  --cache $OSM2PGSQL_CACHE \
   --number-processes $OSM2PGSQL_NUMPROC \
   --host "$PG_HOST" \
   --database "$PG_DATABASE" \
-  --username "$PG_USER" \
+  --user "$PG_USER" \
   --style /script/map-it.style \
   $DATA_DIR/combined.osm.pbf \
   || exit 1
@@ -325,7 +322,7 @@ echo "Importing legend data"
 osm2pgsql \
   --host "$PG_HOST" \
   --database "$PG_LEGEND_DATABASE" \
-  --username "$PG_USER" \
+  --user "$PG_USER" \
   --style /script/map-it.style \
   /tmp/legend_cleaned.osm
 
