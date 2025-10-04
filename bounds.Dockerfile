@@ -1,4 +1,4 @@
-FROM debian:12-slim
+FROM debian:13-slim
 
 LABEL maintainer="Hidde Wieringa <hidde@hiddewieringa.nl>"
 
