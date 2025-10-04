@@ -5,7 +5,7 @@ import sys
 import tempfile
 import time
 
-from pypdf import PdfMerger, PdfFileReader
+from pypdf import PdfMerger, PdfReader
 import cairo
 import mapnik
 
@@ -87,7 +87,7 @@ def main():
             stats = os.stat(tempFile.name)
             print('Done rendering page %d of %d in %.1f sec with generated page size %.1f MB' %
                   (page, len(boundingBoxes), time.time() - startTime, stats.st_size / (1024 * 1024)))
-            pdfWriter.append(PdfFileReader(tempFile))
+            pdfWriter.append(PdfReader(tempFile))
 
             print('Done writing PDF page %s of %d' % (page, len(boundingBoxes)))
 
