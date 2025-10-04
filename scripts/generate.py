@@ -5,7 +5,7 @@ import sys
 import tempfile
 import time
 
-from pypdf import PdfMerger, PdfReader
+from pypdf import PdfWriter, PdfReader
 import cairo
 import mapnik
 
@@ -72,7 +72,7 @@ def main():
         )
     print('Rendering %s pages' % (len(boundingBoxes),))
 
-    pdfWriter = PdfMerger()
+    pdfWriter = PdfWriter()
     page = 1
     for boundingBox in boundingBoxes:
         tileBoundingBox = bounds.latitudeLongitudeToWebMercator.forward(boundingBox)
