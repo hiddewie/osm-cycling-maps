@@ -139,7 +139,7 @@ osm2pgsql \
   --number-processes $OSM2PGSQL_NUMPROC \
   --host "$PG_HOST" \
   --database "$PG_DATABASE" \
-  --username "$PG_USER" \
+  --user "$PG_USER" \
   --style /script/map-it.style \
   $DATA_DIR/combined.osm.pbf \
   || exit 1
@@ -325,7 +325,7 @@ echo "Importing legend data"
 osm2pgsql \
   --host "$PG_HOST" \
   --database "$PG_LEGEND_DATABASE" \
-  --username "$PG_USER" \
+  --user "$PG_USER" \
   --style /script/map-it.style \
   /tmp/legend_cleaned.osm
 
